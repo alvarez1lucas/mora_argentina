@@ -103,6 +103,29 @@ def sorpresa_carga_cuota(inflacion_mensual: pd.Series, salario_nominal: pd.Serie
     return esperado / realizado
 
 
+def futuro_cercano(futuros: pd.DataFrame, plazo_objetivo: int = 30, plazo_minimo: int = 7) -> pd.DataFrame:
+    """Por día, el contrato de dólar futuro con plazo más cercano a `plazo_objetivo` días.
+
+    Se descartan los contratos a menos de `plazo_minimo` días (la tasa implícita anualizada de
+    un contrato por vencer es muy ruidosa).
+    """
+    f = futuros.copy()
+    f["dias"] = (f["vencimiento"] - f["fecha"]).dt.days
+    f = f[f["dias"] >= plazo_minimo]
+    f["_dist"] = (f["dias"] - plazo_objetivo).abs()
+    return f.sort_values(["fecha", "_dist"]).groupby("fecha").first().drop(columns="_dist")
+
+
+def tasa_sintetica_usd(tasa_pesos: pd.Series, devaluacion_implicita: pd.Series, dias: pd.Series) -> pd.Series:
+    """Rendimiento en dólares (TNA %) de colocar pesos a `tasa_pesos` y cubrirse con el futuro.
+
+    Ambas tasas son TNA en %, al plazo `dias`. Una tasa sintética alta y positiva indica que el
+    futuro estaba "barato" respecto de la tasa en pesos: cobertura cambiaria subsidiada.
+    """
+    bruto = (1 + tasa_pesos / 100 * dias / 365) / (1 + devaluacion_implicita / 100 * dias / 365)
+    return (bruto - 1) * 365 / dias * 100
+
+
 def familias(h: int = 12) -> pd.DataFrame:
     """Dataset de familias por línea: ratios, saldos, saldo irregular nominal y real, y descomposición."""
     fam = load("familias_por_linea")

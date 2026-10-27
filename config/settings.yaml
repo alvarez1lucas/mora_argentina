@@ -45,6 +45,9 @@ bcra_api:
     tasa_tamar_privados:       {id: 44,  agg: mean}   # % TNA, desde oct-2024
     tasa_politica_monetaria:   {id: 160, agg: mean}   # % TNA, discontinuada jul-2025
     tipo_cambio_mayorista:     {id: 5,   agg: mean}   # ARS/USD
+    tasa_pases_terceros_1d:    {id: 150, agg: mean}   # % TNA, proxy de la caución
+    tasa_pases_terceros_1d_max: {id: 150, agg: max}   # máximo mensual (picos de iliquidez)
+    reservas_internacionales:  {id: 1,   agg: last}   # millones USD, brutas
     # Liquidez / política monetaria (fase causal)
     base_monetaria:            {id: 15,  agg: mean}   # millones ARS
     m2:                        {id: 109, agg: mean}   # millones ARS
@@ -113,3 +116,8 @@ transparencia:
   base_url: "https://api.bcra.gob.ar/transparencia/v1.0"
   productos: [Personales, Prendarios, Hipotecarios]
   antiguedad_max_dias: 180
+
+a3:
+  url: "https://apicem.matbarofex.com.ar/api/v2/closing-prices"
+  page_size: 500
+  inicio: "2020-01-01"

@@ -16,7 +16,7 @@
 4. **Modelo satélite:** tests de raíz unitaria (ADF/KPSS, Zivot-Andrews con quiebre), ARDL / modelo de corrección de errores si hay cointegración y modelo en diferencias si no la hay; rezagos por criterio de información con un tope justificado; crecimiento previo del crédito como proxy del efecto cosecha; validación expanding-window fuera de muestra contra benchmarks ingenuos (random walk, AR).
 5. **Canales monetarios y financieros (fase causal, separada del satélite).** Ver abajo.
 6. **Escenarios:** base, adverso y favorable, con intervalos de confianza (lógica forward-looking de NIIF 9 y stress test).
-7. **Dashboard y automatización:** Streamlit bilingüe que lee sólo `data/processed/` y `outputs/`; GitHub Actions mensual.
+7. **Sitio web y automatización:** sitio estático (Quarto + gráficos Plotly) publicado en GitHub Pages, bilingüe ES/EN, que lee sólo `data/processed/` y `outputs/`. GitHub Actions corre la ingesta, el modelo y el render, y publica. Reemplaza a Streamlit: carga instantánea sin servidor, se ve como una publicación y no como una demo, y el informe de 2 páginas (PDF) sale del mismo código fuente.
 8. **Informe de 2 páginas y README (EN + ES).**
 
 ## Fase 5: canales monetarios y financieros
@@ -42,6 +42,16 @@
 **H2 — Absorción del sector público y del BCRA (esterilización).** Los bancos tienen una parte grande del activo en instrumentos remunerados del Tesoro y del BCRA, y eso compite con el crédito privado y sostiene tasas altas. Datos del anexo (activo en moneda nacional, sistema): títulos públicos + otros créditos por intermediación (pases) pasan de ~54% en dic-23 a ~38% en dic-25, mientras el crédito privado sube de 27% a 45%. En 2026 los títulos públicos vuelven a subir (31,1% → 33,6%) y el crédito privado se estanca.
 - Medición: participación de títulos públicos, pases y LELIQ en el activo por grupo de entidades; intereses pagados por el BCRA (efecto monetario, id 55); depósitos del gobierno en el BCRA; cronología de encajes verificada (`config/eventos_monetarios.yaml`).
 - Identificación: panel por entidad. Las entidades con más exposición al sector público antes del shock de jul-ago 2025 (fin de las LEFI, subas de encajes integrables con títulos) deberían mostrar menos crecimiento del crédito privado y, si el canal opera vía tasa, más mora en sus carteras de consumo. Para esto hace falta la exposición por entidad, que se arma con las cuentas de títulos públicos de `bal_hist`.
+
+**H3 — Cobertura cambiaria subsidiada.** El BCRA vendió dólar futuro (hasta ~83% del interés abierto en sep-2025) para que el sector financiero se quedara en pesos cubierto. Ver el eslabón 3b de `docs/marco_teorico.md`. Medición: devaluación implícita del futuro a ~30 días, tasa sintética en USD e interés abierto (A3 Mercados); pases a 1 día como proxy de la caución.
+
+**Aristas que se suman al análisis:**
+- **Cambios en la clasificación de deudores y refinanciaciones:** los bancos pidieron flexibilizar la clasificación (ago-2026) y las familias ya refinanciaron ~$2,6 billones. Si el BCRA lo aprueba, la mora *medida* baja sin que mejore la capacidad de pago: es un quiebre en la variable dependiente. Se sigue en `config/eventos_monetarios.yaml`.
+- **Castigos (cuentas de orden):** el ratio subestima el deterioro cuando los bancos pasan créditos a irrecuperables (cuenta 711046 del balance por entidad).
+- **Carga financiera de los hogares:** cuotas estimadas (stock × CFT) sobre la masa salarial (SIPA).
+- **Expectativas de inflación (REM)**, para tasas reales ex ante.
+- **Reservas internacionales y compras de divisas del BCRA en 2026**, como canal de emisión y capacidad de intervención.
+- **Empleo registrado (SIPA)**, como canal de ingreso además del salario real.
 
 **Variables candidatas** (las que ya están en la ingesta se marcan ✔):
 

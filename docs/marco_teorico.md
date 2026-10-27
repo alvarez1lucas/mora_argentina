@@ -37,6 +37,22 @@ El boom de crédito 2024-25 es literalmente esa reasignación del activo. El cr�
 Tipo de cambio mayorista como % del techo de la banda (aproximado: 1.400 + 1% mensual desde abr-25, por inflación t-2 desde ene-26): 80% en abr-25, 88% en jul-25 (fin de las LEFI, la liquidez queda libre), **95-96% entre sep-25 y dic-25**. El techo de la banda es el ancla nominal que disciplina los precios de los transables; acercarse al techo pone el ancla en riesgo.
 - **Salvedad:** en ese período coinciden las elecciones (26/10/25), la dolarización de carteras y el fin de las LEFI. Los datos no permiten atribuir la presión cambiaria *al crédito* en particular.
 
+### (3b) Cobertura cambiaria subsidiada vía dólar futuro — respaldado
+
+Para que el sector financiero se quedara en pesos sin presionar el contado, el BCRA vendió dólar futuro y abarató la cobertura. Datos de A3 Mercados (`a3_dolar_futuro.csv`) y pases entre terceros a 1 día del BCRA (proxy de la caución):
+
+| Promedio mensual | jul-25 | ago-25 | sep-25 | oct-25 | nov-25 | abr-26 | sep-26 |
+|---|---|---|---|---|---|---|---|
+| Devaluación implícita, futuro a ~30 días (TNA %) | 33,3 | 43,7 | 41,8 | 43,5 | 23,8 | 20,3 | 19,4 |
+| TAMAR (TNA %) | 34,4 | 53,4 | 52,1 | 50,8 | 33,9 | 23,4 | 23,8 |
+| Pases a 1 día, máximo del mes (TNA %) | 70,1 | 79,3 | 61,8 | **157,2** | 28,7 | 23,0 | 23,9 |
+| Tasa sintética en USD con TAMAR, máximo del mes (TNA %) | 33,1 | 27,3 | 43,9 | **61,8** | 39,1 | 14,3 | 8,1 |
+
+- Interés abierto total: USD 3.776 millones (30/06/25) → **USD 8.247 millones (30/09/25)** → USD 3.500 millones (30/09/26). La posición vendida del BCRA informada por la prensa (USD 6.844 millones al 30/09/25) es el **83%** de ese interés abierto.
+- El 09/10/25 la devaluación implícita del contrato a 22 días fue **negativa (−7,1% TNA)**: el futuro cotizaba por debajo del contado, algo que sólo se explica por la intervención vendedora.
+- Lectura: mientras la tasa en pesos estaba en 50-150%, cubrirse con el futuro costaba ~40%. Quedarse en pesos cubierto rendía en dólares mucho más que cualquier tasa internacional. La cobertura estaba subsidiada, y quien la subsidiaba (el BCRA) asumía el riesgo cambiario.
+- **Pendiente:** la serie oficial mensual de la posición del BCRA en futuros. La prensa la cita de publicaciones del BCRA, pero todavía no ubiqué el archivo fuente.
+
 ### (4) Re-esterilización — respaldado
 
 - La tasa "endógena" duró poco: la TAMAR pasa de 34% (jul-25) a 53% (ago-25) y queda en ~50% hasta oct-25.

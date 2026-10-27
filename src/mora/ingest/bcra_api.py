@@ -7,7 +7,7 @@ import pandas as pd
 from mora.config import settings
 from mora.ingest.http import get_json
 
-AGGS = {"last", "mean", "sum"}
+AGGS = {"last", "mean", "sum", "max"}
 
 
 def fetch_series(id_variable: int) -> pd.Series:

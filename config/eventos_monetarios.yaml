@@ -98,3 +98,19 @@ eventos:
     descripcion: "El cupo de financiamiento al sector público admite todos los títulos nacionales en pesos (incluso dollar-linked) e incluye el exceso de encajes al 15/05/24."
     fuente: comunicacion
     url: "https://www.bcra.gob.ar/archivos/Pdfs/comytexord/A8483.pdf"
+
+  - id: pedido_flexibilizacion_clasificacion
+    emision: 2026-08-01
+    vigencia: null
+    tipo: regulacion_mora
+    descripcion: "Bancos (ABAPPRA) piden flexibilizar la clasificación de deudores para refinanciar. Si se aprueba, la mora medida baja sin mejora real: quiebre en la variable dependiente. Pendiente de norma."
+    fuente: prensa
+    url: "https://www.iproup.com/finanzas/71017-mora-bancaria-fuerte-suba-bancos-reclaman-salvataje-millones-deudores-agosto-2026"
+
+  - id: pico_posicion_futuros_bcra
+    emision: 2025-09-30
+    vigencia: 2025-09-30
+    tipo: futuros
+    descripcion: "Posición vendida del BCRA en dólar futuro: ~USD 6.844 millones (83% del interés abierto), máximo desde 2016. Se desarma después de las elecciones."
+    fuente: prensa
+    url: "https://www.infobae.com/economia/2025/10/24/el-bcra-revelo-que-termino-septiembre-con-la-mayor-venta-de-futuros-de-dolar-desde-2016/"

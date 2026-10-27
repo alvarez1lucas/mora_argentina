@@ -73,3 +73,23 @@ def test_sorpresa_carga_cuota():
     assert s.loc["2024-12-01"] == pytest.approx(1.04**12 / 1.02**12)
     # cohorte dic-25: esperaba 2%, obtuvo 2% -> sin sorpresa (si hubiera dato a 12 meses)
     assert s.loc["2025-12-01"] == pytest.approx(1.0)
+
+
+def test_futuro_cercano_and_sintetico():
+    from mora.features import futuro_cercano, tasa_sintetica_usd
+
+    fecha = pd.Timestamp("2025-10-01")
+    fut = pd.DataFrame(
+        {
+            "fecha": [fecha] * 3,
+            "contrato": ["DLR102025", "DLR112025", "DLR122025"],
+            "vencimiento": pd.to_datetime(["2025-10-03", "2025-10-31", "2025-11-30"]),
+            "tasa_implicita": [90.0, 40.0, 45.0],
+        }
+    )
+    f = futuro_cercano(fut).loc[fecha]
+    assert f["contrato"] == "DLR112025"  # el de 3 días se descarta; 30 días es el más cercano
+    s = tasa_sintetica_usd(pd.Series([60.0]), pd.Series([40.0]), pd.Series([30]))
+    assert s.iloc[0] == pytest.approx(((1 + 0.60 * 30 / 365) / (1 + 0.40 * 30 / 365) - 1) * 365 / 30 * 100)
+    # sin diferencial de tasas, el sintético rinde 0
+    assert tasa_sintetica_usd(pd.Series([40.0]), pd.Series([40.0]), pd.Series([30])).iloc[0] == pytest.approx(0)
