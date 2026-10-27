@@ -35,7 +35,7 @@ from statsmodels.tools.sm_exceptions import InterpolationWarning
 from statsmodels.tsa.stattools import adfuller, kpss, zivot_andrews
 
 from mora.config import ROOT, path, settings
-from mora.features import cft_aproximado, load, price_index
+from mora.features import cft_aproximado, load, precios
 
 
 # --------------------------------------------------------------------------- datos
@@ -57,22 +57,25 @@ def regime_dummy(index: pd.DatetimeIndex, regime_id: str) -> pd.Series:
     return pd.Series(((index >= desde) & (index <= hasta)).astype(float), index=index)
 
 
-def build_dataset(linea: str = "total") -> pd.DataFrame:
-    """Dataset mensual: mora (logit y Δ) y regresores en variación interanual (%)."""
+def build_dataset(linea: str = "total", deflactor: str = "publico") -> pd.DataFrame:
+    """Dataset mensual: mora (logit y Δ) y regresores en variación interanual (%).
+
+    `deflactor` elige la medición de precios (ver mora.deflactores) para todas las variables reales.
+    """
     fam = load("familias_por_linea")
     bcra, macro = load("bcra_mensual"), load("macro_mensual")
     col = "ratio_cartera_irregular_total" if linea == "total" else f"ratio_{linea}"
     idx = fam.index
-    p = price_index(macro["ipc_nacional"], bcra["inflacion_mensual"])
+    p = precios(deflactor)
     ipc = p["ipc"].reindex(idx)
     # Expectativa de inflación: inflación de los últimos w meses anualizada. Con 12 meses la medida
     # falla en las desinflaciones bruscas (en 2024 daba tasas reales de -40% con tasas muy positivas).
     w = settings()["satelite"]["ventana_expectativa_inflacion"]
-    factor = (1 + bcra["inflacion_mensual"] / 100).rolling(w).apply(np.prod, raw=True)
+    factor = (p["ipc"] / p["ipc"].shift(w))
     infl_previa = (factor ** (12 / w)).reindex(idx) - 1
     cft = cft_aproximado(bcra["tasa_prestamos_personales"]).reindex(idx) / 100
     credito_real = (bcra["prestamos_personales"] + bcra["prestamos_tarjetas"]).reindex(idx) / ipc
-    salario_real = macro["salarios_registrados"].reindex(idx) / macro["ipc_nacional"].reindex(idx)
+    salario_real = macro["salarios_registrados"].reindex(idx) / ipc
 
     def ia(s: pd.Series) -> pd.Series:
         return 100 * np.log(s).diff(12)
@@ -303,8 +306,8 @@ def contributions(res, df: pd.DataFrame, spec: Spec, desde: pd.Timestamp, hasta:
 
 # --------------------------------------------------------------------------- orquestación
 
-def run_sample(name: str, spec_name: str, grid: dict[str, list[int]], cfg: dict) -> dict:
-    df = build_dataset()
+def run_sample(name: str, spec_name: str, grid: dict[str, list[int]], cfg: dict, deflactor: str = "publico") -> dict:
+    df = build_dataset(deflactor=deflactor)
     inicio = pd.Timestamp(settings()["sample"]["muestras"][name]["inicio"])
     if name == "limpia":
         df.loc[df["ipc_empalmado"], ["tasa_real_cft", "credito_real_ia", "salario_real_ia"]] = np.nan
@@ -315,26 +318,25 @@ def run_sample(name: str, spec_name: str, grid: dict[str, list[int]], cfg: dict)
     errors = evaluate_oos(df, grid, cfg["ar_max"], cfg["min_train"], cfg["horizontes"], expected)
     ult = df["dy"].dropna().index.max()
     contrib = contributions(res, df, spec, ult - pd.DateOffset(months=11), ult)
-    tag = f"{spec_name}_{name}"
+    tag = f"{spec_name}_{name}_{deflactor}"
     coefs = pd.DataFrame({"coef": res.params, "se_hac": res.bse, "pvalor": res.pvalues, "ic95_inf": res.conf_int()[0], "ic95_sup": res.conf_int()[1]})
     return {
         "tag": tag,
         "spec": spec,
         "coeficientes": coefs.rename_axis("termino").reset_index(),
         "ranking": ranking.head(10),
-        "oos": oos_summary(errors).assign(especificacion=spec_name, muestra=name),
-        "contribuciones": contrib.assign(especificacion=spec_name, muestra=name, desde=str((ult - pd.DateOffset(months=11)).date()), hasta=str(ult.date())),
+        "oos": oos_summary(errors).assign(especificacion=spec_name, muestra=name, deflactor=deflactor),
+        "contribuciones": contrib.assign(especificacion=spec_name, muestra=name, deflactor=deflactor, desde=str((ult - pd.DateOffset(months=11)).date()), hasta=str(ult.date())),
         "meta": {"especificacion": spec.name(), "signos_ok": bool(signs_ok(res, spec, expected)), "n": int(res.nobs), "r2_ajustado": float(res.rsquared_adj),
                  "desde": str(res.model.data.row_labels[0].date()), "hasta": str(res.model.data.row_labels[-1].date())},
     }
 
 
-def main() -> None:
+def run_all(deflactor: str, out) -> list[dict]:
+    """Todas las especificaciones y muestras configuradas con un deflactor; escribe los outputs en `out`."""
     cfg = settings()["satelite"]
-    out = path("outputs") / "modelo"
     out.mkdir(parents=True, exist_ok=True)
-
-    df = build_dataset()
+    df = build_dataset(deflactor=deflactor)
     vars_ = ["y", "tasa_real_cft", "salario_real_ia", "empleo_ia", "emae_ia", "credito_real_ia"]
     unit_root_table(df.loc["2011-01-01":], vars_).to_csv(out / "estacionariedad.csv", index=False)
     za = zivot_andrews_test(df["y"])
@@ -342,16 +344,21 @@ def main() -> None:
     corridas = []
     for spec_name, spec_cfg in cfg["especificaciones"].items():
         for muestra in spec_cfg["muestras"]:
-            corridas.append(run_sample(muestra, spec_name, spec_cfg["grilla"], cfg))
-            print(f"satélite {spec_name}/{muestra}: ok")
+            corridas.append(run_sample(muestra, spec_name, spec_cfg["grilla"], cfg, deflactor))
+            print(f"satélite {spec_name}/{muestra}/{deflactor}: ok")
 
     pd.concat([c["coeficientes"].assign(corrida=c["tag"]) for c in corridas]).to_csv(out / "coeficientes.csv", index=False)
     pd.concat([c["ranking"].assign(corrida=c["tag"]) for c in corridas]).to_csv(out / "seleccion_rezagos.csv", index=False)
     pd.concat([c["oos"] for c in corridas]).to_csv(out / "evaluacion_fuera_de_muestra.csv", index=False)
     pd.concat([c["contribuciones"] for c in corridas]).to_csv(out / "contribuciones_12m.csv", index=False)
     with open(out / "resumen_modelo.json", "w", encoding="utf-8") as fh:
-        json.dump({"zivot_andrews_logit_mora": za, "corridas": {c["tag"]: c["meta"] for c in corridas}}, fh, ensure_ascii=False, indent=2)
+        json.dump({"deflactor": deflactor, "zivot_andrews_logit_mora": za, "corridas": {c["tag"]: c["meta"] for c in corridas}}, fh, ensure_ascii=False, indent=2)
     print(f"satélite: {out}")
+    return corridas
+
+
+def main() -> None:
+    run_all(settings()["deflactores"]["principal"], path("outputs") / "modelo")
 
 
 if __name__ == "__main__":

@@ -13,7 +13,7 @@ from datetime import datetime, timezone
 import pandas as pd
 
 from mora.config import path
-from mora.ingest import a3, bcra_anexo, bcra_api, datos_gob, entidades, transparencia
+from mora.ingest import a3, bcra_anexo, bcra_api, datos_gob, entidades, indec_ipc, transparencia
 
 
 def _summary(df: pd.DataFrame, date_col: str | None = None) -> dict:
@@ -58,6 +58,11 @@ def main(argv: list[str] | None = None) -> None:
         df.to_csv(out / name, date_format="%Y-%m-%d")
         manifest["archivos"][name] = _summary(df)
     print("datos.gob.ar: ok")
+
+    div = indec_ipc.fetch_divisiones()
+    div.to_csv(out / "ipc_divisiones.csv", date_format="%Y-%m-%d")
+    manifest["archivos"]["ipc_divisiones.csv"] = _summary(div)
+    print("indec ipc divisiones: ok")
 
     tr = transparencia.update(out / "transparencia_entidades.csv")
     manifest["archivos"]["transparencia_entidades.csv"] = _summary(tr, "fecha_descarga")

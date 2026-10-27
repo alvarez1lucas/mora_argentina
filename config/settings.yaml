@@ -70,6 +70,11 @@ datos_gob:
     # RIPTE (158.1_REPTE_0_0_5) figura en el catálogo pero la API lo devuelve vacío (oct-2026).
     emae_desest:         "143.3_NO_PR_2004_A_31"         # INDEC, EMAE desestacionalizado
     empleo_registrado:   "151.1_TL_SIN_TAC_2012_M_15"    # SIPA, total de trabajadores registrados, sin estacionalidad
+    # IPC de la Ciudad de Buenos Aires (IDECBA): base jul-11/jun-12 (2012-07 a 2022-02) y base 2021 (2022-02 en adelante)
+    ipcba_general_b2012:   "193.1_NIVEL_GENERAL_JULI_0_13"
+    ipcba_general_b2021:   "193.2_NIVEL_GENERAL_2021_0_13_2"
+    # ipcba_regulados_b2012 (193.1_REGULADOSDOS_JULI_0_9) figura en el catálogo pero la API lo devuelve vacío
+    ipcba_vivienda_b2012:  "193.1_VIVIENDA_ALES_JULI_0_45"
     desocupacion:        "42.3_EPH_PUNTUATAL_0_M_30"     # INDEC, EPH, trimestral
     # Futuro de dólar ROFEX, diario, discontinuado en abr-2024 (2020+ sale de A3 Mercados).
     # "1M" = contrato más próximo a vencer (vence a fin de mes), no plazo constante.
@@ -167,3 +172,29 @@ satelite:
         salario_real_ia: [3, 6, 9]
         emae_ia: [3, 6, 9]
         credito_real_ia: [12, 15, 18]
+
+indec_ipc:
+  url_divisiones: "https://www.indec.gob.ar/ftp/cuadros/economia/serie_ipc_divisiones.csv"
+
+deflactores:
+  # Estructura del gasto de consumo de los hogares, total país, ENGHo 2017-2018 (%), por división COICOP.
+  # Fuente: INDEC, ENGHo 2017-2018, Informe de gastos (resultados definitivos), gráfico de estructura por región.
+  # https://www.indec.gob.ar/ftp/cuadros/sociedad/engho_2017_2018_informe_gastos.pdf
+  engho_2017_18:
+    "01": 22.7   # Alimentos y bebidas no alcohólicas
+    "02": 1.9    # Bebidas alcohólicas y tabaco
+    "03": 6.8    # Prendas de vestir y calzado
+    "04": 14.5   # Vivienda, agua, electricidad, gas y otros combustibles
+    "05": 5.4    # Equipamiento y mantenimiento del hogar
+    "06": 6.4    # Salud
+    "07": 14.3   # Transporte
+    "08": 5.2    # Comunicación
+    "09": 8.6    # Recreación y cultura
+    "10": 3.1    # Educación
+    "11": 6.6    # Restaurantes y hoteles
+    "12": 4.3    # Bienes y servicios varios
+  # Período de relevamiento de la ENGHo (para llevar las participaciones a precios de la base dic-2016)
+  engho_periodo: ["2017-11-01", "2018-11-01"]
+  region: nacional
+  # Deflactor que usa el resto del pipeline por defecto ("publico", "seleccionado" o "mix")
+  principal: publico

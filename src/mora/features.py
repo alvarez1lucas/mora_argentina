@@ -126,11 +126,20 @@ def tasa_sintetica_usd(tasa_pesos: pd.Series, devaluacion_implicita: pd.Series, 
     return (bruto - 1) * 365 / dias * 100
 
 
-def familias(h: int = 12) -> pd.DataFrame:
+def precios(deflactor: str = "publico") -> pd.DataFrame:
+    """Índice de precios (`ipc`) y marca de empalme (`ipc_empalmado`) según la medición elegida."""
+    from mora.deflactores import build
+
+    d = build()
+    # mix y seleccionado comparten el tramo empalmado (antes del IPCBA)
+    marca = "empalme_publico" if deflactor == "publico" else "empalme_seleccionado"
+    return pd.DataFrame({"ipc": d[deflactor], "ipc_empalmado": d[marca]})
+
+
+def familias(h: int = 12, deflactor: str = "publico") -> pd.DataFrame:
     """Dataset de familias por línea: ratios, saldos, saldo irregular nominal y real, y descomposición."""
     fam = load("familias_por_linea")
-    bcra, macro = load("bcra_mensual"), load("macro_mensual")
-    p = price_index(macro["ipc_nacional"], bcra["inflacion_mensual"]).reindex(fam.index)
+    p = precios(deflactor).reindex(fam.index)
     out = fam.copy()
     out[["ipc", "ipc_empalmado"]] = p
     # El anexo llama "Cartera irregular total" al ratio y "Cartera total" al saldo: ambos son la línea "total"
