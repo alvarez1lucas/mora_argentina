@@ -8,6 +8,7 @@ con una raíz propia instalada en el sistema, sin desactivar la verificación.
 from __future__ import annotations
 
 import ssl
+import time
 from functools import lru_cache
 from pathlib import Path
 
@@ -47,15 +48,28 @@ def get_json(url: str, params: dict | None = None) -> dict:
 
 
 def download(url: str, dest: Path) -> Path:
-    """Baja `url` a `dest` en streaming. Falla si el servidor devuelve HTML en lugar del archivo."""
+    """Baja `url` a `dest` en streaming. Falla si el servidor devuelve HTML en lugar del archivo.
+
+    Los reintentos del adapter cubren la conexión, no un corte a mitad de la transferencia:
+    eso se reintenta acá, rehaciendo la descarga completa.
+    """
+    cfg = settings()["http"]
     dest.parent.mkdir(parents=True, exist_ok=True)
     tmp = dest.with_suffix(dest.suffix + ".part")
-    with session().get(url, stream=True, timeout=settings()["http"]["timeout"]) as r:
-        r.raise_for_status()
-        if "text/html" in r.headers.get("Content-Type", ""):
-            raise FileNotFoundError(f"El servidor devolvió HTML para {url}")
-        with open(tmp, "wb") as fh:
-            for chunk in r.iter_content(chunk_size=1 << 20):
-                fh.write(chunk)
+    for attempt in range(cfg["retries"] + 1):
+        try:
+            with session().get(url, stream=True, timeout=cfg["timeout"]) as r:
+                r.raise_for_status()
+                if "text/html" in r.headers.get("Content-Type", ""):
+                    raise FileNotFoundError(f"El servidor devolvió HTML para {url}")
+                with open(tmp, "wb") as fh:
+                    for chunk in r.iter_content(chunk_size=1 << 20):
+                        fh.write(chunk)
+            break
+        except (requests.ConnectionError, requests.exceptions.ChunkedEncodingError):
+            tmp.unlink(missing_ok=True)
+            if attempt == cfg["retries"]:
+                raise
+            time.sleep(cfg["backoff"] * 2**attempt)
     tmp.replace(dest)
     return dest
