@@ -31,6 +31,13 @@ def test_parse_indicator_file_takes_current_month_column():
     assert set(df["variable"]) == {"a16_irregular_consumo"}
 
 
+def test_parse_indicator_file_recovers_previous_month():
+    recs = parse_indicator_file(INDICAD, "202607", keep={"800010200160": "a16"}, rezago=1)
+    df = pd.DataFrame(recs).set_index("entidad")
+    assert df.loc["00007", "valor"] == 17.91
+    assert df.loc["00007", "fecha"] == pd.Timestamp("2026-06-01")
+
+
 def test_parse_indicator_file_decodes_latin1():
     raw = _line("00007", "BANCO ÑANDÚ", "202607", "1", "x", 0, 0, 0, 0, 5, 0, 0, 0, "N").encode("latin-1")
     recs = parse_indicator_file(raw, "202607", keep={"1": "v"})

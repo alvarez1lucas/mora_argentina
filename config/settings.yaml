@@ -60,7 +60,6 @@ datos_gob:
 
 entidades:
   api_url: "https://www.bcra.gob.ar/api/endpoints/informacion-entidades.php"
-  file_url: "https://www.bcra.gob.ar/archivos/Pdfs/PublicacionesEstadisticas/Entidades/{yyyymm}d.7z"
   first_month: "2011-01"
   keep_archives: false   # borrar el 7z después de extraer lo necesario
   # Indicadores de `indicad` que se conservan (código de línea -> nombre)
