@@ -5,4 +5,12 @@ truststore==0.10.5
 openpyxl==3.1.5
 py7zr==1.1.4
 PyYAML==6.0.2
+scipy==1.15.3
+statsmodels==0.15.0
+scikit-learn==1.7.2
+lightgbm==4.6.0
+shap==0.50.0
+linearmodels==7.1
+econml==0.17.0
+DoubleML==0.11.4
 pytest==9.0.3

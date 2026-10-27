@@ -1,0 +1,71 @@
+{
+  "publico": {
+    "deflactor": "publico",
+    "especificacion": "salario_real_ia(t-6), tasa_real_cft(t-6), absorcion_d12(t-12), tcr_ia(t-9), credito_real_ia(t-18) | AR(2)",
+    "signos_ok": true,
+    "n": 77,
+    "r2_ajustado": 0.5674203573370751,
+    "ventana": [
+      "2024-10-01",
+      "2026-08-01"
+    ],
+    "mora_inicio": 2.489310113996647,
+    "mora_fin": 12.814578878881402,
+    "cambio_observado_pp": 10.325268764884756,
+    "suma_aportes_canales_pp": 10.877294393507636,
+    "mora_simulada_fin": 12.8145788788814,
+    "referencias": {
+      "salario_real_ia": 0.0,
+      "tasa_real_cft": 25.511191376733702,
+      "absorcion_d12": 0.0,
+      "tcr_ia": 0.0,
+      "credito_real_ia": 0.0
+    }
+  },
+  "seleccionado": {
+    "deflactor": "seleccionado",
+    "especificacion": "salario_real_ia(t-6), tasa_real_cft(t-6), absorcion_d12(t-12), tcr_ia(t-9), credito_real_ia(t-18) | AR(2)",
+    "signos_ok": true,
+    "n": 77,
+    "r2_ajustado": 0.5807736447165615,
+    "ventana": [
+      "2024-10-01",
+      "2026-08-01"
+    ],
+    "mora_inicio": 2.489310113996647,
+    "mora_fin": 12.814578878881402,
+    "cambio_observado_pp": 10.325268764884756,
+    "suma_aportes_canales_pp": 13.695293893913098,
+    "mora_simulada_fin": 12.8145788788814,
+    "referencias": {
+      "salario_real_ia": 0.0,
+      "tasa_real_cft": 25.687496706722243,
+      "absorcion_d12": 0.0,
+      "tcr_ia": 0.0,
+      "credito_real_ia": 0.0
+    }
+  },
+  "mix": {
+    "deflactor": "mix",
+    "especificacion": "salario_real_ia(t-6), tasa_real_cft(t-6), absorcion_d12(t-12), tcr_ia(t-9), credito_real_ia(t-18) | AR(2)",
+    "signos_ok": true,
+    "n": 77,
+    "r2_ajustado": 0.5735524170903596,
+    "ventana": [
+      "2024-10-01",
+      "2026-08-01"
+    ],
+    "mora_inicio": 2.489310113996647,
+    "mora_fin": 12.814578878881402,
+    "cambio_observado_pp": 10.325268764884756,
+    "suma_aportes_canales_pp": 12.343142672275047,
+    "mora_simulada_fin": 12.8145788788814,
+    "referencias": {
+      "salario_real_ia": 0.0,
+      "tasa_real_cft": 25.596078553629457,
+      "absorcion_d12": 0.0,
+      "tcr_ia": 0.0,
+      "credito_real_ia": 0.0
+    }
+  }
+}

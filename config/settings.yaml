@@ -209,3 +209,22 @@ panel:
 
 panel_ml:
   corte_alerta_temprana: "2024-01-01"   # se entrena con orígenes hasta 12 meses antes y se evalúa desde acá
+
+canales:
+  inicio: "2017-01-01"            # muestra limpia: la única con salario real
+  buscar_minimo_desde: "2024-01-01" # la ventana de atribución arranca en el mínimo de la mora desde esta fecha
+  grilla:
+    salario_real_ia: [3, 6, 9]
+    tasa_real_cft: [3, 6, 9, 12]
+    absorcion_d12: [3, 6, 9, 12]
+    tcr_ia: [3, 6, 9, 12]
+    credito_real_ia: [12, 15, 18]
+  # más absorción del sector público/BCRA, más mora; el tipo de cambio real no tiene signo teórico único
+  signos_esperados: {absorcion_d12: 1, tcr_ia: 0}
+  # Valor neutral de cada canal en el contrafáctico: variaciones en 0; la tasa real en su promedio previo a la ventana
+  referencias:
+    salario_real_ia: 0
+    tasa_real_cft: media_previa
+    absorcion_d12: 0
+    tcr_ia: 0
+    credito_real_ia: 0
