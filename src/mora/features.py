@@ -1,0 +1,77 @@
+"""Construcción de variables de análisis a partir de data/processed.
+
+- Deflactor: IPC INDEC (base dic-2016) y, hacia atrás, encadenado con la inflación mensual
+  de la API del BCRA. El tramo empalmado (antes de 2016-12) se marca y se usa sólo como
+  descriptivo: la API no documenta la fuente de esa serie antes de 2017.
+- Descomposición exacta del cambio del ratio de irregularidad en efecto numerador
+  (cambio del saldo irregular) y efecto denominador (cambio del saldo total).
+"""
+
+from __future__ import annotations
+
+import pandas as pd
+
+from mora.config import path
+
+
+def load(name: str) -> pd.DataFrame:
+    return pd.read_csv(path("processed") / f"{name}.csv", index_col=0, parse_dates=True)
+
+
+def price_index(ipc_indec: pd.Series, inflacion_mensual: pd.Series) -> pd.DataFrame:
+    """Índice de precios (base: primer dato de INDEC = valor INDEC) con flag de empalme."""
+    ipc = ipc_indec.dropna()
+    base_date = ipc.index.min()
+    back = inflacion_mensual[inflacion_mensual.index <= base_date].sort_index()
+    # P_{t-1} = P_t / (1 + pi_t): se encadena hacia atrás desde la base
+    factors = (1 + back / 100).iloc[::-1].cumprod().iloc[::-1]
+    back_level = ipc.loc[base_date] / factors.shift(-1).fillna(1.0)
+    back_level = back_level[back_level.index < base_date]
+    level = pd.concat([back_level, ipc]).sort_index()
+    return pd.DataFrame({"ipc": level, "ipc_empalmado": level.index < base_date})
+
+
+def decompose_ratio_change(numerador: pd.Series, denominador: pd.Series, h: int = 12) -> pd.DataFrame:
+    """Descomposición exacta de R_t - R_{t-h}, con R = 100 * N / D (en puntos porcentuales).
+
+    R_t - R_{t-h} = 100 * (N_t - N_{t-h}) / D_t            (efecto numerador)
+                  + 100 * N_{t-h} * (1/D_t - 1/D_{t-h})     (efecto denominador)
+
+    El ratio no depende de la unidad, pero la partición sí: con N y D en pesos corrientes la
+    inflación infla los dos efectos. Por eso se aplica sobre saldos reales; así el efecto
+    denominador mide cuánto cambió el ratio sólo porque creció o cayó la cartera real.
+    """
+    n, d = numerador, denominador
+    efecto_num = 100 * (n - n.shift(h)) / d
+    efecto_den = 100 * n.shift(h) * (1 / d - 1 / d.shift(h))
+    ratio = 100 * n / d
+    return pd.DataFrame(
+        {
+            "ratio": ratio,
+            "cambio_ratio": ratio - ratio.shift(h),
+            "efecto_numerador": efecto_num,
+            "efecto_denominador": efecto_den,
+        }
+    )
+
+
+def familias(h: int = 12) -> pd.DataFrame:
+    """Dataset de familias por línea: ratios, saldos, saldo irregular nominal y real, y descomposición."""
+    fam = load("familias_por_linea")
+    bcra, macro = load("bcra_mensual"), load("macro_mensual")
+    p = price_index(macro["ipc_nacional"], bcra["inflacion_mensual"]).reindex(fam.index)
+    out = fam.copy()
+    out[["ipc", "ipc_empalmado"]] = p
+    # El anexo llama "Cartera irregular total" al ratio y "Cartera total" al saldo: ambos son la línea "total"
+    out = out.rename(columns={"ratio_cartera_irregular_total": "ratio_total", "saldo_cartera_total": "saldo_total"})
+    lineas = [c.removeprefix("ratio_") for c in out.columns if c.startswith("ratio_")]
+    for linea in lineas:
+        saldo_col = f"saldo_{linea}"
+        irregular = out[f"ratio_{linea}"] / 100 * out[saldo_col]
+        out[f"irregular_{linea}"] = irregular
+        out[f"irregular_real_{linea}"] = irregular / out["ipc"] * 100
+        out[f"saldo_real_{linea}"] = out[saldo_col] / out["ipc"] * 100
+        dec = decompose_ratio_change(out[f"irregular_real_{linea}"], out[f"saldo_real_{linea}"], h=h)
+        out[f"efecto_num_{linea}"] = dec["efecto_numerador"]
+        out[f"efecto_den_{linea}"] = dec["efecto_denominador"]
+    return out
