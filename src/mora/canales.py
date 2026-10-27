@@ -38,6 +38,9 @@ CANAL_DE = {
     "absorcion_d12": "esterilizacion",
     "tcr_ia": "ancla_cambiaria",
     "credito_real_ia": "cosecha_dilucion",
+    # variante costo_dividido: el costo financiero separado en fondeo (política monetaria) y spread (riesgo)
+    "tasa_real_fondeo": "tasa_fondeo_politica",
+    "spread_personales": "spread_riesgo",
 }
 
 
@@ -55,6 +58,12 @@ def channel_dataset(deflactor: str) -> pd.DataFrame:
     tcr = (bcra["tipo_cambio_mayorista"] / ipc).reindex(df.index)
     df["tcr_ia"] = 100 * np.log(tcr).diff(12)
     df["absorcion_d12"] = absorcion_sistema().reindex(df.index).diff(12)
+    # Fondeo: BADLAR (plazo fijo mayorista) real con la misma expectativa de inflación que el CFT
+    w = settings()["satelite"]["ventana_expectativa_inflacion"]
+    infl_exp = ((ipc / ipc.shift(w)) ** (12 / w) - 1).reindex(df.index)
+    badlar_tea = ((1 + bcra["tasa_badlar_privados"] / 100 / 12) ** 12 - 1).reindex(df.index)
+    df["tasa_real_fondeo"] = 100 * ((1 + badlar_tea) / (1 + infl_exp) - 1)
+    df["spread_personales"] = (bcra["tasa_prestamos_personales"] - bcra["tasa_badlar_privados"]).reindex(df.index)
     return df
 
 
@@ -118,20 +127,22 @@ def historical_decomposition(res, df: pd.DataFrame, spec, desde: pd.Timestamp, h
     return out
 
 
-def run(deflactor: str) -> dict:
+def run(deflactor: str, variante: str = "base") -> dict:
     cfg = settings()["canales"]
+    var = cfg["variantes"][variante]
     sat = settings()["satelite"]
     df = channel_dataset(deflactor).loc[cfg["inicio"]:]
     expected = {**sat["signos_esperados"], **cfg["signos_esperados"]}
-    spec, ranking = select_spec(df, cfg["grilla"], sat["ar_max"], expected)
+    spec, ranking = select_spec(df, var["grilla"], sat["ar_max"], expected)
     res = fit(df, spec)
     mora = df["mora"]
     desde = mora.loc[cfg["buscar_minimo_desde"]:].idxmin()
     hasta = df["dy"].dropna().index.max()
-    referencias = {v: (df.loc[: desde, v].mean() if r == "media_previa" else float(r)) for v, r in cfg["referencias"].items()}
+    referencias = {v: (df.loc[: desde, v].mean() if r == "media_previa" else float(r))
+                   for v, r in cfg["referencias"].items() if v in var["grilla"]}
     contrib = historical_decomposition(res, df, spec, desde + pd.DateOffset(months=1), hasta, referencias)
     meta = {
-        "deflactor": deflactor, "especificacion": spec.name(), "signos_ok": bool(signs_ok(res, spec, expected)),
+        "deflactor": deflactor, "variante": variante, "especificacion": spec.name(), "signos_ok": bool(signs_ok(res, spec, expected)),
         "n": int(res.nobs), "r2_ajustado": float(res.rsquared_adj),
         "ventana": [str(desde.date()), str(hasta.date())],
         "mora_inicio": float(mora.loc[desde]), "mora_fin": float(mora.loc[hasta]),
@@ -141,19 +152,20 @@ def run(deflactor: str) -> dict:
         "referencias": {k: float(v) for k, v in referencias.items()},
     }
     coefs = pd.DataFrame({"coef": res.params, "pvalor": res.pvalues}).rename_axis("termino").reset_index()
-    return {"contribuciones": contrib.assign(deflactor=deflactor), "meta": meta, "coeficientes": coefs.assign(deflactor=deflactor),
-            "ranking": ranking.head(10).assign(deflactor=deflactor)}
+    tags = {"deflactor": deflactor, "variante": variante}
+    return {"contribuciones": contrib.assign(**tags), "meta": meta, "coeficientes": coefs.assign(**tags),
+            "ranking": ranking.head(10).assign(**tags)}
 
 
 def main() -> None:
     out = path("outputs") / "canales"
     out.mkdir(parents=True, exist_ok=True)
-    corridas = {d: run(d) for d in DEFLACTORES}
+    corridas = {(d, v): run(d, v) for v in settings()["canales"]["variantes"] for d in DEFLACTORES}
     pd.concat([c["contribuciones"] for c in corridas.values()]).to_csv(out / "aportes_por_canal.csv", index=False)
     pd.concat([c["coeficientes"] for c in corridas.values()]).to_csv(out / "coeficientes.csv", index=False)
     pd.concat([c["ranking"] for c in corridas.values()]).to_csv(out / "seleccion_rezagos.csv", index=False)
     with open(out / "resumen_canales.json", "w", encoding="utf-8") as fh:
-        json.dump({d: c["meta"] for d, c in corridas.items()}, fh, ensure_ascii=False, indent=2)
+        json.dump({f"{v}_{d}": c["meta"] for (d, v), c in corridas.items()}, fh, ensure_ascii=False, indent=2)
     print(f"canales: {out}")
 
 

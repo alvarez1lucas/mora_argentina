@@ -215,14 +215,27 @@ panel_ml:
 canales:
   inicio: "2017-01-01"            # muestra limpia: la única con salario real
   buscar_minimo_desde: "2024-01-01" # la ventana de atribución arranca en el mínimo de la mora desde esta fecha
-  grilla:
-    salario_real_ia: [3, 6, 9]
-    tasa_real_cft: [3, 6, 9, 12]
-    absorcion_d12: [3, 6, 9, 12]
-    tcr_ia: [3, 6, 9, 12]
-    credito_real_ia: [12, 15, 18]
-  # más absorción del sector público/BCRA, más mora; el tipo de cambio real no tiene signo teórico único
-  signos_esperados: {absorcion_d12: 1, tcr_ia: 0}
+  variantes:
+    base:
+      grilla:
+        salario_real_ia: [3, 6, 9]
+        tasa_real_cft: [3, 6, 9, 12]
+        absorcion_d12: [3, 6, 9, 12]
+        tcr_ia: [3, 6, 9, 12]
+        credito_real_ia: [12, 15, 18]
+    # Mediación: el costo financiero separado en tasa de fondeo (la que mueve la política monetaria:
+    # esterilización, encajes, ancla) y spread de la tasa a familias sobre el fondeo (riesgo y costos)
+    costo_dividido:
+      grilla:
+        salario_real_ia: [3, 6, 9]
+        tasa_real_fondeo: [3, 6, 9, 12]
+        spread_personales: [3, 6, 9, 12]
+        absorcion_d12: [3, 6, 9, 12]
+        tcr_ia: [3, 6, 9, 12]
+        credito_real_ia: [12, 15, 18]
+  # más absorción del sector público/BCRA, más mora; fondeo y spread más altos, más mora;
+  # el tipo de cambio real no tiene signo teórico único
+  signos_esperados: {absorcion_d12: 1, tcr_ia: 0, tasa_real_fondeo: 1, spread_personales: 1}
   # Valor neutral de cada canal en el contrafáctico: variaciones en 0; la tasa real en su promedio previo a la ventana
   referencias:
     salario_real_ia: 0
@@ -230,6 +243,8 @@ canales:
     absorcion_d12: 0
     tcr_ia: 0
     credito_real_ia: 0
+    tasa_real_fondeo: media_previa
+    spread_personales: media_previa
 
 ajuste:
   desde: "2023-11-01"     # ventana principal del análisis: desde el mes previo a la devaluación de dic-2023

@@ -59,3 +59,27 @@ El lineal pronostica mejor el nivel; LightGBM identifica mejor a las entidades q
 - Carga financiera de los hogares (cuota / ingreso), para verificar la afirmación de ~25% del salario.
 - REM como expectativa de inflación.
 - Ponderación de canales con bootstrap en vez de bandas por IC del coeficiente.
+
+## 4. Mediación: ¿el costo financiero viene del fondeo o del spread?
+
+Variante `costo_dividido` de `mora.canales`: la tasa real del CFT se reemplaza por dos regresores, la tasa real de fondeo (BADLAR, la tasa que mueve la política monetaria) y el spread de la tasa de préstamos personales sobre la BADLAR. Ventana: oct-24 → ago-26.
+
+| Componente | Pública | Mix | Seleccionada |
+|---|---|---|---|
+| Spread personales − BADLAR (t−12) | +8,3 pp (p < 0,001) | +8,2 pp (p < 0,001) | +7,5 pp (p < 0,001) |
+| Tasa real de fondeo (t−6) | +0,4 (p = 0,73) | +0,5 (p = 0,70) | +1,1 (p = 0,21) |
+
+**Lectura:** el efecto del costo financiero sobre la mora pasa por el spread, no por la tasa de fondeo. Entre jun-25 y ago-26 la TAMAR fue de 22% a 53% y volvió, pero la tasa a familias se quedó en 65-83%: el spread pasó de 21 pp (ago-25) a 41-44 pp.
+
+**Salvedades:**
+- Parte del spread es *consecuencia* de la mora (los bancos cobran el riesgo). El rezago de 12 meses mitiga la causalidad inversa, pero no la elimina.
+- Con datos públicos el spread no se puede separar en riesgo, costos y **costo de oportunidad de prestarle al Estado**. Si una Lecap rinde 28-42% sin riesgo, ese rendimiento pone un piso a la tasa de un préstamo a familias. Esa es la vía por la que la esterilización encarecería el crédito sin pasar por la BADLAR. Para medirla hace falta la serie de rendimientos de Lecap/Boncap (pendiente: resultados de licitaciones de la Secretaría de Finanzas).
+
+## 5. Ventana del ajuste (nov-23 → hoy)
+
+`python -m mora.ajuste` (outputs en `outputs/ajuste/`).
+
+- Crédito privado en pesos: 9,3% del PBI en nov-23, 11,7% en nov-25 y 11,1% al último dato. En feb-24 la exposición de los bancos al Estado (títulos + pases, moneda nacional) era 18,8% del PBI, contra 8,4% de crédito privado.
+- Salario real contra nov-23: −8,7% con la medición pública, −10,2% con la mix y −11,6% con la seleccionada.
+- **Castigos y el freno reciente de la mora:** en jun-26 y jul-26 el stock irregular de familias creció $59 y $22 mil millones reales, mientras se castigaban unos $238 y $189 mil millones atribuibles a familias (estimado: castigos totales × participación de las familias en el stock irregular). Sin castigos, el stock habría crecido unos $298 y $211 mil millones. El freno de la mora es, en buena parte, contable.
+- Empresas: la mora bajó de 2,7% a 0,7% (nov-24) con el boom de crédito y volvió a 3,8%. Embargos de ARCA y cheques rechazados: sin series públicas (contexto de prensa).

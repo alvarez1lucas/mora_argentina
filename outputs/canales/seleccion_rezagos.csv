@@ -1,31 +1,61 @@
-spec,bic,n,signos_ok,deflactor
-"salario_real_ia(t-6), tasa_real_cft(t-6), absorcion_d12(t-12), tcr_ia(t-9), credito_real_ia(t-18) | AR(2)",-251.34582125225597,76,True,publico
-"salario_real_ia(t-6), tasa_real_cft(t-6), absorcion_d12(t-12), tcr_ia(t-6), credito_real_ia(t-18) | AR(2)",-251.3036496457945,76,True,publico
-"salario_real_ia(t-6), tasa_real_cft(t-6), absorcion_d12(t-12), tcr_ia(t-12), credito_real_ia(t-18) | AR(2)",-250.76435308184762,76,True,publico
-"salario_real_ia(t-6), tasa_real_cft(t-6), absorcion_d12(t-12), tcr_ia(t-3), credito_real_ia(t-18) | AR(2)",-250.68582303573316,76,True,publico
-"salario_real_ia(t-9), tasa_real_cft(t-6), absorcion_d12(t-12), tcr_ia(t-3), credito_real_ia(t-18) | AR(2)",-250.56806831015194,76,True,publico
-"salario_real_ia(t-9), tasa_real_cft(t-6), absorcion_d12(t-12), tcr_ia(t-12), credito_real_ia(t-18) | AR(2)",-250.24182426748132,76,True,publico
-"salario_real_ia(t-9), tasa_real_cft(t-6), absorcion_d12(t-12), tcr_ia(t-6), credito_real_ia(t-18) | AR(2)",-250.2133838881981,76,True,publico
-"salario_real_ia(t-3), tasa_real_cft(t-6), absorcion_d12(t-12), tcr_ia(t-3), credito_real_ia(t-18) | AR(2)",-249.27569338686976,76,True,publico
-"salario_real_ia(t-3), tasa_real_cft(t-6), absorcion_d12(t-12), tcr_ia(t-12), credito_real_ia(t-18) | AR(2)",-249.2381330353569,76,True,publico
-"salario_real_ia(t-3), tasa_real_cft(t-6), absorcion_d12(t-12), tcr_ia(t-9), credito_real_ia(t-18) | AR(2)",-249.09036631724643,76,True,publico
-"salario_real_ia(t-6), tasa_real_cft(t-6), absorcion_d12(t-12), tcr_ia(t-9), credito_real_ia(t-18) | AR(2)",-253.70438553715587,76,True,seleccionado
-"salario_real_ia(t-6), tasa_real_cft(t-6), absorcion_d12(t-12), tcr_ia(t-6), credito_real_ia(t-18) | AR(2)",-253.38467243071898,76,True,seleccionado
-"salario_real_ia(t-6), tasa_real_cft(t-6), absorcion_d12(t-12), tcr_ia(t-12), credito_real_ia(t-18) | AR(2)",-252.45710336690217,76,True,seleccionado
-"salario_real_ia(t-6), tasa_real_cft(t-6), absorcion_d12(t-12), tcr_ia(t-3), credito_real_ia(t-18) | AR(2)",-251.44766105174938,76,True,seleccionado
-"salario_real_ia(t-9), tasa_real_cft(t-6), absorcion_d12(t-12), tcr_ia(t-12), credito_real_ia(t-18) | AR(2)",-251.26604899138442,76,True,seleccionado
-"salario_real_ia(t-9), tasa_real_cft(t-6), absorcion_d12(t-12), tcr_ia(t-6), credito_real_ia(t-18) | AR(2)",-250.98313458374923,76,True,seleccionado
-"salario_real_ia(t-9), tasa_real_cft(t-6), absorcion_d12(t-12), tcr_ia(t-3), credito_real_ia(t-18) | AR(2)",-250.8997137664211,76,True,seleccionado
-"salario_real_ia(t-3), tasa_real_cft(t-6), absorcion_d12(t-12), tcr_ia(t-6), credito_real_ia(t-18) | AR(2)",-249.84858479400884,76,True,seleccionado
-"salario_real_ia(t-3), tasa_real_cft(t-6), absorcion_d12(t-12), tcr_ia(t-9), credito_real_ia(t-18) | AR(2)",-249.63130437220468,76,True,seleccionado
-"salario_real_ia(t-3), tasa_real_cft(t-6), absorcion_d12(t-12), tcr_ia(t-3), credito_real_ia(t-18) | AR(2)",-249.54204419474252,76,True,seleccionado
-"salario_real_ia(t-6), tasa_real_cft(t-6), absorcion_d12(t-12), tcr_ia(t-9), credito_real_ia(t-18) | AR(2)",-252.42254976885806,76,True,mix
-"salario_real_ia(t-6), tasa_real_cft(t-6), absorcion_d12(t-12), tcr_ia(t-6), credito_real_ia(t-18) | AR(2)",-252.2932935959875,76,True,mix
-"salario_real_ia(t-6), tasa_real_cft(t-6), absorcion_d12(t-12), tcr_ia(t-12), credito_real_ia(t-18) | AR(2)",-251.52312068980189,76,True,mix
-"salario_real_ia(t-6), tasa_real_cft(t-6), absorcion_d12(t-12), tcr_ia(t-3), credito_real_ia(t-18) | AR(2)",-251.04129169436396,76,True,mix
-"salario_real_ia(t-9), tasa_real_cft(t-6), absorcion_d12(t-12), tcr_ia(t-3), credito_real_ia(t-18) | AR(2)",-250.72156390438693,76,True,mix
-"salario_real_ia(t-9), tasa_real_cft(t-6), absorcion_d12(t-12), tcr_ia(t-12), credito_real_ia(t-18) | AR(2)",-250.693552359838,76,True,mix
-"salario_real_ia(t-9), tasa_real_cft(t-6), absorcion_d12(t-12), tcr_ia(t-6), credito_real_ia(t-18) | AR(2)",-250.57699717809226,76,True,mix
-"salario_real_ia(t-3), tasa_real_cft(t-6), absorcion_d12(t-12), tcr_ia(t-6), credito_real_ia(t-18) | AR(2)",-249.36207084209707,76,True,mix
-"salario_real_ia(t-3), tasa_real_cft(t-6), absorcion_d12(t-12), tcr_ia(t-12), credito_real_ia(t-18) | AR(2)",-249.31972326809193,76,True,mix
-"salario_real_ia(t-3), tasa_real_cft(t-6), absorcion_d12(t-12), tcr_ia(t-9), credito_real_ia(t-18) | AR(2)",-249.28948992622793,76,True,mix
+spec,bic,n,signos_ok,deflactor,variante
+"salario_real_ia(t-6), tasa_real_cft(t-6), absorcion_d12(t-12), tcr_ia(t-9), credito_real_ia(t-18) | AR(2)",-251.34582125225597,76,True,publico,base
+"salario_real_ia(t-6), tasa_real_cft(t-6), absorcion_d12(t-12), tcr_ia(t-6), credito_real_ia(t-18) | AR(2)",-251.3036496457945,76,True,publico,base
+"salario_real_ia(t-6), tasa_real_cft(t-6), absorcion_d12(t-12), tcr_ia(t-12), credito_real_ia(t-18) | AR(2)",-250.76435308184762,76,True,publico,base
+"salario_real_ia(t-6), tasa_real_cft(t-6), absorcion_d12(t-12), tcr_ia(t-3), credito_real_ia(t-18) | AR(2)",-250.68582303573316,76,True,publico,base
+"salario_real_ia(t-9), tasa_real_cft(t-6), absorcion_d12(t-12), tcr_ia(t-3), credito_real_ia(t-18) | AR(2)",-250.56806831015194,76,True,publico,base
+"salario_real_ia(t-9), tasa_real_cft(t-6), absorcion_d12(t-12), tcr_ia(t-12), credito_real_ia(t-18) | AR(2)",-250.24182426748132,76,True,publico,base
+"salario_real_ia(t-9), tasa_real_cft(t-6), absorcion_d12(t-12), tcr_ia(t-6), credito_real_ia(t-18) | AR(2)",-250.2133838881981,76,True,publico,base
+"salario_real_ia(t-3), tasa_real_cft(t-6), absorcion_d12(t-12), tcr_ia(t-3), credito_real_ia(t-18) | AR(2)",-249.27569338686976,76,True,publico,base
+"salario_real_ia(t-3), tasa_real_cft(t-6), absorcion_d12(t-12), tcr_ia(t-12), credito_real_ia(t-18) | AR(2)",-249.2381330353569,76,True,publico,base
+"salario_real_ia(t-3), tasa_real_cft(t-6), absorcion_d12(t-12), tcr_ia(t-9), credito_real_ia(t-18) | AR(2)",-249.09036631724643,76,True,publico,base
+"salario_real_ia(t-6), tasa_real_cft(t-6), absorcion_d12(t-12), tcr_ia(t-9), credito_real_ia(t-18) | AR(2)",-253.70438553715587,76,True,seleccionado,base
+"salario_real_ia(t-6), tasa_real_cft(t-6), absorcion_d12(t-12), tcr_ia(t-6), credito_real_ia(t-18) | AR(2)",-253.38467243071898,76,True,seleccionado,base
+"salario_real_ia(t-6), tasa_real_cft(t-6), absorcion_d12(t-12), tcr_ia(t-12), credito_real_ia(t-18) | AR(2)",-252.45710336690217,76,True,seleccionado,base
+"salario_real_ia(t-6), tasa_real_cft(t-6), absorcion_d12(t-12), tcr_ia(t-3), credito_real_ia(t-18) | AR(2)",-251.44766105174938,76,True,seleccionado,base
+"salario_real_ia(t-9), tasa_real_cft(t-6), absorcion_d12(t-12), tcr_ia(t-12), credito_real_ia(t-18) | AR(2)",-251.26604899138442,76,True,seleccionado,base
+"salario_real_ia(t-9), tasa_real_cft(t-6), absorcion_d12(t-12), tcr_ia(t-6), credito_real_ia(t-18) | AR(2)",-250.98313458374923,76,True,seleccionado,base
+"salario_real_ia(t-9), tasa_real_cft(t-6), absorcion_d12(t-12), tcr_ia(t-3), credito_real_ia(t-18) | AR(2)",-250.8997137664211,76,True,seleccionado,base
+"salario_real_ia(t-3), tasa_real_cft(t-6), absorcion_d12(t-12), tcr_ia(t-6), credito_real_ia(t-18) | AR(2)",-249.84858479400884,76,True,seleccionado,base
+"salario_real_ia(t-3), tasa_real_cft(t-6), absorcion_d12(t-12), tcr_ia(t-9), credito_real_ia(t-18) | AR(2)",-249.63130437220468,76,True,seleccionado,base
+"salario_real_ia(t-3), tasa_real_cft(t-6), absorcion_d12(t-12), tcr_ia(t-3), credito_real_ia(t-18) | AR(2)",-249.54204419474252,76,True,seleccionado,base
+"salario_real_ia(t-6), tasa_real_cft(t-6), absorcion_d12(t-12), tcr_ia(t-9), credito_real_ia(t-18) | AR(2)",-252.42254976885806,76,True,mix,base
+"salario_real_ia(t-6), tasa_real_cft(t-6), absorcion_d12(t-12), tcr_ia(t-6), credito_real_ia(t-18) | AR(2)",-252.2932935959875,76,True,mix,base
+"salario_real_ia(t-6), tasa_real_cft(t-6), absorcion_d12(t-12), tcr_ia(t-12), credito_real_ia(t-18) | AR(2)",-251.52312068980189,76,True,mix,base
+"salario_real_ia(t-6), tasa_real_cft(t-6), absorcion_d12(t-12), tcr_ia(t-3), credito_real_ia(t-18) | AR(2)",-251.04129169436396,76,True,mix,base
+"salario_real_ia(t-9), tasa_real_cft(t-6), absorcion_d12(t-12), tcr_ia(t-3), credito_real_ia(t-18) | AR(2)",-250.72156390438693,76,True,mix,base
+"salario_real_ia(t-9), tasa_real_cft(t-6), absorcion_d12(t-12), tcr_ia(t-12), credito_real_ia(t-18) | AR(2)",-250.693552359838,76,True,mix,base
+"salario_real_ia(t-9), tasa_real_cft(t-6), absorcion_d12(t-12), tcr_ia(t-6), credito_real_ia(t-18) | AR(2)",-250.57699717809226,76,True,mix,base
+"salario_real_ia(t-3), tasa_real_cft(t-6), absorcion_d12(t-12), tcr_ia(t-6), credito_real_ia(t-18) | AR(2)",-249.36207084209707,76,True,mix,base
+"salario_real_ia(t-3), tasa_real_cft(t-6), absorcion_d12(t-12), tcr_ia(t-12), credito_real_ia(t-18) | AR(2)",-249.31972326809193,76,True,mix,base
+"salario_real_ia(t-3), tasa_real_cft(t-6), absorcion_d12(t-12), tcr_ia(t-9), credito_real_ia(t-18) | AR(2)",-249.28948992622793,76,True,mix,base
+"salario_real_ia(t-6), tasa_real_fondeo(t-6), spread_personales(t-12), absorcion_d12(t-12), tcr_ia(t-3), credito_real_ia(t-18) | AR(2)",-251.03634900628182,76,True,publico,costo_dividido
+"salario_real_ia(t-6), tasa_real_fondeo(t-6), spread_personales(t-12), absorcion_d12(t-12), tcr_ia(t-12), credito_real_ia(t-18) | AR(2)",-249.97880203269162,76,True,publico,costo_dividido
+"salario_real_ia(t-6), tasa_real_fondeo(t-6), spread_personales(t-12), absorcion_d12(t-12), tcr_ia(t-9), credito_real_ia(t-18) | AR(2)",-249.92845278214563,76,True,publico,costo_dividido
+"salario_real_ia(t-3), tasa_real_fondeo(t-6), spread_personales(t-12), absorcion_d12(t-12), tcr_ia(t-9), credito_real_ia(t-18) | AR(2)",-249.00048341590613,76,True,publico,costo_dividido
+"salario_real_ia(t-3), tasa_real_fondeo(t-6), spread_personales(t-12), absorcion_d12(t-12), tcr_ia(t-12), credito_real_ia(t-18) | AR(2)",-248.75760509196672,76,True,publico,costo_dividido
+"salario_real_ia(t-6), tasa_real_fondeo(t-6), spread_personales(t-9), absorcion_d12(t-12), tcr_ia(t-12), credito_real_ia(t-18) | AR(2)",-248.7116459605637,76,True,publico,costo_dividido
+"salario_real_ia(t-6), tasa_real_fondeo(t-6), spread_personales(t-9), absorcion_d12(t-12), tcr_ia(t-9), credito_real_ia(t-18) | AR(2)",-248.6383991179459,76,True,publico,costo_dividido
+"salario_real_ia(t-6), tasa_real_fondeo(t-6), spread_personales(t-9), absorcion_d12(t-12), tcr_ia(t-3), credito_real_ia(t-18) | AR(2)",-248.51330440502542,76,True,publico,costo_dividido
+"salario_real_ia(t-3), tasa_real_fondeo(t-6), spread_personales(t-12), absorcion_d12(t-12), tcr_ia(t-6), credito_real_ia(t-18) | AR(2)",-248.4647922014477,76,True,publico,costo_dividido
+"salario_real_ia(t-6), tasa_real_fondeo(t-6), spread_personales(t-9), absorcion_d12(t-12), tcr_ia(t-6), credito_real_ia(t-18) | AR(2)",-248.42156523543392,76,True,publico,costo_dividido
+"salario_real_ia(t-6), tasa_real_fondeo(t-6), spread_personales(t-12), absorcion_d12(t-12), tcr_ia(t-12), credito_real_ia(t-18) | AR(2)",-251.78020828460328,76,True,seleccionado,costo_dividido
+"salario_real_ia(t-6), tasa_real_fondeo(t-6), spread_personales(t-12), absorcion_d12(t-12), tcr_ia(t-3), credito_real_ia(t-18) | AR(2)",-251.707033216109,76,True,seleccionado,costo_dividido
+"salario_real_ia(t-6), tasa_real_fondeo(t-6), spread_personales(t-12), absorcion_d12(t-12), tcr_ia(t-9), credito_real_ia(t-18) | AR(2)",-251.60544793375865,76,True,seleccionado,costo_dividido
+"salario_real_ia(t-9), tasa_real_fondeo(t-6), spread_personales(t-12), absorcion_d12(t-12), tcr_ia(t-12), credito_real_ia(t-18) | AR(2)",-251.54536212551497,76,True,seleccionado,costo_dividido
+"salario_real_ia(t-6), tasa_real_fondeo(t-6), spread_personales(t-9), absorcion_d12(t-12), tcr_ia(t-12), credito_real_ia(t-18) | AR(2)",-250.50441725001346,76,True,seleccionado,costo_dividido
+"salario_real_ia(t-6), tasa_real_fondeo(t-6), spread_personales(t-9), absorcion_d12(t-12), tcr_ia(t-9), credito_real_ia(t-18) | AR(2)",-250.4868155615812,76,True,seleccionado,costo_dividido
+"salario_real_ia(t-6), tasa_real_fondeo(t-6), spread_personales(t-9), absorcion_d12(t-12), tcr_ia(t-6), credito_real_ia(t-18) | AR(2)",-250.15137081958252,76,True,seleccionado,costo_dividido
+"salario_real_ia(t-3), tasa_real_fondeo(t-6), spread_personales(t-12), absorcion_d12(t-12), tcr_ia(t-6), credito_real_ia(t-18) | AR(2)",-249.87735300441258,76,True,seleccionado,costo_dividido
+"salario_real_ia(t-3), tasa_real_fondeo(t-6), spread_personales(t-12), absorcion_d12(t-12), tcr_ia(t-9), credito_real_ia(t-18) | AR(2)",-249.66203403470965,76,True,seleccionado,costo_dividido
+"salario_real_ia(t-3), tasa_real_fondeo(t-6), spread_personales(t-12), absorcion_d12(t-12), tcr_ia(t-3), credito_real_ia(t-18) | AR(2)",-249.61967365589564,76,True,seleccionado,costo_dividido
+"salario_real_ia(t-6), tasa_real_fondeo(t-6), spread_personales(t-12), absorcion_d12(t-12), tcr_ia(t-3), credito_real_ia(t-18) | AR(2)",-251.35539625562805,76,True,mix,costo_dividido
+"salario_real_ia(t-6), tasa_real_fondeo(t-6), spread_personales(t-12), absorcion_d12(t-12), tcr_ia(t-12), credito_real_ia(t-18) | AR(2)",-250.8106578857248,76,True,mix,costo_dividido
+"salario_real_ia(t-6), tasa_real_fondeo(t-6), spread_personales(t-12), absorcion_d12(t-12), tcr_ia(t-9), credito_real_ia(t-18) | AR(2)",-250.68259153442065,76,True,mix,costo_dividido
+"salario_real_ia(t-6), tasa_real_fondeo(t-6), spread_personales(t-9), absorcion_d12(t-12), tcr_ia(t-12), credito_real_ia(t-18) | AR(2)",-249.55104881917256,76,True,mix,costo_dividido
+"salario_real_ia(t-6), tasa_real_fondeo(t-6), spread_personales(t-9), absorcion_d12(t-12), tcr_ia(t-9), credito_real_ia(t-18) | AR(2)",-249.4934323028202,76,True,mix,costo_dividido
+"salario_real_ia(t-3), tasa_real_fondeo(t-6), spread_personales(t-12), absorcion_d12(t-12), tcr_ia(t-3), credito_real_ia(t-18) | AR(2)",-249.38103222146398,76,True,mix,costo_dividido
+"salario_real_ia(t-3), tasa_real_fondeo(t-6), spread_personales(t-12), absorcion_d12(t-12), tcr_ia(t-9), credito_real_ia(t-18) | AR(2)",-249.29734200134155,76,True,mix,costo_dividido
+"salario_real_ia(t-6), tasa_real_fondeo(t-6), spread_personales(t-9), absorcion_d12(t-12), tcr_ia(t-6), credito_real_ia(t-18) | AR(2)",-249.22087350874935,76,True,mix,costo_dividido
+"salario_real_ia(t-3), tasa_real_fondeo(t-6), spread_personales(t-12), absorcion_d12(t-12), tcr_ia(t-12), credito_real_ia(t-18) | AR(2)",-249.13095353649928,76,True,mix,costo_dividido
+"salario_real_ia(t-3), tasa_real_fondeo(t-6), spread_personales(t-12), absorcion_d12(t-12), tcr_ia(t-6), credito_real_ia(t-18) | AR(2)",-249.06855178385567,76,True,mix,costo_dividido
