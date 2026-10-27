@@ -70,24 +70,36 @@ datos_gob:
 entidades:
   api_url: "https://www.bcra.gob.ar/api/endpoints/informacion-entidades.php"
   first_month: "2011-01"
-  keep_archives: false   # borrar el 7z después de extraer lo necesario
-  # Indicadores de `indicad` que se conservan (código de línea -> nombre)
-  indicadores:
-    "800010200090": a9_irregular_total
-    "800010200110": a11_irregular_privado
-    "800010200130": a13_part_consumo
-    "800010200140": a14_previsiones_irregular
-    "800010200160": a16_irregular_consumo
-    "800010200170": a17_irregular_comercial
-  # Líneas de `esd` (Estado de Situación de Deudores), cartera de consumo o vivienda
-  esd:
-    "500110201000": esd_consumo_saldo
-    "500110201010": esd_consumo_sit1
-    "500110201020": esd_consumo_sit2
-    "500110201030": esd_consumo_sit3
-    "500110201040": esd_consumo_sit4
-    "500110201050": esd_consumo_sit5
-  # Cuentas de `bal_hist` (balance histórico por entidad) que se conservan
+  keep_archives: false   # borrar el 7z después de extraer lo necesario (--keep-archives lo pisa)
+  # Variables de `indicad` y `esd`, identificadas por la DESCRIPCIÓN (regex, sin distinguir mayúsculas).
+  # Los códigos de `indicad` cambiaron de significado entre ene-2014 y jun-2014; las descripciones no.
+  variables:
+    # indicad, esquema nuevo (desde 2014-06)
+    a9_irregular_total: "^A9 - Total Cartera Irregular"
+    a11_irregular_privado: "^A11 - Cartera Irregular Sector Privado"
+    a13_part_consumo: "^A13 - Participaci.n Cartera Consumo"
+    a14_previsiones_irregular: "^A14 - Previsiones sobre Cartera Irregular"
+    a16_irregular_consumo: "^A16 - Cartera Irregular Consumo"
+    a17_irregular_comercial: "^A17 - Cartera Irregular Comercial"
+    # indicad, esquema viejo (hasta 2014-01): A12 equivale a A16
+    a10_irregular_total_viejo: "^A10 - Cartera irregular sobre financiaciones"
+    a12_irregular_consumo_viejo: "^A12 - Cartera de Consumo irregular"
+    # esd: cartera de consumo o vivienda (saldo y % por situación), estable 2011-2026
+    esd_consumo_saldo: "^CARTERA DE CONSUMO O VIVIENDA"
+    esd_consumo_sit1: "^C\\.CON\\.Sit\\.1"
+    esd_consumo_sit2: "^C\\.CON\\.Sit\\.2"
+    esd_consumo_sit3: "^C\\.CON\\.Sit\\.3"
+    esd_consumo_sit4: "^C\\.CON\\.Sit\\.4"
+    esd_consumo_sit5: "^C\\.CON\\.Sit\\.5"
+  valor_centinela: 99999   # el BCRA usa 99999 para "no aplica"
+  # Agregados del balance por entidad: suma de cuentas hoja por prefijo, filtradas por descripción.
+  # Aproximación (moneda nacional + extranjera); ver docs/relevamiento_datos.md.
+  agregados_balance:
+    activo_total: {prefijo: "1"}
+    titulos_publicos_bcra: {prefijo: "12", incluye: "P[UÚ]B|BCRA|B\\.C\\.R\\.A|LEBAC|LELIQ|LEFI|LETRAS|NOTAS|BONO|BGN|LECAP|TESORO", excluye: "PRIVAD"}
+    pases_activos: {prefijo: "14", incluye: "PASE"}
+    prestamos_total: {prefijo: "13"}
+  # Cuentas individuales de `bal_hist` que se conservan
   cuentas_balance:
     "711046": irrecuperables_cuentas_orden
     "131731": prestamos_personales

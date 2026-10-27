@@ -25,6 +25,8 @@ def main(argv: list[str] | None = None) -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--skip-entidades", action="store_true", help="no actualizar el panel por entidad")
     parser.add_argument("--max-months", type=int, default=None, help="tope de meses nuevos del panel por corrida")
+    parser.add_argument("--keep-archives", action="store_true", help="conservar los 7z en data/raw")
+    parser.add_argument("--rebuild-entidades", action="store_true", help="reconstruir el panel por entidad desde cero")
     args = parser.parse_args(argv)
 
     out = path("processed")
@@ -56,7 +58,12 @@ def main(argv: list[str] | None = None) -> None:
     print("datos.gob.ar: ok")
 
     if not args.skip_entidades:
-        panel = entidades.update_panel(out, max_months=args.max_months)
+        panel = entidades.update_panel(
+            out,
+            max_months=args.max_months,
+            keep_archives=args.keep_archives or None,
+            rebuild=args.rebuild_entidades,
+        )
         manifest["archivos"]["entidades_panel.csv"] = _summary(panel, "fecha")
 
     with open(manifest_file, "w", encoding="utf-8") as fh:

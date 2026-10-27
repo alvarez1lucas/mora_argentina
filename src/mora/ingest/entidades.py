@@ -29,11 +29,11 @@ from mora.config import path, settings
 from mora.ingest.http import download, get_json
 
 # Columnas de indicad/esd: entidad, nombre, fecha, código de línea, descripción, 5 valores...
-_COL_ENTIDAD, _COL_NOMBRE, _COL_FECHA, _COL_CODIGO = 0, 1, 2, 3
+_COL_ENTIDAD, _COL_NOMBRE, _COL_FECHA, _COL_DESCRIPCION = 0, 1, 2, 4
 # Columna del mes del archivo (rezago 0) y del mes anterior (rezago 1)
 _COL_POR_REZAGO = {0: 9, 1: 8}
 _MEMBER_RE = re.compile(r"Tec_Cont/(indicad|esd)/(completo|AA\d{3})\.txt$", re.I)
-_BALHIST_RE = re.compile(r"Tec_Cont/bal_hist/balhist\.txt$", re.I)
+_BALHIST_RE = re.compile(r"Tec_Cont/(bal_hist/balhist|cuentas/cuentas)\.txt$", re.I)
 
 
 def available_months() -> list[str]:
@@ -79,10 +79,22 @@ def _month_start(yyyymm: str) -> pd.Timestamp:
     return pd.Timestamp(f"{yyyymm[:4]}-{yyyymm[4:]}-01")
 
 
-def parse_indicator_file(raw: bytes, yyyymm: str, keep: dict[str, str], rezago: int = 0) -> list[dict]:
-    """Filas de indicad/esd del archivo del mes `yyyymm` -> registros para los códigos en `keep`.
+def compile_patterns(variables: dict[str, str]) -> dict[str, re.Pattern]:
+    return {name: re.compile(rx, re.I) for name, rx in variables.items()}
 
-    Con `rezago=1` toma la columna del mes anterior y le asigna esa fecha.
+
+def parse_indicator_file(
+    raw: bytes,
+    yyyymm: str,
+    patterns: dict[str, re.Pattern],
+    rezago: int = 0,
+    sentinel: float | None = 99999,
+) -> list[dict]:
+    """Filas de indicad/esd del archivo del mes `yyyymm` -> registros de las variables en `patterns`.
+
+    Cada variable se identifica por la descripción de la fila (no por el código, que cambió de
+    significado en 2014). Con `rezago=1` toma la columna del mes anterior y le asigna esa fecha.
+    El valor centinela se convierte en faltante.
     """
     col = _COL_POR_REZAGO[rezago]
     fecha = _month_start(yyyymm) - pd.DateOffset(months=rezago)
@@ -91,16 +103,20 @@ def parse_indicator_file(raw: bytes, yyyymm: str, keep: dict[str, str], rezago: 
     for row in reader:
         if len(row) <= col or row[_COL_FECHA] != yyyymm:
             continue
-        name = keep.get(row[_COL_CODIGO])
+        desc = row[_COL_DESCRIPCION].strip()
+        name = next((n for n, rx in patterns.items() if rx.search(desc)), None)
         if name is None:
             continue
+        valor = pd.to_numeric(row[col], errors="coerce")
+        if sentinel is not None and valor == sentinel:
+            valor = float("nan")
         out.append(
             {
                 "entidad": row[_COL_ENTIDAD],
                 "nombre": row[_COL_NOMBRE].strip(),
                 "fecha": fecha,
                 "variable": name,
-                "valor": pd.to_numeric(row[col], errors="coerce"),
+                "valor": valor,
             }
         )
     return out
@@ -113,10 +129,10 @@ def extract_month(archive: Path, yyyymm: str, rezago: int = 0) -> tuple[pd.DataF
     o del archivo del mes siguiente (1).
     """
     cfg = settings()["entidades"]
-    keep = {**cfg["indicadores"], **cfg["esd"]}
+    patterns = compile_patterns(cfg["variables"])
     records = []
     for raw in _read_members(archive, _MEMBER_RE).values():
-        records.extend(parse_indicator_file(raw, yyyymm, keep, rezago=rezago))
+        records.extend(parse_indicator_file(raw, yyyymm, patterns, rezago=rezago, sentinel=cfg["valor_centinela"]))
     long = pd.DataFrame.from_records(records, columns=["entidad", "nombre", "fecha", "variable", "valor"])
     long = long.drop_duplicates(["entidad", "fecha", "variable"])
     wide = long.pivot(index=["entidad", "fecha"], columns="variable", values="valor").reset_index()
@@ -126,26 +142,57 @@ def extract_month(archive: Path, yyyymm: str, rezago: int = 0) -> tuple[pd.DataF
     return wide, names
 
 
-def parse_balhist(raw: bytes, cuentas: dict[str, str], desde: str) -> pd.DataFrame:
-    """Filtra balhist.txt (entidad, fecha, cuenta, saldo) a las cuentas configuradas."""
+def parse_catalog(raw: bytes) -> dict[str, str]:
+    """cuentas.txt -> {código de cuenta: descripción}."""
     reader = csv.reader(io.StringIO(raw.decode("latin-1")), delimiter="\t", quotechar='"')
-    rows = [
-        (r[0], r[1], cuentas[r[2]], float(r[3]))
-        for r in reader
-        if len(r) >= 4 and r[2] in cuentas and r[1] >= desde
-    ]
-    df = pd.DataFrame(rows, columns=["entidad", "yyyymm", "variable", "saldo"])
-    df["fecha"] = pd.to_datetime(df.pop("yyyymm"), format="%Y%m")
-    return df[["entidad", "fecha", "variable", "saldo"]]
+    return {r[0]: r[1].strip() for r in reader if len(r) >= 2}
+
+
+def account_map(catalog: dict[str, str], cuentas: dict[str, str], agregados: dict[str, dict]) -> dict[str, list[str]]:
+    """{código de cuenta: [variables a las que suma]}: cuentas individuales + agregados por prefijo."""
+    out: dict[str, list[str]] = {c: [name] for c, name in cuentas.items()}
+    for name, rule in agregados.items():
+        inc = re.compile(rule["incluye"], re.I) if "incluye" in rule else None
+        exc = re.compile(rule["excluye"], re.I) if "excluye" in rule else None
+        for code, desc in catalog.items():
+            if not code.startswith(rule["prefijo"]):
+                continue
+            if inc and not inc.search(desc):
+                continue
+            if exc and exc.search(desc):
+                continue
+            out.setdefault(code, []).append(name)
+    return out
+
+
+def parse_balhist(raw: bytes, mapping: dict[str, list[str]], desde: str) -> pd.DataFrame:
+    """balhist.txt (entidad, fecha, cuenta, saldo) -> panel ancho entidad x mes con las variables de `mapping`."""
+    totals: dict[tuple[str, str, str], float] = {}
+    reader = csv.reader(io.StringIO(raw.decode("latin-1")), delimiter="\t", quotechar='"')
+    for r in reader:
+        if len(r) < 4 or r[1] < desde or r[2] not in mapping:
+            continue
+        saldo = float(r[3])
+        for name in mapping[r[2]]:
+            key = (r[0], r[1], name)
+            totals[key] = totals.get(key, 0.0) + saldo
+    long = pd.DataFrame([(*k, v) for k, v in totals.items()], columns=["entidad", "yyyymm", "variable", "saldo"])
+    long["fecha"] = pd.to_datetime(long.pop("yyyymm"), format="%Y%m")
+    wide = long.pivot(index=["entidad", "fecha"], columns="variable", values="saldo").reset_index()
+    wide.columns.name = None
+    return wide.sort_values(["fecha", "entidad"])
 
 
 def extract_balhist(archive: Path) -> pd.DataFrame:
     cfg = settings()["entidades"]
     members = _read_members(archive, _BALHIST_RE)
-    if not members:
-        raise FileNotFoundError(f"{archive.name} no contiene bal_hist/balhist.txt")
+    balhist = next((v for k, v in members.items() if k.lower().endswith("balhist.txt")), None)
+    catalog = next((v for k, v in members.items() if k.lower().endswith("cuentas.txt")), None)
+    if balhist is None or catalog is None:
+        raise FileNotFoundError(f"{archive.name} no contiene bal_hist/balhist.txt y cuentas/cuentas.txt")
+    mapping = account_map(parse_catalog(catalog), cfg["cuentas_balance"], cfg["agregados_balance"])
     desde = cfg["first_month"].replace("-", "")
-    return parse_balhist(next(iter(members.values())), cfg["cuentas_balance"], desde)
+    return parse_balhist(balhist, mapping, desde)
 
 
 def _read_csv(file: Path, dates: bool = False) -> pd.DataFrame | None:
@@ -164,16 +211,26 @@ def _save(panels: list[pd.DataFrame], names: list[pd.DataFrame], panel_file: Pat
     return out
 
 
-def update_panel(out_dir: Path, max_months: int | None = None) -> pd.DataFrame:
+def update_panel(
+    out_dir: Path,
+    max_months: int | None = None,
+    keep_archives: bool | None = None,
+    rebuild: bool = False,
+) -> pd.DataFrame:
     """Agrega al panel los meses publicados que falten y refresca el balance histórico.
 
     Escribe en `out_dir`: entidades_panel.csv, entidades_nombres.csv y entidades_balance.csv.
     El panel se guarda después de cada mes, así una corrida cortada no pierde lo avanzado.
+    `rebuild=True` descarta el panel existente (los 7z conservados en disco se reutilizan).
     """
     cfg = settings()["entidades"]
+    keep = cfg["keep_archives"] if keep_archives is None else keep_archives
     panel_file = out_dir / "entidades_panel.csv"
     names_file = out_dir / "entidades_nombres.csv"
     balance_file = out_dir / "entidades_balance.csv"
+    if rebuild:
+        for f in (panel_file, names_file, balance_file):
+            f.unlink(missing_ok=True)
 
     panel, names = _read_csv(panel_file, dates=True), _read_csv(names_file)
     done = set(panel["fecha"].dt.strftime("%Y%m")) if panel is not None else set()
@@ -204,7 +261,7 @@ def update_panel(out_dir: Path, max_months: int | None = None) -> pd.DataFrame:
         _save(panels, name_tables, panel_file, names_file)
         note = f" (recuperado de {source})" if rezago else ""
         print(f"entidades {yyyymm}: {len(wide)} entidades{note}")
-        if not cfg["keep_archives"] and rezago == 0:
+        if not keep and rezago == 0:
             archive.unlink()
             used_archives.discard(archive)
 
@@ -213,7 +270,7 @@ def update_panel(out_dir: Path, max_months: int | None = None) -> pd.DataFrame:
         used_archives.add(archive)
         extract_balhist(archive).to_csv(balance_file, index=False, date_format="%Y-%m-%d")
 
-    if not cfg["keep_archives"]:
+    if not keep:
         for archive in used_archives:
             archive.unlink(missing_ok=True)
     return pd.concat(panels, ignore_index=True) if panels else pd.DataFrame()
