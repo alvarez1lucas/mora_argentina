@@ -35,3 +35,19 @@ def test_price_index_backcasts_with_monthly_inflation():
     assert p.loc["2016-10-01", "ipc"] == pytest.approx(100 / 1.01 / 1.10)
     assert p.loc["2016-12-01", "ipc"] == 100.0
     assert p["ipc_empalmado"].tolist() == [True, True, False, False, False]
+
+
+def test_tasas_reales_ex_post_uses_following_inflation():
+    from mora.features import tasas_reales
+
+    idx = pd.date_range("2025-01-01", periods=36, freq="MS")
+    infl = pd.Series(np.where(idx < "2026-01-01", 5.0, 1.0), index=idx)  # desinflación en 2026
+    tna = pd.Series(60.0, index=idx)
+    t = tasas_reales(tna, infl, h=12)
+    tea = (1 + 0.05) ** 12 - 1
+    assert t.loc["2025-12-01", "tea"] == pytest.approx(100 * tea)
+    # originado en dic-25: la inflación de los 12 meses siguientes es 1% mensual
+    assert t.loc["2025-12-01", "real_ex_post"] == pytest.approx(100 * ((1 + tea) / 1.01**12 - 1))
+    # la expectativa ingenua (inflación previa al 5% mensual) da tasa real casi nula
+    assert t.loc["2025-12-01", "real_ex_ante_ingenua"] == pytest.approx(100 * ((1 + tea) / 1.05**12 - 1))
+    assert t["real_ex_post"].iloc[-12:].isna().all()

@@ -55,6 +55,29 @@ def decompose_ratio_change(numerador: pd.Series, denominador: pd.Series, h: int 
     )
 
 
+def tasas_reales(tna: pd.Series, inflacion_mensual: pd.Series, h: int = 12) -> pd.DataFrame:
+    """Tasa real anual de un préstamo originado en t a tasa fija (TNA en %, capitalización mensual).
+
+    - `tea`: tasa efectiva anual.
+    - `real_ex_ante_ingenua`: contra la inflación de los h meses previos (expectativa adaptativa).
+    - `real_ex_post`: contra la inflación realizada en los h meses siguientes (lo que terminó pagando
+      el deudor en términos reales). Queda vacía para las cohortes cuyos h meses todavía no pasaron.
+    """
+    tea = (1 + tna / 100 / 12) ** 12 - 1
+    factor = 1 + inflacion_mensual / 100
+    infl_previa = factor.rolling(h).apply(lambda x: x.prod(), raw=True) - 1
+    infl_siguiente = infl_previa.shift(-h)
+    return pd.DataFrame(
+        {
+            "tea": 100 * tea,
+            "inflacion_previa": 100 * infl_previa,
+            "inflacion_siguiente": 100 * infl_siguiente,
+            "real_ex_ante_ingenua": 100 * ((1 + tea) / (1 + infl_previa) - 1),
+            "real_ex_post": 100 * ((1 + tea) / (1 + infl_siguiente) - 1),
+        }
+    )
+
+
 def familias(h: int = 12) -> pd.DataFrame:
     """Dataset de familias por línea: ratios, saldos, saldo irregular nominal y real, y descomposición."""
     fam = load("familias_por_linea")
