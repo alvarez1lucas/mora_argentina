@@ -198,3 +198,14 @@ deflactores:
   region: nacional
   # Deflactor que usa el resto del pipeline por defecto ("publico", "seleccionado" o "mix")
   principal: publico
+
+panel:
+  meses_minimos: 36                 # historia mínima por entidad
+  recorte_crecimiento: [-100, 200]  # % real interanual; fuera de rango = fusiones o entidades muy chicas
+  evento:
+    fecha: "2025-07-01"             # fin de las LEFI y comienzo del apretón de encajes (ver eventos_monetarios.yaml)
+    fecha_exposicion: "2025-06-01"  # exposición al sector público medida antes del evento
+    ventana: [-12, 12]              # meses relativos al evento
+
+panel_ml:
+  corte_alerta_temprana: "2024-01-01"   # se entrena con orígenes hasta 12 meses antes y se evalúa desde acá
