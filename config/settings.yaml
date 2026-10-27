@@ -12,14 +12,21 @@ http:
   backoff: 2.0
 
 sample:
-  # Estimación principal desde 2017 (IPC INDEC base dic-2016). 2011-2016 sólo descriptivo.
-  estimation_start: "2017-01-01"
-  descriptive_start: "2010-01-01"
+  # Cada modelo se estima en las dos muestras y se comparan resultados.
+  muestras:
+    larga:
+      inicio: "2010-01-01"
+      nota: "Incluye 2010-2016 con deflactor empalmado (IPC 2007-2015 cuestionado): más observaciones, más ruido de medición."
+    limpia:
+      inicio: "2017-01-01"
+      nota: "IPC INDEC base dic-2016 e índice de salarios disponibles: menos observaciones, medición confiable."
+  principal: limpia
 
 bcra_anexo:
   url: "https://www.bcra.gob.ar/archivos/Pdfs/PublicacionesEstadisticas/informes/informe-bancos-anexo.xlsx"
   sheet_lineas: "Calidad de Cartera (por líneas)"
   sheet_grupos: "Calidad de Cartera"
+  sheet_balance: "Estado de Sit. Financiera ($)"   # moneda nacional, por grupo, mensual desde dic-2012
 
 bcra_api:
   base_url: "https://api.bcra.gob.ar/estadisticas/v4.0/monetarias"
@@ -42,12 +49,14 @@ bcra_api:
     base_monetaria:            {id: 15,  agg: mean}   # millones ARS
     m2:                        {id: 109, agg: mean}   # millones ARS
     depositos_ef_en_bcra:      {id: 19,  agg: mean}   # millones ARS, proxy de integración de encajes
+    depositos_gobierno_en_bcra: {id: 1264, agg: mean} # millones ARS, proxy de absorción vía Tesoro
     efecto_bm_compras_tesoro:  {id: 48,  agg: sum}    # millones ARS, flujo diario
     efecto_bm_adelantos_tesoro: {id: 49, agg: sum}
     efecto_bm_utilidades_tesoro: {id: 50, agg: sum}
     efecto_bm_resto_tesoro:    {id: 51,  agg: sum}
     efecto_bm_pases:           {id: 52,  agg: sum}
     efecto_bm_leliq:           {id: 53,  agg: sum}
+    efecto_bm_intereses_bcra:  {id: 55,  agg: sum}    # intereses y primas de pases/LELIQ y remuneración de cuentas corrientes
 
 datos_gob:
   base_url: "https://apis.datos.gob.ar/series/api/series/"

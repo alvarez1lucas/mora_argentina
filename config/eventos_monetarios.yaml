@@ -1,0 +1,100 @@
+# Eventos de política monetaria y de liquidez, para el estudio de eventos de la Fase 5.
+# `fuente`: comunicacion = texto oficial del BCRA leído; prensa = sin verificar en fuente primaria.
+# `vigencia` es la fecha en que el cambio empieza a regir (puede diferir de la de emisión).
+
+eventos:
+  - id: fin_lefi
+    emision: 2025-06-09
+    vigencia: 2025-07-10
+    tipo: tasa
+    descripcion: "El BCRA deja de ofrecer LEFI; el stock se canjea por Lecaps. La tasa pasa a ser endógena (régimen de agregados)."
+    fuente: prensa
+    url: "https://www.ambito.com/economia/bcra-anuncio-un-cambio-clave-las-tasas-interes-fin-las-lefis-y-cambio-los-encajes-los-bancos-n6154767"
+
+  - id: A8281
+    emision: 2025-07-17
+    vigencia: 2025-08-01
+    tipo: encajes
+    descripcion: "+10 pp de efectivo mínimo sobre depósitos de FCI money market y cauciones bursátiles tomadoras en pesos."
+    fuente: comunicacion
+    url: "https://www.bcra.gob.ar/archivos/Pdfs/comytexord/A8281.pdf"
+
+  - id: A8286
+    emision: 2025-07-24
+    vigencia: 2025-07-25
+    tipo: encajes
+    descripcion: "Los pases pasivos en pesos quedan sujetos a las exigencias de las cauciones tomadoras."
+    fuente: comunicacion
+    url: "https://www.bcra.gob.ar/archivos/Pdfs/comytexord/A8286.pdf"
+
+  - id: A8289
+    emision: 2025-07-31
+    vigencia: 2025-08-01
+    tipo: encajes
+    descripcion: "+10 pp adicionales sobre FCI money market, pases pasivos y cauciones; -4 pp en la exigencia integrable con títulos."
+    fuente: comunicacion
+    url: "https://www.bcra.gob.ar/archivos/Pdfs/comytexord/A8289.pdf"
+
+  - id: A8302
+    emision: 2025-08-14
+    vigencia: 2025-08-18
+    tipo: encajes
+    descripcion: "Integración de encajes en pesos con medición diaria (antes promedio mensual); cargo de 3 veces TAMAR por deficiencias."
+    fuente: comunicacion
+    url: "https://www.bcra.gob.ar/archivos/Pdfs/comytexord/A8302.pdf"
+
+  - id: suba_5pp_ago25
+    emision: 2025-08-14
+    vigencia: 2025-08-18
+    tipo: encajes
+    descripcion: "+5 pp de efectivo mínimo, hasta 3 pp integrables con títulos de licitaciones especiales para entidades."
+    fuente: prensa
+    url: "https://www.cronista.com/finanzas-mercados/bcra-toma-todos-los-pesos-con-una-suba-de-encajes-a-los-bancos-que-impacta-en-la-tasa-de-interes/"
+
+  - id: A8305
+    emision: 2025-08-21
+    vigencia: 2025-09-01
+    tipo: encajes
+    descripcion: "Pases pasivos y cauciones tomadoras computan por posición neta."
+    fuente: comunicacion
+    url: "https://www.bcra.gob.ar/archivos/Pdfs/comytexord/A8305.pdf"
+
+  - id: A8306
+    emision: 2025-08-25
+    vigencia: 2025-09-01
+    tipo: encajes
+    descripcion: "+3,5 pp en todas las obligaciones en pesos con encaje fraccionario, integrables con títulos públicos de suscripción primaria a 60 días o más."
+    fuente: comunicacion
+    url: "https://www.bcra.gob.ar/archivos/Pdfs/comytexord/A8306.pdf"
+
+  - id: elecciones_legislativas_2025
+    emision: 2025-10-26
+    vigencia: 2025-10-26
+    tipo: politico
+    descripcion: "Elecciones legislativas nacionales; el pico de tasas de préstamos personales (oct-2025) es previo."
+    fuente: prensa
+    url: ""
+
+  - id: A8355
+    emision: 2025-11-20
+    vigencia: 2025-12-01
+    tipo: encajes
+    descripcion: "Se elimina el +3,5 pp de la A 8306 para imposiciones a la vista, FCI money market, pases y cauciones."
+    fuente: comunicacion
+    url: "https://www.bcra.gob.ar/archivos/Pdfs/comytexord/A8355.pdf"
+
+  - id: fin_suba_temporal_abr26
+    emision: 2026-03-31
+    vigencia: 2026-04-01
+    tipo: encajes
+    descripcion: "No se renueva la suba temporal de encajes en bonos; encaje sobre depósitos a la vista de 50% a 45%."
+    fuente: prensa
+    url: "https://www.bloomberglinea.com/latinoamerica/argentina/primicia-bcra-no-renovara-norma-clave-del-apreton-monetario-preelectoral-y-encajes-bajaran-en-abril/"
+
+  - id: A8483
+    emision: 2026-09-17
+    vigencia: 2026-09-17
+    tipo: sector_publico
+    descripcion: "El cupo de financiamiento al sector público admite todos los títulos nacionales en pesos (incluso dollar-linked) e incluye el exceso de encajes al 15/05/24."
+    fuente: comunicacion
+    url: "https://www.bcra.gob.ar/archivos/Pdfs/comytexord/A8483.pdf"

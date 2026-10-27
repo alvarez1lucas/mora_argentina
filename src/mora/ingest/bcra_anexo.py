@@ -86,7 +86,7 @@ def read_anexo(xlsx: Path) -> pd.DataFrame:
     wb = openpyxl.load_workbook(xlsx, read_only=True, data_only=True)
     frames = [
         parse_sheet(list(wb[sheet].iter_rows(values_only=True)), hoja=sheet)
-        for sheet in (cfg["sheet_lineas"], cfg["sheet_grupos"])
+        for sheet in (cfg["sheet_lineas"], cfg["sheet_grupos"], cfg["sheet_balance"])
     ]
     wb.close()
     return pd.concat(frames, ignore_index=True)
