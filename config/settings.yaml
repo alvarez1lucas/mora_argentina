@@ -76,6 +76,8 @@ datos_gob:
     # ipcba_regulados_b2012 (193.1_REGULADOSDOS_JULI_0_9) figura en el catálogo pero la API lo devuelve vacío
     ipcba_vivienda_b2012:  "193.1_VIVIENDA_ALES_JULI_0_45"
     desocupacion:        "42.3_EPH_PUNTUATAL_0_M_30"     # INDEC, EPH, trimestral
+    pbi_nominal:         "166.2_PPIB_0_0_3"              # INDEC, PIB a precios corrientes, millones de $, trimestral a tasa anual
+    pbi_real:            "4.2_OGP_2004_T_17"             # INDEC, PIB a precios de 2004, trimestral (llega más lejos que el nominal)
     # Futuro de dólar ROFEX, diario, discontinuado en abr-2024 (2020+ sale de A3 Mercados).
     # "1M" = contrato más próximo a vencer (vence a fin de mes), no plazo constante.
     futuro_dolar_1m:     "168.1_FRO_ROF1M_D_0_0_19"
@@ -228,3 +230,7 @@ canales:
     absorcion_d12: 0
     tcr_ia: 0
     credito_real_ia: 0
+
+ajuste:
+  desde: "2023-11-01"     # ventana principal del análisis: desde el mes previo a la devaluación de dic-2023
+  meses_castigos: 8

@@ -1,5 +1,5 @@
 {
-  "corrida_utc": "2026-10-27T15:05:44+00:00",
+  "corrida_utc": "2026-10-27T16:55:43+00:00",
   "archivos": {
     "a3_dolar_futuro.csv": {
       "filas": 19252,
@@ -41,15 +41,20 @@
       "desde": "2010-01-01",
       "hasta": "2026-08-01"
     },
+    "ipc_divisiones.csv": {
+      "filas": 118,
+      "desde": "2016-12-01",
+      "hasta": "2026-09-01"
+    },
     "macro_diaria.csv": {
       "filas": 5585,
       "desde": "2009-01-03",
       "hasta": "2024-04-18"
     },
     "macro_mensual.csv": {
-      "filas": 272,
+      "filas": 273,
       "desde": "2004-01-01",
-      "hasta": "2026-08-01"
+      "hasta": "2026-09-01"
     },
     "macro_trimestral.csv": {
       "filas": 94,

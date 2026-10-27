@@ -1,0 +1,34 @@
+{
+  "ventana": [
+    "2023-11-01",
+    "2026-10-01"
+  ],
+  "credito_privado_pbi": {
+    "inicio": 9.33,
+    "ultimo": 11.58
+  },
+  "exposicion_estado_pbi": {
+    "inicio": 12.84,
+    "ultimo": 9.78
+  },
+  "credito_familias_pbi": {
+    "inicio": 4.84,
+    "ultimo": 6.92
+  },
+  "credito_empresas_pbi": {
+    "inicio": 5.65,
+    "ultimo": 8.63
+  },
+  "mora_familias": {
+    "inicio": 2.7,
+    "maximo": 12.94,
+    "fecha_maximo": "2026-07-01",
+    "ultimo": 12.81
+  },
+  "mora_empresas": {
+    "inicio": 2.65,
+    "ultimo": 3.8
+  },
+  "castigos_ultimos_meses_real_millones": 2056219.0,
+  "pbi_extrapolado_desde": "2026-01-01"
+}
