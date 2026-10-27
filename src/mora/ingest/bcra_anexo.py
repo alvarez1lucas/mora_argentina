@@ -26,6 +26,13 @@ from mora.ingest.http import download
 
 _SKIP_TITLES = ("Fuente", "Ver ", "Apertura", "Calidad de Cartera")
 
+# Hoja del anexo -> sufijo del archivo procesado (data/processed/anexo_<sufijo>.csv)
+ARCHIVOS_POR_HOJA = {
+    "Calidad de Cartera (por líneas)": "calidad_por_linea",
+    "Calidad de Cartera": "calidad_por_grupo",
+    "Estado de Sit. Financiera ($)": "balance_por_grupo",
+}
+
 
 def download_anexo() -> Path:
     cfg = settings()["bcra_anexo"]

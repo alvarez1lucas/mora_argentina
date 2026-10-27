@@ -39,8 +39,10 @@ def main(argv: list[str] | None = None) -> None:
 
     xlsx = bcra_anexo.download_anexo()
     anexo = bcra_anexo.read_anexo(xlsx)
-    anexo.to_csv(out / "anexo_calidad_cartera.csv", index=False, date_format="%Y-%m-%d")
-    manifest["archivos"]["anexo_calidad_cartera.csv"] = _summary(anexo, "fecha")
+    for hoja, df in anexo.groupby("hoja"):
+        name = f"anexo_{bcra_anexo.ARCHIVOS_POR_HOJA[hoja]}.csv"
+        df.drop(columns="hoja").to_csv(out / name, index=False, date_format="%Y-%m-%d")
+        manifest["archivos"][name] = _summary(df, "fecha")
     familias = bcra_anexo.familias_por_linea(anexo)
     familias.to_csv(out / "familias_por_linea.csv", date_format="%Y-%m-%d")
     manifest["archivos"]["familias_por_linea.csv"] = _summary(familias)

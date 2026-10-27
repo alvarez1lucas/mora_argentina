@@ -60,3 +60,12 @@ def test_familias_por_linea_wide():
 def test_slug():
     assert _slug("Tarjetas de crédito") == "tarjetas_de_credito"
     assert _slug("Con garantía prendaria") == "prendaria"
+
+
+def test_every_configured_sheet_has_output_file():
+    from mora.config import settings
+    from mora.ingest.bcra_anexo import ARCHIVOS_POR_HOJA
+
+    cfg = settings()["bcra_anexo"]
+    sheets = {cfg["sheet_lineas"], cfg["sheet_grupos"], cfg["sheet_balance"]}
+    assert sheets == set(ARCHIVOS_POR_HOJA)

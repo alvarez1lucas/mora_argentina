@@ -34,6 +34,15 @@ IPC nacional base dic-2016 (2016-12+), índice de salarios registrados (2015-10+
 | Personales jul-26 | "cerca del 15%" | 16,71% |
 | Familias ago-26 | — | 12,81% |
 
+## Panel por entidad: hallazgos al construirlo
+
+- **Cambio de esquema de indicadores (entre ene-2014 y jun-2014):** los mismos códigos de `indicad` significan cosas distintas antes y después. Por ejemplo, el código `800010200110` es "A11 - Cartera Comercial irregular" en 2011 y "A11 - Cartera Irregular Sector Privado" desde 2014-06. Por eso las variables se identifican por descripción. El viejo **A12** ("Cartera de Consumo irregular") equivale al nuevo **A16**.
+- **Medida homogénea 2011-2026:** sit. 3 + 4 + 5 del ESD de la cartera de consumo o vivienda. Coincide con el A12 y con el A16 en todos los cortes verificados (Galicia ene-2011: 3,22 = 3,22; jul-2026: 18,43 = 18,43; sistema jun-2014: 3,19 contra 3,20).
+- **Centinela:** el BCRA usa 99999 para "no aplica". Se convierte en faltante.
+- **Unidad del saldo de ESD:** miles de pesos al principio de la serie y millones al final; hay que normalizarlo antes de usar montos.
+- **Meses sin 7z:** feb-2011, jun-2011 y may-2013 sólo se publicaron en PDF. Se recuperan de la columna "mes anterior" del archivo siguiente (columna `rezago` = 1).
+- **Agregados de balance por entidad** (activo total, títulos públicos y del BCRA, pases, préstamos): se arman sumando cuentas hoja de `bal_hist` por prefijo y descripción (incluyen moneda nacional y extranjera). Contraste con el anexo, sistema: dic-23, títulos + pases ≈ 47% del activo y préstamos 22%; jul-26, títulos 28%, préstamos 44%. Las magnitudes son coherentes con la hoja del anexo en moneda nacional, pero no son idénticas: es una aproximación.
+
 ## Problemas técnicos encontrados
 
 - **TLS:** un antivirus que inspecciona TLS (Avast) reemplaza la cadena de certificados. La ingesta valida contra el almacén del sistema operativo (`truststore`) y no desactiva la verificación.
