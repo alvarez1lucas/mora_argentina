@@ -108,3 +108,8 @@ entidades:
     "131742": prestamos_tarjetas
     "131708": hipotecarios_vivienda
     "131713": prendarios_automotores
+
+transparencia:
+  base_url: "https://api.bcra.gob.ar/transparencia/v1.0"
+  productos: [Personales, Prendarios, Hipotecarios]
+  antiguedad_max_dias: 180

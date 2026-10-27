@@ -51,3 +51,25 @@ def test_tasas_reales_ex_post_uses_following_inflation():
     # la expectativa ingenua (inflación previa al 5% mensual) da tasa real casi nula
     assert t.loc["2025-12-01", "real_ex_ante_ingenua"] == pytest.approx(100 * ((1 + tea) / 1.05**12 - 1))
     assert t["real_ex_post"].iloc[-12:].isna().all()
+
+
+def test_cft_aproximado_adds_vat_on_monthly_rate():
+    from mora.features import cft_aproximado
+
+    tna = pd.Series([60.0])
+    assert cft_aproximado(tna).iloc[0] == pytest.approx(100 * ((1 + 0.05 * 1.21) ** 12 - 1))
+    assert cft_aproximado(tna, iva=0).iloc[0] == pytest.approx(100 * (1.05**12 - 1))
+
+
+def test_sorpresa_carga_cuota():
+    from mora.features import sorpresa_carga_cuota
+
+    idx = pd.date_range("2024-01-01", periods=36, freq="MS")
+    infl = pd.Series(np.where(idx < "2025-01-01", 4.0, 2.0), index=idx)
+    # salario que sube 2% mensual siempre
+    w = pd.Series(1.02 ** np.arange(36), index=idx)
+    s = sorpresa_carga_cuota(infl, w, h=12)
+    # cohorte dic-24: esperaba 4% mensual de suba salarial, obtuvo 2%
+    assert s.loc["2024-12-01"] == pytest.approx(1.04**12 / 1.02**12)
+    # cohorte dic-25: esperaba 2%, obtuvo 2% -> sin sorpresa (si hubiera dato a 12 meses)
+    assert s.loc["2025-12-01"] == pytest.approx(1.0)

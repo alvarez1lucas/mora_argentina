@@ -78,6 +78,31 @@ def tasas_reales(tna: pd.Series, inflacion_mensual: pd.Series, h: int = 12) -> p
     )
 
 
+def cft_aproximado(tna: pd.Series, iva: float = 0.21) -> pd.Series:
+    """CFT efectivo anual (%) aproximado: tasa mensual de la TNA más IVA sobre intereses.
+
+    Es una cota inferior: no incluye seguros de vida ni gastos de otorgamiento. La serie de tasas
+    del BCRA es una TNA sin IVA; en la foto del régimen de transparencia (2026) la mediana de
+    CFT mensual / TEM es 1,21, exactamente el IVA.
+    """
+    tem_con_iva = tna / 100 / 12 * (1 + iva)
+    return 100 * ((1 + tem_con_iva) ** 12 - 1)
+
+
+def sorpresa_carga_cuota(inflacion_mensual: pd.Series, salario_nominal: pd.Series, h: int = 12) -> pd.Series:
+    """Cuánto más pesa una cuota fija sobre el salario a h meses de lo que el deudor podía esperar.
+
+    Expectativa ingenua: el salario nominal sube como la inflación de los h meses previos.
+    >1 significa que la cuota quedó más pesada que lo esperado (la desinflación no la licuó).
+    Con expectativas adaptativas sobreestima la sorpresa en las desinflaciones bruscas (2024);
+    la versión con expectativas del REM queda para la Fase 5.
+    """
+    factor = 1 + inflacion_mensual / 100
+    esperado = factor.rolling(h).apply(lambda x: x.prod(), raw=True)
+    realizado = salario_nominal.shift(-h) / salario_nominal
+    return esperado / realizado
+
+
 def familias(h: int = 12) -> pd.DataFrame:
     """Dataset de familias por línea: ratios, saldos, saldo irregular nominal y real, y descomposición."""
     fam = load("familias_por_linea")

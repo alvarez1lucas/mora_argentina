@@ -13,7 +13,7 @@ from datetime import datetime, timezone
 import pandas as pd
 
 from mora.config import path
-from mora.ingest import bcra_anexo, bcra_api, datos_gob, entidades
+from mora.ingest import bcra_anexo, bcra_api, datos_gob, entidades, transparencia
 
 
 def _summary(df: pd.DataFrame, date_col: str | None = None) -> dict:
@@ -58,6 +58,10 @@ def main(argv: list[str] | None = None) -> None:
         df.to_csv(out / name, date_format="%Y-%m-%d")
         manifest["archivos"][name] = _summary(df)
     print("datos.gob.ar: ok")
+
+    tr = transparencia.update(out / "transparencia_entidades.csv")
+    manifest["archivos"]["transparencia_entidades.csv"] = _summary(tr, "fecha_descarga")
+    print("transparencia: ok")
 
     if not args.skip_entidades:
         panel = entidades.update_panel(
