@@ -71,6 +71,11 @@ def main(argv: list[str] | None = None) -> None:
             rebuild=args.rebuild_entidades,
         )
         manifest["archivos"]["entidades_panel.csv"] = _summary(panel, "fecha")
+        balance = pd.read_csv(out / "entidades_balance.csv", usecols=["fecha"])
+        manifest["archivos"]["entidades_balance.csv"] = _summary(balance, "fecha")
+
+    # Sin entradas de archivos que ya no existen (p. ej. renombrados)
+    manifest["archivos"] = {k: v for k, v in sorted(manifest["archivos"].items()) if (out / k).exists()}
 
     with open(manifest_file, "w", encoding="utf-8") as fh:
         json.dump(manifest, fh, ensure_ascii=False, indent=2)
