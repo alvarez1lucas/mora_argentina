@@ -3,7 +3,7 @@
 ## Alcance acordado (después de la Fase 1)
 
 - **A. Variable objetivo:** la irregularidad nacional de familias por producto (anexo del Informe sobre Bancos) como serie principal, y el panel por entidad (A16 / ESD de consumo) para robustez y heterogeneidad entre grupos.
-- **B. Muestra:** estimación principal desde 2017-01 (IPC INDEC base dic-2016). 2010-2016 sólo como descriptivo, con el deflactor empalmado y marcado.
+- **B. Muestras en paralelo:** cada modelo se estima en una muestra *larga* (2010+, con el deflactor empalmado 2010-2016 y por lo tanto más ruido de medición) y en una *limpia* (2017+, IPC INDEC base dic-2016). La limpia es la principal; si un resultado sólo aparece en una de las dos, se reporta como frágil. La limpia arranca en 2017 y no en 2015 porque INDEC no publicó IPC entre ene y abr de 2016 y el IPC nacional empieza en dic-2016.
 - **C. PNFC/fintech:** fuera del modelo, sólo como contexto. Bancos vs EFNB sí entra (EFNB ≠ fintech).
 - **D. Desempleo:** trimestral. Va a un modelo auxiliar trimestral y no como regresor mensual.
 - **E. Datos:** se versionan las series procesadas chicas (`data/processed/`). Los 7z y `balhist.txt` no se versionan.
@@ -32,6 +32,16 @@
 | Estudio de eventos sobre cambios de régimen (fin de las LEFI en jul-2025, subas de encajes, salida del cepo) | Dinámica alrededor de quiebres fechados con su fuente normativa | Pocos eventos, que suelen coincidir con otros shocks |
 | **Panel por entidad con exposición diferencial** | ¿Las entidades más expuestas al shock (más tarjetas, a tasa variable, o más crecimiento de crédito previo) sufrieron más mora? | Es la identificación más defendible con estos datos; la exposición tiene que medirse antes del shock |
 | Heterogeneidad por línea | Si el canal tasa importa, tarjetas (tasa variable) debería reaccionar antes que personales (tasa fija al originar) | Implicancia testeable, no una prueba |
+
+### Hipótesis de trabajo
+
+**H1 — Tasa fija + desinflación + salario real en baja.** Los préstamos personales se otorgan a tasa fija. Los originados entre mediados de 2024 y 2025 tuvieron una TNA de 65-83% (pico en oct-2025), pero la inflación de los 12 meses siguientes fue de 31-34%: tasa real ex post de 45-54% anual. Desde fines de 2025 el salario real registrado cae (de −0,3% a −4,2% interanual). En 2024 las tasas reales ex post también fueron muy altas y la mora no saltó, porque el stock era chico. Por eso H1 predice una interacción: importa la *carga real ponderada por el stock originado*, no la tasa sola.
+- Medición: tasa real ex post por cohorte de originación (tasa de originación contra inflación realizada a 12 meses), tasa real ex ante (inflación esperada del REM), crecimiento real del stock como proxy de la originación, y salario real.
+- Implicancia testeable: tarjetas (tasa variable, se reprecian) contra personales (tasa fija): bajo H1, personales debería mostrar más mora rezagada a la desinflación.
+
+**H2 — Absorción del sector público y del BCRA (esterilización).** Los bancos tienen una parte grande del activo en instrumentos remunerados del Tesoro y del BCRA, y eso compite con el crédito privado y sostiene tasas altas. Datos del anexo (activo en moneda nacional, sistema): títulos públicos + otros créditos por intermediación (pases) pasan de ~54% en dic-23 a ~38% en dic-25, mientras el crédito privado sube de 27% a 45%. En 2026 los títulos públicos vuelven a subir (31,1% → 33,6%) y el crédito privado se estanca.
+- Medición: participación de títulos públicos, pases y LELIQ en el activo por grupo de entidades; intereses pagados por el BCRA (efecto monetario, id 55); depósitos del gobierno en el BCRA; cronología de encajes verificada (`config/eventos_monetarios.yaml`).
+- Identificación: panel por entidad. Las entidades con más exposición al sector público antes del shock de jul-ago 2025 (fin de las LEFI, subas de encajes integrables con títulos) deberían mostrar menos crecimiento del crédito privado y, si el canal opera vía tasa, más mora en sus carteras de consumo. Para esto hace falta la exposición por entidad, que se arma con las cuentas de títulos públicos de `bal_hist`.
 
 **Variables candidatas** (las que ya están en la ingesta se marcan ✔):
 
