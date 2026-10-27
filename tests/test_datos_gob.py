@@ -13,3 +13,13 @@ def test_parse_payload_sorts_and_coerces():
 
 def test_parse_payload_empty():
     assert parse_payload({"data": []}, name="x").empty
+
+
+def test_frequency_classification():
+    import pandas as pd
+
+    from mora.ingest.datos_gob import frequency
+
+    assert frequency(pd.Series(1.0, index=pd.date_range("2025-01-01", periods=10, freq="B"))) == "diaria"
+    assert frequency(pd.Series(1.0, index=pd.date_range("2025-01-01", periods=10, freq="MS"))) == "mensual"
+    assert frequency(pd.Series(1.0, index=pd.date_range("2025-01-01", periods=10, freq="QS"))) == "trimestral"

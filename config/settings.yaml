@@ -69,6 +69,14 @@ datos_gob:
     # RIPTE (158.1_REPTE_0_0_5) figura en el catálogo pero la API lo devuelve vacío (oct-2026).
     emae_desest:         "143.3_NO_PR_2004_A_31"         # INDEC, EMAE desestacionalizado
     desocupacion:        "42.3_EPH_PUNTUATAL_0_M_30"     # INDEC, EPH, trimestral
+    # Futuro de dólar ROFEX, diario, discontinuado en abr-2024 (2020+ sale de A3 Mercados).
+    # "1M" = contrato más próximo a vencer (vence a fin de mes), no plazo constante.
+    futuro_dolar_1m:     "168.1_FRO_ROF1M_D_0_0_19"
+    futuro_dolar_2m:     "168.1_FRO_ROF2M_D_0_0_19"
+    futuro_dolar_3m:     "168.1_FRO_ROF3M_D_0_0_19"
+    interes_abierto_1m:  "168.1_IRES_AB_1M_D_0_0_18"
+    interes_abierto_2m:  "168.1_IRES_AB_2M_D_0_0_18"
+    # interes_abierto_3m (168.1_IRES_AB_3M_D_0_0_18) figura en el catálogo pero la API lo devuelve vacío
 
 entidades:
   api_url: "https://www.bcra.gob.ar/api/endpoints/informacion-entidades.php"

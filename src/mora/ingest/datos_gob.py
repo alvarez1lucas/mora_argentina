@@ -39,15 +39,23 @@ def parse_payload(payload: dict, name: str) -> pd.Series:
     return pd.Series(vals, index=idx, name=name).sort_index()
 
 
+def frequency(s: pd.Series) -> str:
+    step = s.index.to_series().diff().dt.days.median() if len(s) > 1 else 31
+    if step < 7:
+        return "diaria"
+    return "trimestral" if step > 45 else "mensual"
+
+
 def build_panel() -> dict[str, pd.DataFrame]:
-    """Devuelve {'mensual': df, 'trimestral': df} según la frecuencia de cada serie."""
-    monthly, quarterly = {}, {}
+    """Devuelve {'diaria': df, 'mensual': df, 'trimestral': df} según la frecuencia de cada serie."""
+    groups: dict[str, dict[str, pd.Series]] = {"diaria": {}, "mensual": {}, "trimestral": {}}
     for name, sid in settings()["datos_gob"]["series"].items():
         s = fetch_series(sid)
-        step = s.index.to_series().diff().dt.days.median() if len(s) > 1 else 31
-        (quarterly if step > 45 else monthly)[name] = s
+        groups[frequency(s)][name] = s
     out = {}
-    for key, cols in (("mensual", monthly), ("trimestral", quarterly)):
+    for key, cols in groups.items():
+        if not cols:
+            continue
         df = pd.DataFrame(cols).sort_index()
         df.index.name = "fecha"
         out[key] = df

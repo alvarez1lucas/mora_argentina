@@ -1,0 +1,17 @@
+# Posición vendida del BCRA en futuros de dólar (millones de USD, fin de mes).
+# No se encontró el archivo fuente oficial: son datos que la prensa atribuye a publicaciones del BCRA.
+# Se usan sólo como puntos de control del interés abierto total de A3 Mercados (dato primario).
+
+puntos:
+  - fecha: 2025-09-30
+    usd_millones: 6844
+    url: "https://www.infobae.com/economia/2025/10/24/el-bcra-revelo-que-termino-septiembre-con-la-mayor-venta-de-futuros-de-dolar-desde-2016/"
+  - fecha: 2026-04-30
+    usd_millones: 2127
+    url: "https://www.cronista.com/finanzas-mercados/dolar-futuro-bcra-redujo-su-posicion-un-70-desde-las-elecciones/"
+  - fecha: 2026-08-31
+    usd_millones: 278
+    url: "https://www.ambito.com/finanzas/dolar-futuro-el-bcra-redujo-su-posicion-vendida-us278-millones-agosto-y-se-acerco-al-minimo-del-ano-n6326175"
+  - fecha: 2026-09-30
+    usd_millones: 42
+    url: "https://www.ambito.com/finanzas/dolar-futuro-la-posicion-del-bcra-se-redujo-casi-cero-por-que-ocurrio-y-que-implica-cara-un-ano-electoral-n6337336"
