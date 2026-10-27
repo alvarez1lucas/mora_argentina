@@ -31,16 +31,19 @@ jobs:
       - name: Ingesta
         run: python -m mora.ingest
 
+      - name: Análisis descriptivo
+        run: python -m mora.descriptivo
+
       - name: Commit de datos nuevos
         run: |
           # El manifest cambia en cada corrida: sólo se commitea si cambió algún dato
-          if git diff --quiet -- data/processed ':!data/processed/manifest.json' && \
-             [ -z "$(git ls-files --others --exclude-standard data/processed)" ]; then
+          if git diff --quiet -- data/processed outputs ':!data/processed/manifest.json' && \
+             [ -z "$(git ls-files --others --exclude-standard data/processed outputs)" ]; then
             echo "Sin datos nuevos"
             exit 0
           fi
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add data/processed
+          git add data/processed outputs
           git commit -m "Actualización automática de datos ($(date -u +%Y-%m-%d))"
           git push

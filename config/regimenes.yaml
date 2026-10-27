@@ -1,0 +1,67 @@
+# Regímenes y quiebres que se marcan en el análisis descriptivo y se tratan en el modelo.
+# `fuente`: comunicacion = norma leída; general = hecho ampliamente documentado, sin verificar acá en fuente primaria.
+
+regimenes:
+  - id: ipc_intervenido
+    desde: 2007-01-01
+    hasta: 2015-12-31
+    tipo: medicion
+    descripcion: "IPC de INDEC cuestionado. Por eso la muestra larga usa el deflactor empalmado, marcado como descriptivo."
+    fuente: general
+
+  - id: cepo_1
+    desde: 2011-10-31
+    hasta: 2015-12-17
+    tipo: cambiario
+    descripcion: "Primer cepo cambiario."
+    fuente: general
+
+  - id: crisis_cambiaria_2018
+    desde: 2018-04-25
+    hasta: 2018-09-30
+    tipo: cambiario
+    descripcion: "Corrida cambiaria y acuerdo con el FMI."
+    fuente: general
+
+  - id: cepo_2
+    desde: 2019-09-01
+    hasta: 2025-04-14
+    tipo: cambiario
+    descripcion: "Segundo cepo (Decreto 609/2019), levantado para personas humanas en abr-2025."
+    fuente: general
+
+  - id: alivio_clasificacion_covid
+    desde: 2020-03-19
+    hasta: 2021-05-31
+    tipo: regulacion_mora
+    descripcion: "+60 días de mora admitida para clasificar (A 6938); +60 días hasta 31/03/21 y +30 hasta 31/05/21 (A 7245). La mora medida queda artificialmente baja."
+    fuente: comunicacion
+    url: "https://www.bcra.gob.ar/archivos/Pdfs/comytexord/A7245.pdf"
+
+  - id: niif9_nic29
+    desde: 2020-01-01
+    hasta: null
+    tipo: contable
+    descripcion: "Balances en moneda homogénea (NIC 29) y NIIF 9 para los bancos del grupo A."
+    fuente: general
+
+  - id: devaluacion_dic23
+    desde: 2023-12-13
+    hasta: 2023-12-31
+    tipo: cambiario
+    descripcion: "Devaluación del tipo de cambio oficial y cambio de régimen macro."
+    fuente: general
+
+  - id: bandas_cambiarias
+    desde: 2025-04-14
+    hasta: null
+    tipo: cambiario
+    descripcion: "Flotación entre bandas (1.000-1.400 ±1% mensual; desde ene-26 ajustadas por inflación t-2)."
+    fuente: general
+
+  - id: apreton_monetario_2025
+    desde: 2025-07-10
+    hasta: 2025-11-30
+    tipo: monetario
+    descripcion: "Fin de las LEFI, subas de encajes (A 8281, 8289, 8302, 8306) y tasas de 50-150% hasta las elecciones. Ver eventos_monetarios.yaml."
+    fuente: comunicacion

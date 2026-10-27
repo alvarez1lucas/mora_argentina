@@ -1,0 +1,18 @@
+{
+  "ultimo_dato": "2026-08-01",
+  "mora_familias": 12.81,
+  "mora_familias_hace_12m": 6.6,
+  "efecto_numerador_12m": 6.24,
+  "efecto_denominador_12m": -0.03,
+  "serie_desde": "2010-01-01",
+  "maximo_de_la_serie": 12.94,
+  "fecha_maximo": "2026-07-01",
+  "mora_por_linea": {
+    "total": 12.81,
+    "hipotecaria": 1.65,
+    "otros": 39.41,
+    "personales": 17.04,
+    "prendaria": 8.17,
+    "tarjetas_de_credito": 12.22
+  }
+}

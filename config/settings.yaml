@@ -4,6 +4,7 @@ paths:
   raw: data/raw            # crudos pesados, no se versionan
   interim: data/interim    # extracciones temporales, no se versionan
   processed: data/processed  # series chicas ya procesadas, se versionan
+  outputs: outputs         # resultados del análisis que lee el sitio web, se versionan
 
 http:
   user_agent: "Mozilla/5.0 (mora-hogares-argentina; +https://github.com/alvarez1lucas)"
@@ -129,3 +130,12 @@ a3:
   url: "https://apicem.matbarofex.com.ar/api/v2/closing-prices"
   page_size: 500
   inicio: "2020-01-01"
+
+descriptivo:
+  # Agrupamientos institucionales del BCRA (archivos AA de Información de Entidades Financieras)
+  grupos:
+    AA000: sistema_financiero
+    AA110: bancos_publicos
+    AA121: bancos_privados_nacionales
+    AA123: bancos_privados_extranjeros
+    AA200: companias_financieras
