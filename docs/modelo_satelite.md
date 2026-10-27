@@ -43,3 +43,22 @@ En la muestra larga el satélite le gana a los dos benchmarks en todos los horiz
 - El CFT es una cota inferior (sin seguros ni gastos) y la expectativa de inflación es adaptativa hasta tener el REM.
 - La ventana COVID excluida saca 21 meses de datos.
 - Los errores de pronóstico a 12 meses son grandes en cualquier modelo (2-4 pp): la incertidumbre de los escenarios tiene que mostrarse.
+
+## Robustez de medición: tres mediciones de precios
+
+`python -m mora.robustez` corre el modelo completo con cada deflactor (ver `src/mora/deflactores.py`). Outputs en `outputs/robustez/`; comparación lado a lado en `comparacion.csv`.
+
+Inflación acumulada por etapa (`inflacion_por_periodo.csv`):
+
+| Etapa | Pública | Seleccionada (ENGHo 2017/18) | Mix | IPCBA |
+|---|---|---|---|---|
+| INDEC intervenido (jul-12 → dic-16) | 125,7% | 238,4% | 176,4% | 243,1% |
+| Tarifas congeladas (dic-16 → nov-23) | 2.716% | 2.637% | 2.676% | 2.463% |
+| Ajuste (nov-23 → sep-26) | 344,4% | 360,2% | 352,2% | 367,2% |
+
+Resultados del modelo con cada medición:
+
+- **Tasa real (CFT):** positiva y significativa en 8 de 9 corridas (p entre 0,001 y 0,015). La excepción es la muestra larga con la medición seleccionada: ahí el coeficiente cambia de signo y no hay especificación que cumpla los signos esperados. El tramo 2012-2016 con inflación IPCBA (mucho más alta que la oficial) produce tasas reales muy negativas en un período de mora estable. **Conclusión: el canal tasa es robusto a la medición en la muestra limpia y en la larga con las mediciones pública y mix; en la larga con la seleccionada no lo es.**
+- **Salario real:** no significativo con ninguna medición (p entre 0,67 y 0,87). La hipótesis de que una medición más realista de precios haría aparecer el canal ingreso **no se confirma en este modelo nacional**. Salvedades: el índice de salarios es de asalariados registrados (no capta a los informales) y la diferencia agregada entre mediciones en la etapa de ajuste es de ~3,5% en el nivel de precios.
+- **Crédito previo (dilución):** negativo y significativo en 8 de 9 corridas.
+- **Fuera de muestra:** en la muestra larga el satélite le gana al AR(1) con las tres mediciones (RMSE relativo a 6 meses de 0,67 a 0,82); en la limpia no, con ninguna.

@@ -1,0 +1,34 @@
+{
+  "deflactor": "publico",
+  "zivot_andrews_logit_mora": {
+    "estadistico": -4.78962378238394,
+    "pvalor": 0.11034280942728043,
+    "fecha_quiebre": "2023-12-01"
+  },
+  "corridas": {
+    "base_larga_publico": {
+      "especificacion": "tasa_real_cft(t-6), empleo_ia(t-3), emae_ia(t-3), credito_real_ia(t-15) | AR(2)",
+      "signos_ok": true,
+      "n": 140,
+      "r2_ajustado": 0.5322428359793957,
+      "desde": "2013-04-01",
+      "hasta": "2026-08-01"
+    },
+    "base_limpia_publico": {
+      "especificacion": "tasa_real_cft(t-6), empleo_ia(t-6), emae_ia(t-3), credito_real_ia(t-15) | AR(2)",
+      "signos_ok": true,
+      "n": 80,
+      "r2_ajustado": 0.5767083619256083,
+      "desde": "2018-04-01",
+      "hasta": "2026-08-01"
+    },
+    "completa_limpia_publico": {
+      "especificacion": "tasa_real_cft(t-6), salario_real_ia(t-9), emae_ia(t-3), credito_real_ia(t-15) | AR(2)",
+      "signos_ok": true,
+      "n": 80,
+      "r2_ajustado": 0.5699342628259403,
+      "desde": "2018-04-01",
+      "hasta": "2026-08-01"
+    }
+  }
+}

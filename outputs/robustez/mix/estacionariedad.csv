@@ -1,0 +1,13 @@
+variable,forma,n,adf_pvalor,kpss_pvalor,conclusion
+y,nivel,188,0.7979155074454225,0.016993300040312923,raiz_unitaria
+y,diferencia,187,5.577620387940189e-07,0.1,estacionaria
+tasa_real_cft,nivel,188,0.012913779363437744,0.1,estacionaria
+tasa_real_cft,diferencia,187,1.8478529208535943e-08,0.1,estacionaria
+salario_real_ia,nivel,118,0.10700765482695201,0.1,ambigua
+salario_real_ia,diferencia,117,5.859952937813521e-07,0.1,estacionaria
+empleo_ia,nivel,162,0.2865614028406471,0.1,ambigua
+empleo_ia,diferencia,161,0.005346899195204461,0.1,estacionaria
+emae_ia,nivel,187,0.05715190699915717,0.1,ambigua
+emae_ia,diferencia,186,5.364383849250198e-10,0.1,estacionaria
+credito_real_ia,nivel,188,0.02764776286349675,0.1,estacionaria
+credito_real_ia,diferencia,187,0.01097357799694057,0.1,estacionaria

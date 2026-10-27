@@ -1,0 +1,13 @@
+factor,rezago,aporte_logit,especificacion,muestra,deflactor,desde,hasta
+tasa_real_cft,6,0.1973722414329857,base,larga,mix,2025-09-01,2026-08-01
+empleo_ia,3,0.10719497332081582,base,larga,mix,2025-09-01,2026-08-01
+emae_ia,3,-0.0015130763708331506,base,larga,mix,2025-09-01,2026-08-01
+credito_real_ia,15,-0.1790127188821096,base,larga,mix,2025-09-01,2026-08-01
+tasa_real_cft,6,0.1850062339186508,base,limpia,mix,2025-09-01,2026-08-01
+empleo_ia,6,0.08614397521324345,base,limpia,mix,2025-09-01,2026-08-01
+emae_ia,3,-0.0010004945043268405,base,limpia,mix,2025-09-01,2026-08-01
+credito_real_ia,15,-0.2666793821061319,base,limpia,mix,2025-09-01,2026-08-01
+tasa_real_cft,6,0.23051333282452358,completa,limpia,mix,2025-09-01,2026-08-01
+salario_real_ia,9,-0.018467420828020286,completa,limpia,mix,2025-09-01,2026-08-01
+emae_ia,3,-0.006151844442266267,completa,limpia,mix,2025-09-01,2026-08-01
+credito_real_ia,15,-0.25477367207540064,completa,limpia,mix,2025-09-01,2026-08-01
