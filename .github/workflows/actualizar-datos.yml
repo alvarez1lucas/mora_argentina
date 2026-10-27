@@ -34,6 +34,9 @@ jobs:
       - name: Análisis descriptivo
         run: python -m mora.descriptivo
 
+      - name: Modelo satélite
+        run: python -m mora.satelite
+
       - name: Commit de datos nuevos
         run: |
           # El manifest cambia en cada corrida: sólo se commitea si cambió algún dato
