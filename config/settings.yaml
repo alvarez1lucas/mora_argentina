@@ -119,8 +119,22 @@ entidades:
     titulos_publicos_bcra: {prefijo: "12", incluye: "P[UÚ]B|BCRA|B\\.C\\.R\\.A|LEBAC|LELIQ|LEFI|LETRAS|NOTAS|BONO|BGN|LECAP|TESORO", excluye: "PRIVAD"}
     pases_activos: {prefijo: "14", incluye: "PASE"}
     prestamos_total: {prefijo: "13"}
-  # Cuentas individuales de `bal_hist` que se conservan
+    # Moneda nacional (121 títulos, 141 otros créditos por intermediación, 311 depósitos)
+    titulos_publicos_mn: {prefijo: "121", incluye: "P[UÚ]B|BCRA|B\\.C\\.R\\.A|LEBAC|LELIQ|LEFI|LETRAS|NOTAS|BONO|BGN|LECAP|TESORO", excluye: "PRIVAD"}
+    pases_activos_mn: {prefijo: "141", incluye: "PASE"}
+    depositos_mn: {prefijo: "311"}
+    # Resultados (acumulados en el ejercicio): costo de los depósitos en pesos
+    costo_depositos_mn: {prefijo: "521", incluye: "DEP|PLAZO|AHORRO|CTAS|UVA", excluye: "T[IÍ]TULO"}
+  # Cuentas individuales de `bal_hist` que se conservan (varias cuentas con el mismo nombre se suman)
   cuentas_balance:
+    # Resultados en pesos, acumulados en el ejercicio (ingresos con signo negativo)
+    "511021": res_titulos_publicos_mn       # intereses por títulos públicos
+    "511075": res_titulos_publicos_mn       # ajustes CER de títulos públicos
+    "511505": res_titulos_publicos_mn       # resultado por medición de títulos públicos
+    "511027": res_pases_bcra_mn             # intereses por pases activos con el BCRA
+    "511108": res_pases_bcra_mn
+    "511107": res_prestamos_personales
+    "511054": res_tarjetas
     "711046": irrecuperables_cuentas_orden
     "131731": prestamos_personales
     "131732": prestamos_personales_monto_reducido
@@ -128,6 +142,10 @@ entidades:
     "131742": prestamos_tarjetas
     "131708": hipotecarios_vivienda
     "131713": prendarios_automotores
+
+rendimientos:
+  desde: "2017-01-01"
+  reexpresion_desde: "2020-01-01"   # NIC 29: balances reexpresados por inflación (Com. A 6651)
 
 transparencia:
   base_url: "https://api.bcra.gob.ar/transparencia/v1.0"
@@ -233,9 +251,19 @@ canales:
         absorcion_d12: [3, 6, 9, 12]
         tcr_ia: [3, 6, 9, 12]
         credito_real_ia: [12, 15, 18]
+    # Costo de oportunidad: la tasa a familias separada en lo que rinde prestarle al Estado (títulos +
+    # pases en pesos, rendimiento implícito del balance) y la prima que el banco cobra por encima
+    costo_oportunidad:
+      grilla:
+        salario_real_ia: [3, 6, 9]
+        tasa_real_estado: [3, 6, 9, 12]
+        prima_sobre_estado: [3, 6, 9, 12]
+        absorcion_d12: [3, 6, 9, 12]
+        tcr_ia: [3, 6, 9, 12]
+        credito_real_ia: [12, 15, 18]
   # más absorción del sector público/BCRA, más mora; fondeo y spread más altos, más mora;
   # el tipo de cambio real no tiene signo teórico único
-  signos_esperados: {absorcion_d12: 1, tcr_ia: 0, tasa_real_fondeo: 1, spread_personales: 1}
+  signos_esperados: {absorcion_d12: 1, tcr_ia: 0, tasa_real_fondeo: 1, spread_personales: 1, tasa_real_estado: 1, prima_sobre_estado: 1}
   # Valor neutral de cada canal en el contrafáctico: variaciones en 0; la tasa real en su promedio previo a la ventana
   referencias:
     salario_real_ia: 0
@@ -245,6 +273,8 @@ canales:
     credito_real_ia: 0
     tasa_real_fondeo: media_previa
     spread_personales: media_previa
+    tasa_real_estado: media_previa
+    prima_sobre_estado: media_previa
 
 ajuste:
   desde: "2023-11-01"     # ventana principal del análisis: desde el mes previo a la devaluación de dic-2023

@@ -45,8 +45,14 @@ jobs:
           python -m mora.panel
           python -m mora.panel_ml
 
+      - name: Rendimientos implícitos (Estado vs familias)
+        run: python -m mora.rendimientos
+
       - name: Ponderación de canales
         run: python -m mora.canales
+
+      - name: Ventana del ajuste (nov-23 en adelante)
+        run: python -m mora.ajuste
 
       - name: Commit de datos nuevos
         run: |

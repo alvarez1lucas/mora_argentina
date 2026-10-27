@@ -30,6 +30,7 @@ import pandas as pd
 from mora.config import path, settings
 from mora.deflactores import DEFLACTORES
 from mora.features import precios
+from mora.rendimientos import comparacion, sistema
 from mora.satelite import build_dataset, design, fit, inv_logit, select_spec, signs_ok
 
 CANAL_DE = {
@@ -41,6 +42,9 @@ CANAL_DE = {
     # variante costo_dividido: el costo financiero separado en fondeo (política monetaria) y spread (riesgo)
     "tasa_real_fondeo": "tasa_fondeo_politica",
     "spread_personales": "spread_riesgo",
+    # variante costo_oportunidad: la tasa a familias separada en lo que paga el Estado y la prima sobre eso
+    "tasa_real_estado": "rendimiento_estado",
+    "prima_sobre_estado": "prima_familias",
 }
 
 
@@ -64,6 +68,10 @@ def channel_dataset(deflactor: str) -> pd.DataFrame:
     badlar_tea = ((1 + bcra["tasa_badlar_privados"] / 100 / 12) ** 12 - 1).reindex(df.index)
     df["tasa_real_fondeo"] = 100 * ((1 + badlar_tea) / (1 + infl_exp) - 1)
     df["spread_personales"] = (bcra["tasa_prestamos_personales"] - bcra["tasa_badlar_privados"]).reindex(df.index)
+    # Costo de oportunidad: rendimiento implícito de títulos + pases en pesos del balance (mora.rendimientos)
+    rend = comparacion(sistema()).reindex(df.index)
+    df["tasa_real_estado"] = 100 * ((1 + rend["tea_estado_3m"] / 100) / (1 + infl_exp) - 1)
+    df["prima_sobre_estado"] = rend["prima_personales_sobre_estado_pp"]
     return df
 
 

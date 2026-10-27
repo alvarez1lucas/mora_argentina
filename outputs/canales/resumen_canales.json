@@ -145,5 +145,80 @@
       "tasa_real_fondeo": -6.816909941486328,
       "spread_personales": 18.241445231098144
     }
+  },
+  "costo_oportunidad_publico": {
+    "deflactor": "publico",
+    "variante": "costo_oportunidad",
+    "especificacion": "salario_real_ia(t-6), tasa_real_estado(t-6), prima_sobre_estado(t-3), absorcion_d12(t-12), tcr_ia(t-9), credito_real_ia(t-18) | AR(2)",
+    "signos_ok": true,
+    "n": 77,
+    "r2_ajustado": 0.5780585928676814,
+    "ventana": [
+      "2024-10-01",
+      "2026-08-01"
+    ],
+    "mora_inicio": 2.489310113996647,
+    "mora_fin": 12.814578878881402,
+    "cambio_observado_pp": 10.325268764884756,
+    "suma_aportes_canales_pp": 15.259659330835754,
+    "mora_simulada_fin": 12.8145788788814,
+    "referencias": {
+      "salario_real_ia": 0.0,
+      "absorcion_d12": 0.0,
+      "tcr_ia": 0.0,
+      "credito_real_ia": 0.0,
+      "tasa_real_estado": -3.306450696440385,
+      "prima_sobre_estado": 22.027248473588195
+    }
+  },
+  "costo_oportunidad_seleccionado": {
+    "deflactor": "seleccionado",
+    "variante": "costo_oportunidad",
+    "especificacion": "salario_real_ia(t-6), tasa_real_estado(t-6), prima_sobre_estado(t-3), absorcion_d12(t-12), tcr_ia(t-9), credito_real_ia(t-18) | AR(2)",
+    "signos_ok": true,
+    "n": 77,
+    "r2_ajustado": 0.5916475993470163,
+    "ventana": [
+      "2024-10-01",
+      "2026-08-01"
+    ],
+    "mora_inicio": 2.489310113996647,
+    "mora_fin": 12.814578878881402,
+    "cambio_observado_pp": 10.325268764884756,
+    "suma_aportes_canales_pp": 17.488556477713814,
+    "mora_simulada_fin": 12.8145788788814,
+    "referencias": {
+      "salario_real_ia": 0.0,
+      "absorcion_d12": 0.0,
+      "tcr_ia": 0.0,
+      "credito_real_ia": 0.0,
+      "tasa_real_estado": -3.1836715118897225,
+      "prima_sobre_estado": 22.027248473588195
+    }
+  },
+  "costo_oportunidad_mix": {
+    "deflactor": "mix",
+    "variante": "costo_oportunidad",
+    "especificacion": "salario_real_ia(t-6), tasa_real_estado(t-6), prima_sobre_estado(t-3), absorcion_d12(t-12), tcr_ia(t-9), credito_real_ia(t-18) | AR(2)",
+    "signos_ok": true,
+    "n": 77,
+    "r2_ajustado": 0.5846428870528767,
+    "ventana": [
+      "2024-10-01",
+      "2026-08-01"
+    ],
+    "mora_inicio": 2.489310113996647,
+    "mora_fin": 12.814578878881402,
+    "cambio_observado_pp": 10.325268764884756,
+    "suma_aportes_canales_pp": 16.533817938769566,
+    "mora_simulada_fin": 12.8145788788814,
+    "referencias": {
+      "salario_real_ia": 0.0,
+      "absorcion_d12": 0.0,
+      "tcr_ia": 0.0,
+      "credito_real_ia": 0.0,
+      "tasa_real_estado": -3.2477937031137123,
+      "prima_sobre_estado": 22.027248473588195
+    }
   }
 }

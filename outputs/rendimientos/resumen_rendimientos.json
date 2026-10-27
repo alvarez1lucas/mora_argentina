@@ -1,0 +1,43 @@
+{
+  "inicio": {
+    "fecha": "2023-11-01",
+    "tea_estado_3m": 229.2,
+    "tea_personales_nuevos": 258.7,
+    "tea_badlar": 241.6,
+    "prima_personales_sobre_estado_pp": 29.5
+  },
+  "ultimo": {
+    "fecha": "2026-07-01",
+    "tea_estado_3m": 38.0,
+    "tea_personales_nuevos": 88.8,
+    "tea_badlar": 23.5,
+    "prima_personales_sobre_estado_pp": 50.8
+  },
+  "promedios_anuales": {
+    "2023": {
+      "tea_estado_3m": 222.6,
+      "tea_personales_nuevos": 265.2,
+      "tea_badlar": 229.4,
+      "prima_personales_sobre_estado_pp": 42.6
+    },
+    "2024": {
+      "tea_estado_3m": 138.6,
+      "tea_personales_nuevos": 136.3,
+      "tea_badlar": 77.4,
+      "prima_personales_sobre_estado_pp": -2.2
+    },
+    "2025": {
+      "tea_estado_3m": 46.4,
+      "tea_personales_nuevos": 104.3,
+      "tea_badlar": 41.7,
+      "prima_personales_sobre_estado_pp": 57.9
+    },
+    "2026": {
+      "tea_estado_3m": 41.8,
+      "tea_personales_nuevos": 92.7,
+      "tea_badlar": 28.2,
+      "prima_personales_sobre_estado_pp": 50.8
+    }
+  },
+  "meses_estado_rinde_mas_que_badlar_pct": 84.8
+}
