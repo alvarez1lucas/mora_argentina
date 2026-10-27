@@ -1,0 +1,21 @@
+# Datos crudos y pesados (se regeneran con el pipeline)
+/data/raw/
+/data/interim/
+
+# Entornos y caches
+/.venv/
+/venv/
+__pycache__/
+*.py[cod]
+/.pytest_cache/
+/build/
+/dist/
+*.egg-info/
+
+# Notebooks
+.ipynb_checkpoints/
+
+# Editor / SO
+/.vscode/
+.DS_Store
+Thumbs.db

@@ -1,0 +1,18 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "mora"
+version = "0.1.0"
+description = "Mora de los hogares en Argentina vs variables macro: ingesta, modelo satélite y escenarios"
+requires-python = ">=3.11"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]
+markers = ["network: tests que bajan datos reales (se saltean por defecto)"]
+addopts = "-m 'not network'"
