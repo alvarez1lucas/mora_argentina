@@ -13,7 +13,7 @@ from datetime import datetime, timezone
 import pandas as pd
 
 from mora.config import path
-from mora.ingest import a3, bcra_anexo, bcra_api, datos_gob, entidades, indec_ipc, transparencia
+from mora.ingest import a3, bcra_anexo, bcra_api, cafci, datos_gob, entidades, indec_ipc, pnfc, transparencia
 
 
 def _summary(df: pd.DataFrame, date_col: str | None = None) -> dict:
@@ -71,6 +71,15 @@ def main(argv: list[str] | None = None) -> None:
     fut = a3.update(out / "a3_dolar_futuro.csv")
     manifest["archivos"]["a3_dolar_futuro.csv"] = _summary(fut, "fecha")
     print("a3 futuros: ok")
+
+    fci = cafci.update(out / "cafci_carteras.csv", out / "cafci_informes.json")
+    manifest["archivos"]["cafci_carteras.csv"] = _summary(fci, "fecha")
+    print("cafci: ok")
+
+    pn = pnfc.tabla()
+    pn.to_csv(out / "pnfc_informes.csv", index=False, date_format="%Y-%m-%d")
+    manifest["archivos"]["pnfc_informes.csv"] = _summary(pn, "fecha")
+    print("pnfc: ok")
 
     if not args.skip_entidades:
         panel = entidades.update_panel(

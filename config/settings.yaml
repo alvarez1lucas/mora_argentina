@@ -152,6 +152,33 @@ transparencia:
   productos: [Personales, Prendarios, Hipotecarios]
   antiguedad_max_dias: 180
 
+# Resumen mensual de la industria de FCI (CAFCI): tenencia de títulos públicos fuera de los bancos
+cafci:
+  url: "https://www.cafci.org.ar/Publica/Estadistica/Resumenes/Mensual/{yyyymm}01_Resumen_Industria.pdf"
+  inicio: "2023-01-01"
+
+# Proveedores no financieros de crédito (fintech, billeteras, emisoras de tarjetas no bancarias,
+# mutuales, etc.). El BCRA publica un informe semestral en PDF, sin series descargables, y cada
+# edición redacta las cifras distinto: se transcriben a mano con su cita textual, que
+# `python -m mora.ingest.pnfc --verificar` comprueba contra el PDF. Saldo en billones de pesos.
+pnfc:
+  informes:
+    - {fecha: "2023-12-01", saldo_billones: 2.1, irregularidad_pct: 10.6,
+       url: "https://www.bcra.gob.ar/archivos/Pdfs/PublicacionesEstadisticas/informe-proveedores-no-financieros-credito-junio-2024.pdf",
+       cita_saldo: "$2,1 billones en diciembre de 2023", cita_irregularidad: "mínimo histórico de 10,6%"}
+    - {fecha: "2024-08-01", saldo_billones: 4.9, irregularidad_pct: 7.6,
+       url: "https://www.bcra.gob.ar/archivos/Pdfs/PublicacionesEstadisticas/informe-proveedores-no-financieros-credito-noviembre-2024.pdf",
+       cita_saldo: "$4,9 billones a agosto de 2024", cita_irregularidad: "7,6% en agosto de 2024"}
+    - {fecha: "2025-01-01", saldo_billones: 8.0, irregularidad_pct: 8.6,
+       url: "https://www.bcra.gob.ar/archivos/Pdfs/PublicacionesEstadisticas/informe-proveedores-no-financieros-credito-junio-2025.pdf",
+       cita_saldo: "$8 billones en enero de 2025", cita_irregularidad: "8,6% en enero de 2025"}
+    - {fecha: "2025-07-01", saldo_billones: 11.0, irregularidad_pct: 16.2,
+       url: "https://www.bcra.gob.ar/archivos/Pdfs/PublicacionesEstadisticas/informe-proveedores-no-financieros-credito-noviembre-2025.pdf",
+       cita_saldo: "$11 billones en julio de 2025", cita_irregularidad: "16,2% en julio de 2025"}
+    - {fecha: "2026-02-01", saldo_billones: 13.9, irregularidad_pct: 26.9,
+       url: "https://www.bcra.gob.ar/archivos/Pdfs/PublicacionesEstadisticas/informes/informe-proveedores-no-financieros-credito-junio-2026.pdf",
+       cita_saldo: "$13,9 billones en febrero de 2026", cita_irregularidad: "26,9% en febrero de 2026"}
+
 a3:
   url: "https://apicem.matbarofex.com.ar/api/v2/closing-prices"
   page_size: 500
