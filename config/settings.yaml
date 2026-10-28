@@ -72,6 +72,14 @@ datos_gob:
     emae_desest:         "143.3_NO_PR_2004_A_31"         # INDEC, EMAE desestacionalizado
     empleo_registrado:   "151.1_TL_SIN_TAC_2012_M_15"    # SIPA, total de trabajadores registrados, sin estacionalidad
     remuneracion_privada: "153.1_RNERACIDIO_2009_M_21"   # SIPA, asalariados del sector privado, remuneración promedio en pesos
+    # Recaudación mensual por tributo (ARCA, millones de pesos corrientes): actividad casi en tiempo real
+    rec_iva_dgi:          "142.3_IVA_D_2001_M_7"          # IVA de operaciones internas: consumo
+    rec_debitos_creditos: "142.3_CREDI_2001_M_24"         # impuesto a los débitos y créditos bancarios: transacciones
+    rec_internos:         "142.3_INTER_2001_M_23"         # impuestos internos coparticipados: consumo de bienes puntuales
+    rec_aportes:          "142.3_APORT_2001_M_18"         # aportes personales: masa salarial formal
+    rec_contribuciones:   "142.3_CONTR_2001_M_25"         # contribuciones patronales: masa salarial formal
+    rec_facilidades_pago: "142.3_FACIL_2001_M_16"         # cobros de planes de facilidades de pago: estrés de contribuyentes
+    rec_total:            "142.3_TOTAL_2001_M_26"         # total de recursos tributarios
     # IPC de la Ciudad de Buenos Aires (IDECBA): base jul-11/jun-12 (2012-07 a 2022-02) y base 2021 (2022-02 en adelante)
     ipcba_general_b2012:   "193.1_NIVEL_GENERAL_JULI_0_13"
     ipcba_general_b2021:   "193.2_NIVEL_GENERAL_2021_0_13_2"
@@ -312,6 +320,18 @@ canales:
 puente_homecredit:
   predicciones: "F:/Home-credit-default/homecredit-model-validation/reports/dashboard/test_predictions.parquet"
   cuantiles: 500
+
+# Alertas tempranas (mora.alertas): método de señales de Kaminsky-Reinhart
+alertas:
+  desde: "2011-01-01"
+  episodio_pp: 1.0            # episodio: la mora sube al menos 1 punto en los próximos 12 meses
+  horizonte_meses: 12
+  cobertura_minima: 0.25      # el umbral tiene que captar al menos 25% de los meses previos a episodios
+  nsr_minimo: 0.1             # piso del cociente ruido/señal para los pesos (evita pesos infinitos)
+  excluir: ["2020-03-01", "2021-12-01"]   # alivio COVID y normalización de la clasificación
+  validacion_hasta: "2023-12-01"          # para la prueba fuera de muestra: lo que se sabía a fines de 2023
+  antiguedad_maxima_meses: 3  # lectura vigente: último dato de cada indicador, con hasta 3 meses de antigüedad
+  grados: {sin_alerta: 0.25, vigilancia: 0.5, alerta: 0.75, alerta_grave: 1.01}
 
 # Carga financiera agregada (mora.carga): cuota de préstamos personales sobre la masa salarial
 carga:
