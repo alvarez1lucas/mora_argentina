@@ -23,7 +23,7 @@ Los aportes no suman exactamente 10,3 pp: el logit no es lineal y los canales in
 **Lecturas:**
 1. **El costo financiero es el canal dominante en las tres mediciones.** Explica alrededor de la mitad de los aportes positivos.
 2. **La hipótesis de la medición se confirma en este modelo.** Con la canasta actualizada (o el mix), el poder de compra pasa a ser un canal significativo y su aporte se duplica o más (de 1,0 a 1,8-2,6 pp). La estadística oficial subestima el canal ingreso.
-3. **La esterilización no aparece como canal propio, pero eso no la descarta.** Opera a través de las tasas: el encaje integrable con títulos y la absorción del Tesoro sostienen el costo del crédito, cuyo efecto ya está dentro del canal costo financiero. Separar "tasa alta por política" de "tasa alta por riesgo" requiere un modelo de mediación (pendiente).
+3. **La esterilización no aparece como canal propio, pero eso no la descarta** (ver la sección 7, que reemplaza esta ponderación por una en dos etapas). Opera a través de las tasas: el encaje integrable con títulos y la absorción del Tesoro sostienen el costo del crédito, cuyo efecto ya está dentro del canal costo financiero. Separar "tasa alta por política" de "tasa alta por riesgo" requiere un modelo de mediación (pendiente).
 4. **Ancla cambiaria:** aporte positivo con las tres mediciones, pero sin significancia. Con un solo episodio de apreciación con intervención, los datos no alcanzan para afirmarlo.
 
 ## 2. Panel por entidad (66 entidades, 2011-2026)
@@ -110,3 +110,42 @@ Tratamiento contable: las cuentas de resultados vienen acumuladas en el año y, 
 **Conclusión:** la esterilización sí aparece, pero no por la BADLAR, sino por el **piso que pone lo que paga el Estado**. Es significativa con las tres mediciones y explica cerca de la mitad de la suba de la mora en la ventana. La prima propia del riesgo de familias suma otro tanto, pero no es significativa.
 
 **Salvedades:** el rendimiento incluye ganancias de valuación de los bonos (ruidoso: se usa el promedio de 3 meses); son 77 observaciones; y el rendimiento del Estado y la prima están correlacionados entre sí, por lo que la división entre ambos es menos precisa que su suma.
+
+## 7. Ponderación en dos etapas: esterilización → tasa → mora
+
+`python -m mora.cadena` (outputs en `outputs/cadena/`). **Reemplaza a la sección 1 como ponderación principal** (es la que muestran el sitio, el README y el informe).
+
+**Por qué.** La esterilización y la tasa no son canales paralelos: la esterilización es causa de la tasa. Para absorber pesos, el BCRA y el Tesoro les pagan a los bancos una tasa que los convenza de comprar títulos o hacer pases; cada peso prestado a una familia deja de ganar esa tasa sin riesgo, así que lo que paga el Estado es el piso de la tasa a familias. En la sección 1 la absorción (cantidad) y la tasa entraban juntas en la ecuación de la mora: el efecto de la esterilización que pasa por la tasa quedaba contado en la tasa y a la absorción le quedaba sólo el efecto directo, que no se distingue de cero (−3,1 pp). Eso subestimaba la esterilización por diseño, no por los datos.
+
+**Etapa 1: qué subió la tasa.** Identidad exacta de la tasa real del CFT de préstamos personales (misma inflación esperada π que el modelo):
+
+tasa real CFT = (r_Estado − π)/(1 + π) + (TEA − r_Estado)/(1 + π) + (CFT − TEA)/(1 + π)
+
+lo que paga el Estado (real) + prima del banco sobre el Estado + IVA sobre los intereses. Suba de cada parte sobre su promedio previo (2017 → oct-24) en los meses que, con el rezago de 6 meses de la etapa 2, mueven la mora de la ventana (may-24 → feb-26). La tasa real pasó de ~25% a ~61-62%:
+
+| Parte | Pública | Mix | Seleccionada | Peso en la suba de la tasa |
+|---|---|---|---|---|
+| Lo que paga el Estado | +14,9 pp | +14,4 | +13,8 | 39-41% |
+| Prima del banco sobre el Estado | +15,1 | +15,0 | +14,9 | 41-43% |
+| IVA sobre los intereses | +6,4 | +6,3 | +6,2 | 18% |
+
+**Traspaso.** Δ12 de la tasa real de los préstamos (sin IVA) contra Δ12 de lo que paga el Estado, controlando por la Δ12 de la mora 3 meses antes, HAC(12), 2018-2026 (n = 100): β = 1,05-1,08 (error estándar ~0,11, p < 0,001). La mora previa no es significativa (p > 0,8). **El piso se traslada uno a uno**, y la prima no subió como reacción al riesgo pasado.
+
+**Etapa 2: qué subió la mora.** La ecuación de canales sin la absorción: salario real (t−6), tasa real del CFT (t−6), tipo de cambio real (t−9), crédito real (t−15), AR(2); signos correctos, R² ajustado 0,58-0,59, n = 77. El aporte de la tasa se reparte entre sus partes poniendo cada una en su promedio previo. El reparto se hace en el logit, donde la ecuación es lineal y las partes suman exacto, y se pasa a pp en la misma proporción. Ventana oct-24 (2,49%) → ago-26 (12,81%):
+
+| Canal | Pública | Mix | Seleccionada |
+|---|---|---|---|
+| **Tasa real del CFT** | **+8,3 pp (p = 0,026)** | **+8,3 (p = 0,014)** | **+8,3 (p = 0,007)** |
+| · lo que paga el Estado | +3,7 | +3,6 | +3,5 |
+| · prima del banco | +3,1 | +3,2 | +3,3 |
+| · IVA | +1,5 | +1,5 | +1,5 |
+| Ancla cambiaria | +1,4 (p = 0,24) | +1,9 (p = 0,11) | +2,4 (p = 0,04) |
+| Poder de compra | +0,7 (p = 0,15) | +1,4 (p = 0,05) | +2,1 (p = 0,009) |
+| Ciclo de crédito | +0,5 (p = 0,004) | +0,5 (p = 0,003) | +0,4 (p = 0,002) |
+
+**Lectura:**
+- La cadena se sostiene en los dos eslabones: lo que paga el Estado explica ~40% de la suba de la tasa y se traslada completo, y la tasa es el canal dominante de la mora. Por la vía de la tasa, la esterilización aporta ~3,5-3,7 pp de los 10,3 pp de suba de la mora.
+- Robustez: con un coeficiente propio para lo que paga el Estado (variante `costo_oportunidad`, sección 6) el aporte es +5,0-5,6 pp. El reparto proporcional es la cota conservadora: supone que un punto de tasa pesa lo mismo venga de donde venga.
+- La prima del banco pesa casi lo mismo que el piso del Estado. Con datos públicos no se puede separar en riesgo, costos y margen; que no responda a la mora previa sugiere que no es sólo riesgo.
+
+**Límites:** los intervalos de las partes se mueven con el coeficiente de la tasa (IC 95% de 0,1 a 16 pp para lo que paga el Estado) y son amplios. Lo que paga el Estado también incorpora expectativas de inflación y riesgo soberano, no sólo la decisión de esterilizar. El IVA crece mecánicamente con la tasa: parte de su aporte es amplificación de las otras dos partes.

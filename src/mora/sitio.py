@@ -83,6 +83,10 @@ def datos() -> dict:
         "rend": _json("rendimientos/resumen_rendimientos.json"),
         "esc": _json("escenarios/resumen_escenarios.json"),
         "canales": _csv("canales/aportes_por_canal.csv"),
+        "cadena_e1": _csv("cadena/etapa1_tasa.csv"),
+        "cadena_e2": _csv("cadena/etapa2_mora.csv"),
+        "cadena_partes": _csv("cadena/etapa2_partes_de_la_tasa.csv"),
+        "cadena_res": _json("cadena/resumen_cadena.json"),
         "familias": _csv("descriptivo/familias_por_linea.csv", parse_dates=["fecha"]),
         "castigos_total": _csv("descriptivo/mora_ajustada_castigos.csv", parse_dates=["fecha"]).dropna(),
         "castigos": _csv("ajuste/castigos_recientes.csv", parse_dates=["fecha"]),
@@ -157,50 +161,73 @@ def fig_salario(d: dict, lang: str) -> go.Figure:
     return _layout(fig, lang, {"es": "Salario registrado real (nov-23 = 100)", "en": "Real registered wage (Nov-23 = 100)"}[lang])
 
 
-ETIQUETA_CANAL = {
-    "es": {"costo_financiero": "Costo financiero", "rendimiento_estado": "Lo que paga el Estado<br>(costo de oportunidad)",
-           "prima_familias": "Prima de familias<br>sobre el Estado", "poder_compra": "Poder de compra<br>(salario real)",
-           "cosecha_dilucion": "Ciclo de crédito", "ancla_cambiaria": "Ancla cambiaria<br>(tipo de cambio real)",
-           "esterilizacion": "Absorción directa<br>(títulos + pases)"},
-    "en": {"costo_financiero": "Financial cost", "rendimiento_estado": "What the State pays<br>(opportunity cost)",
-           "prima_familias": "Household premium<br>over the State", "poder_compra": "Purchasing power<br>(real wage)",
-           "cosecha_dilucion": "Credit cycle", "ancla_cambiaria": "FX anchor<br>(real exchange rate)",
-           "esterilizacion": "Direct absorption<br>(securities + repos)"},
+ETIQUETA = {
+    "es": {"estado": "Lo que paga el Estado<br>(piso: esterilización)", "prima": "Prima del banco<br>sobre el Estado",
+           "impuestos": "IVA sobre<br>los intereses", "poder_compra": "Poder de compra<br>(salario real)",
+           "cosecha_dilucion": "Ciclo de crédito", "ancla_cambiaria": "Ancla cambiaria<br>(tipo de cambio real)"},
+    "en": {"estado": "What the State pays<br>(floor: sterilization)", "prima": "Bank premium<br>over the State",
+           "impuestos": "VAT on<br>interest", "poder_compra": "Purchasing power<br>(real wage)",
+           "cosecha_dilucion": "Credit cycle", "ancla_cambiaria": "FX anchor<br>(real exchange rate)"},
 }
+PARTES = ("estado", "prima", "impuestos")
 
 
-def fig_canales(d: dict, lang: str) -> go.Figure:
-    a = d["canales"]
-    variantes = {"base": {"es": "Costo total", "en": "Total cost"},
-                 "costo_oportunidad": {"es": "Estado + prima", "en": "State + premium"}}
-    fig, botones, k = go.Figure(), [], 0
-    trazas = []
-    for v in variantes:
-        for m in MEDICIONES:
-            s = a[(a["variante"] == v) & (a["deflactor"] == m)].sort_values("aporte_pp")
-            etiquetas = [ETIQUETA_CANAL[lang][c] for c in s["canal"]]
-            signif = ["p < 0,05" if p < 0.05 else "n.s." for p in s["pvalor"]] if lang == "es" else \
-                     ["p < 0.05" if p < 0.05 else "n.s." for p in s["pvalor"]]
-            fig.add_trace(go.Bar(
-                x=s["aporte_pp"], y=etiquetas, orientation="h", meta={"rol": "s1"}, name="",
-                marker=dict(color=SERIES["s1"][0], line=dict(width=0)), visible=(k == 0),
-                error_x=dict(type="data", symmetric=False, array=s["aporte_pp_ic_sup"] - s["aporte_pp"],
-                             arrayminus=s["aporte_pp"] - s["aporte_pp_ic_inf"], color=TINTA["claro"]["secundario"], thickness=1),
-                customdata=list(zip(s["pvalor"], signif, s["aporte_pp_ic_inf"], s["aporte_pp_ic_sup"])),
-                hovertemplate=("%{y}: %{x:+.1f} pp<br>IC 95%: %{customdata[2]:.1f} a %{customdata[3]:.1f}<br>p = %{customdata[0]:.3f} (%{customdata[1]})<extra></extra>"
-                               if lang == "es" else
-                               "%{y}: %{x:+.1f} pp<br>95% CI: %{customdata[2]:.1f} to %{customdata[3]:.1f}<br>p = %{customdata[0]:.3f} (%{customdata[1]})<extra></extra>"),
-            ))
-            trazas.append((variantes[v][lang], T[lang]["med"][m]))
-            k += 1
-    for i, (v, m) in enumerate(trazas):
-        botones.append((f"{v} · {m}", [j == i for j in range(len(trazas))]))
+def _barras_h(fig: go.Figure, lang: str, x_titulo: str, alto: int) -> None:
     fig.add_vline(x=0, line=dict(color=TINTA["claro"]["eje"], width=1))
-    _layout(fig, lang, "", alto=420)
-    fig.update_layout(hovermode="closest", showlegend=False, bargap=0.35)
-    fig.update_xaxes(title=dict(text={"es": "Aporte (pp de mora)", "en": "Contribution (pp)"}[lang]),
-                     showgrid=True, gridcolor=TINTA["claro"]["grilla"])
-    fig.update_yaxes(gridcolor="rgba(0,0,0,0)", automargin=True)
+    _layout(fig, lang, "", alto=alto)
+    fig.update_layout(hovermode="closest", bargap=0.35, margin=dict(b=110), legend=dict(y=-0.3, yanchor="top"))
+    fig.update_xaxes(title=dict(text=x_titulo), showgrid=True, gridcolor=TINTA["claro"]["grilla"])
+    fig.update_yaxes(gridcolor="rgba(0,0,0,0)", automargin=True, autorange="reversed")
+
+
+def fig_etapa1(d: dict, lang: str) -> go.Figure:
+    """Etapa 1: cuánto subió cada parte de la tasa real del CFT sobre su promedio previo."""
+    e1 = d["cadena_e1"]
+    fig, botones = go.Figure(), []
+    for i, m in enumerate(MEDICIONES):
+        s = e1[e1["deflactor"] == m].set_index("parte").loc[list(PARTES)]
+        fig.add_trace(go.Bar(
+            x=s["exceso_pp"], y=[ETIQUETA[lang][p] for p in PARTES], orientation="h", name="", meta={"rol": "s1"},
+            marker=dict(color=SERIES["s1"][0], line=dict(width=0)), visible=(i == 0),
+            customdata=list(zip(s["promedio_previo_pp"], s["promedio_ventana_pp"], s["peso_en_suba_tasa_pct"])),
+            hovertemplate=("%{y}: %{x:+.1f} pp de tasa real<br>Antes: %{customdata[0]:.1f} · en la ventana: %{customdata[1]:.1f}<br>%{customdata[2]:.0f}% de la suba de la tasa<extra></extra>"
+                           if lang == "es" else
+                           "%{y}: %{x:+.1f} pp of real rate<br>Before: %{customdata[0]:.1f} · in the window: %{customdata[1]:.1f}<br>%{customdata[2]:.0f}% of the rate increase<extra></extra>"),
+        ))
+        botones.append((T[lang]["med"][m], [j == i for j in range(len(MEDICIONES))]))
+    _barras_h(fig, lang, {"es": "Suba sobre el promedio previo<br>(pp de tasa real anual)",
+                          "en": "Rise over the prior average<br>(pp of real annual rate)"}[lang], 300)
+    fig.update_layout(showlegend=False)
+    _menu(fig, botones)
+    return fig
+
+
+def fig_etapa2(d: dict, lang: str) -> go.Figure:
+    """Etapa 2: aporte a la suba de la mora; la tasa aparece repartida entre sus partes."""
+    e2, partes = d["cadena_e2"], d["cadena_partes"]
+    grupos = {"es": ("Tasa, por parte (etapa 1)", "Otros canales"), "en": ("Rate, by part (stage 1)", "Other channels")}[lang]
+    hov = ("%{y}: %{x:+.1f} pp<br>IC 95%: %{customdata[0]:.1f} a %{customdata[1]:.1f}<br>%{customdata[2]}<extra></extra>"
+           if lang == "es" else "%{y}: %{x:+.1f} pp<br>95% CI: %{customdata[0]:.1f} to %{customdata[1]:.1f}<br>%{customdata[2]}<extra></extra>")
+    fig, botones, n = go.Figure(), [], 2
+    for i, m in enumerate(MEDICIONES):
+        t = partes[partes["deflactor"] == m].set_index("parte").loc[list(PARTES)]
+        p_tasa = float(e2[(e2["deflactor"] == m) & (e2["canal"] == "costo_financiero")]["pvalor"].iloc[0])
+        o = e2[(e2["deflactor"] == m) & (e2["canal"] != "costo_financiero")].sort_values("aporte_pp", ascending=False)
+        nota_t = [f"{num(x, lang, 0)}% del aporte de la tasa · p de la tasa = {num(p_tasa, lang, 3)}" if lang == "es" else
+                  f"{num(x, lang, 0)}% of the rate contribution · rate p = {num(p_tasa, lang, 3)}" for x in t["peso_en_aporte_tasa_pct"]]
+        nota_o = [f"p = {num(p, lang, 3)}" for p in o["pvalor"]]
+        for (y, x, lo, hi, notas), rol, nombre in (
+                (([ETIQUETA[lang][p] for p in PARTES], t["aporte_pp"], t["aporte_pp_ic_inf"], t["aporte_pp_ic_sup"], nota_t), "s1", grupos[0]),
+                (([ETIQUETA[lang][c] for c in o["canal"]], o["aporte_pp"], o["aporte_pp_ic_inf"], o["aporte_pp_ic_sup"], nota_o), "s2", grupos[1])):
+            fig.add_trace(go.Bar(
+                x=x, y=y, orientation="h", name=nombre, meta={"rol": rol}, visible=(i == 0), legendrank=1 if rol == "s1" else 2,
+                marker=dict(color=SERIES[rol][0], line=dict(width=0)),
+                error_x=dict(type="data", symmetric=False, array=hi - x, arrayminus=x - lo,
+                             color=TINTA["claro"]["secundario"], thickness=1),
+                customdata=list(zip(lo, hi, notas)), hovertemplate=hov,
+            ))
+        botones.append((T[lang]["med"][m], [j // n == i for j in range(n * len(MEDICIONES))]))
+    _barras_h(fig, lang, {"es": "Aporte a la suba<br>de la mora (pp)", "en": "Contribution to<br>the NPL rise (pp)"}[lang], 420)
     _menu(fig, botones)
     return fig
 
@@ -280,24 +307,54 @@ def _tabla(encabezado: list[str], filas: list[list[str]]) -> str:
     return f'<div class="tabla"><table><thead><tr>{th}</tr></thead><tbody>{tr}</tbody></table></div>'
 
 
+def cadena_cifras(d: dict, L: str) -> dict:
+    """Cifras de la ponderación en dos etapas (outputs/cadena/), como rangos entre las tres mediciones."""
+    e1, e2, pa, res = d["cadena_e1"], d["cadena_e2"], d["cadena_partes"], d["cadena_res"]
+    a = d["canales"]
+
+    def rg(vals, k=1):
+        lo, hi = min(vals), max(vals)
+        return num(lo, L, k) if round(lo, k) == round(hi, k) else f"{num(lo, L, k)}–{num(hi, L, k)}"
+
+    def de(tabla, col, valor, campo):
+        return [float(tabla[(tabla["deflactor"] == m) & (tabla[col] == valor)][campo].iloc[0]) for m in MEDICIONES]
+
+    def oport(campo):
+        return [float(a[(a["variante"] == "costo_oportunidad") & (a["deflactor"] == m) & (a["canal"] == "rendimiento_estado")][campo].iloc[0])
+                for m in MEDICIONES]
+
+    r = [res[m] for m in MEDICIONES]
+    pub = res["publico"]
+    out = {
+        "meses_tasa": (mes(pub["meses_tasa"][0], L), mes(pub["meses_tasa"][1], L)), "rezago": pub["rezago_tasa"],
+        "ventana": (mes(pub["ventana"][0], L), mes(pub["ventana"][1], L)),
+        "mora_ini": num(pub["mora_inicio"], L), "mora_fin": num(pub["mora_fin"], L),
+        "tasa_prev": rg([x["tasa_real_previa_pp"] for x in r], 0), "tasa_vent": rg([x["tasa_real_ventana_pp"] for x in r], 0),
+        "tasa_suba": rg([x["tasa_real_ventana_pp"] - x["tasa_real_previa_pp"] for x in r], 0),
+        "beta": rg([x["traspaso"]["beta_estado"] for x in r], 2),
+        "p_mora_previa": num(min(x["traspaso"]["p_mora_previa"] for x in r), L, 2),
+        "tasa": rg(de(e2, "canal", "costo_financiero", "aporte_pp")),
+        "tasa_p": rg(de(e2, "canal", "costo_financiero", "pvalor"), 3),
+        "rob": rg(oport("aporte_pp")), "rob_p": rg(oport("pvalor"), 3),
+    }
+    for x in PARTES:
+        out[f"exc_{x}"] = rg(de(e1, "parte", x, "exceso_pp"))
+        out[f"peso_{x}"] = rg(de(e1, "parte", x, "peso_en_suba_tasa_pct"), 0)
+        out[f"mora_{x}"] = rg(de(pa, "parte", x, "aporte_pp"))
+    for c in ("poder_compra", "ancla_cambiaria", "cosecha_dilucion"):
+        out[c] = {m: num(v, L) for m, v in zip(MEDICIONES, de(e2, "canal", c, "aporte_pp"))}
+        out[f"{c}_p"] = {m: num(v, L, 3) for m, v in zip(MEDICIONES, de(e2, "canal", c, "pvalor"))}
+        out[f"{c}_rg"] = rg(de(e2, "canal", c, "aporte_pp"))
+    return out
+
+
 def contenido(d: dict, lang: str) -> str:
     """Secciones del sitio. Cada número sale de `d` (outputs/)."""
     L = lang
     desc, aj, rend, esc = d["desc"], d["ajuste"], d["rend"], d["esc"]
-    a = d["canales"]
     pp = lambda x, k=1: num(x, L, k)  # noqa: E731
 
-    def aporte(v, m, canal, campo="aporte_pp"):
-        return float(a[(a["variante"] == v) & (a["deflactor"] == m) & (a["canal"] == canal)][campo].iloc[0])
-
-    def rango(v, canal):
-        vals = [aporte(v, m, canal) for m in MEDICIONES]
-        return f"{pp(min(vals))}–{pp(max(vals))}"
-
-    def pv(v, canal):
-        vals = [aporte(v, m, canal, "pvalor") for m in MEDICIONES]
-        return f"{num(min(vals), L, 3)}–{num(max(vals), L, 3)}"
-
+    cad = cadena_cifras(d, L)
     sat = {m: esc[f"satelite_{m}"] for m in MEDICIONES}
     s_pub = sat["publico"]
     base_pub = s_pub["mora_fin"]["base"]
@@ -306,7 +363,6 @@ def contenido(d: dict, lang: str) -> str:
     oos = d["oos"]
     o12 = oos[(oos["especificacion"] == "base") & (oos["muestra"] == "larga") & (oos["h"] == 12)].set_index("modelo")
     oc12 = d["oos_canales"][d["oos_canales"]["h"] == 12].set_index("modelo")
-    res_can = _json("canales/resumen_canales.json")["base_publico"]
     sal = d["cadena"][[f"salario_real_{m}" for m in MEDICIONES]].dropna().iloc[-1]
     prof = d["profundidad"]
     feb24 = prof.loc["2024-02-01"]
@@ -339,15 +395,27 @@ def contenido(d: dict, lang: str) -> str:
 {_div(fig_tasas(d, L), 'g-tasas', L)}
 </section>
 
-<section><h2>3. Cuánto pesó cada canal</h2>
-<p>Ecuación de la variación mensual de la mora (logit) con un regresor por canal, rezagos elegidos por BIC y descomposición histórica contrafáctica: el aporte de cada canal es la mora simulada con los datos reales menos la simulada con ese canal en un valor neutral. Ventana: del mínimo de {mes(res_can['ventana'][0], L)} ({pp(res_can['mora_inicio'])}%) a {mes(res_can['ventana'][1], L)} ({pp(res_can['mora_fin'])}%). Las barras muestran el intervalo del 95%. Usá el menú para cambiar la medición de precios y la forma de medir el costo financiero.</p>
-{_div(fig_canales(d, L), 'g-canales', L)}
+<section><h2>3. Cuánto pesó cada canal: la cadena en dos etapas</h2>
+<p><strong>La esterilización y la tasa no son canales paralelos: una causa la otra.</strong> Para absorber pesos, el BCRA y el Tesoro les pagan a los bancos una tasa que los convenza de comprar sus títulos o hacer pases (Leliq, pases, LEFI, Lecap). Cada peso que un banco le presta a una familia es un peso que deja de ganar esa tasa sin riesgo: lo que paga el Estado es el piso de la tasa a familias. Si la esterilización y la tasa entran juntas en la ecuación de la mora, el efecto que pasa por la tasa queda contado en la tasa y a la esterilización le queda sólo el resto, que es casi nada. Por eso la ponderación se hace en dos pasos: primero qué subió la tasa, después qué subió la mora.</p>
+
+<h3>Etapa 1: qué subió la tasa</h3>
+<p>La tasa real del CFT de préstamos personales se descompone de forma exacta en tres partes: lo que paga el Estado (en términos reales), la prima que el banco cobra por encima del Estado y el IVA sobre los intereses. Entre {cad['meses_tasa'][0]} y {cad['meses_tasa'][1]} (los meses que, con el rezago de {cad['rezago']} meses de la etapa 2, mueven la mora de la ventana) la tasa real promedió {cad['tasa_vent']}%, contra {cad['tasa_prev']}% antes: <strong>+{cad['tasa_suba']} pp</strong>.</p>
+{_div(fig_etapa1(d, L), 'g-etapa1', L)}
 <ul>
-<li><strong>El costo financiero es el canal dominante</strong> en las tres mediciones: +{rango('base', 'costo_financiero')} pp (p = {pv('base', 'costo_financiero')}).</li>
-<li>Al separarlo, <strong>lo que paga el Estado aporta +{rango('costo_oportunidad', 'rendimiento_estado')} pp y es significativo</strong> (p = {pv('costo_oportunidad', 'rendimiento_estado')}). La prima propia de las familias suma +{rango('costo_oportunidad', 'prima_familias')} pp, pero no es significativa. La esterilización actúa por el piso que pone a las tasas, no por la BADLAR.</li>
-<li><strong>El poder de compra pesa más cuanto más realista es la medición de precios</strong>: en la ecuación base aporta +{pp(aporte('base', 'publico', 'poder_compra'))} pp con la oficial (p = {num(aporte('base', 'publico', 'poder_compra', 'pvalor'), L, 3)}) y +{pp(aporte('base', 'seleccionado', 'poder_compra'))} pp con la canasta actualizada (p = {num(aporte('base', 'seleccionado', 'poder_compra', 'pvalor'), L, 3)}).</li>
-<li>Ancla cambiaria y absorción directa: sin significancia estable entre especificaciones.</li>
+<li><strong>Lo que paga el Estado explica el {cad['peso_estado']}% de la suba de la tasa</strong> (+{cad['exc_estado']} pp). La prima del banco, el {cad['peso_prima']}% (+{cad['exc_prima']} pp), y el IVA, el {cad['peso_impuestos']}% (+{cad['exc_impuestos']} pp): crece solo, porque se cobra sobre una tasa más alta.</li>
+<li><strong>El piso se traslada completo.</strong> Cada punto más que paga el Estado sube {cad['beta']} puntos la tasa real de los préstamos (variaciones interanuales desde 2018, p &lt; 0,001), controlando por la mora previa. La mora previa no explica la tasa (p &gt; {cad['p_mora_previa']}): la prima no subió por el riesgo pasado.</li>
 </ul>
+
+<h3>Etapa 2: qué subió la mora</h3>
+<p>Ecuación de la variación mensual de la mora (logit) con la tasa real del CFT, el salario real, el tipo de cambio real y el crédito real, con rezagos elegidos por BIC. El aporte de cada canal es la mora simulada con los datos reales menos la simulada con ese canal en un valor neutral. El aporte de la tasa se reparte entre sus partes de la etapa 1, poniendo cada parte en su promedio previo. Ventana: del mínimo de {cad['ventana'][0]} ({cad['mora_ini']}%) a {cad['ventana'][1]} ({cad['mora_fin']}%). Las barras muestran el intervalo del 95%.</p>
+{_div(fig_etapa2(d, L), 'g-etapa2', L)}
+<ul>
+<li><strong>La tasa es el canal dominante:</strong> +{cad['tasa']} pp (p = {cad['tasa_p']}). De eso, <strong>lo que paga el Estado aporta +{cad['mora_estado']} pp</strong>, la prima del banco +{cad['mora_prima']} pp y el IVA +{cad['mora_impuestos']} pp.</li>
+<li>Robustez: si a lo que paga el Estado se le estima un coeficiente propio en vez de repartir el de la tasa, su aporte es +{cad['rob']} pp (p = {cad['rob_p']}).</li>
+<li><strong>El poder de compra pesa más cuanto más realista es la medición de precios:</strong> +{cad['poder_compra']['publico']} pp con la oficial (p = {cad['poder_compra_p']['publico']}) y +{cad['poder_compra']['seleccionado']} pp con la canasta actualizada (p = {cad['poder_compra_p']['seleccionado']}).</li>
+<li>Ancla cambiaria: +{cad['ancla_cambiaria_rg']} pp, significativa sólo con la canasta actualizada (p = {cad['ancla_cambiaria_p']['seleccionado']}). Ciclo de crédito: +{cad['cosecha_dilucion_rg']} pp.</li>
+</ul>
+<p class="nota">La cantidad absorbida (stock de títulos y pases) no entra en la etapa 2 porque actúa a través del precio: en una ecuación única con la tasa adentro, su aporte directo no se distingue de cero. Los intervalos de las partes de la tasa se mueven con el coeficiente de la tasa y son amplios. Lo que paga el Estado también refleja las expectativas de inflación y el riesgo soberano, no sólo la decisión de esterilizar.</p>
 </section>
 
 <section><h2>4. La baja reciente es, en buena parte, contable</h2>
@@ -393,15 +461,27 @@ def contenido(d: dict, lang: str) -> str:
 {_div(fig_tasas(d, L), 'g-tasas', L)}
 </section>
 
-<section><h2>3. How much each channel weighed</h2>
-<p>Equation for the monthly change in the (logit) NPL ratio with one regressor per channel, BIC-selected lags, and a counterfactual historical decomposition: each channel's contribution is simulated delinquency with actual data minus simulated delinquency with that channel held neutral. Window: from the {mes(res_can['ventana'][0], L)} low ({pp(res_can['mora_inicio'])}%) to {mes(res_can['ventana'][1], L)} ({pp(res_can['mora_fin'])}%). Bars show the 95% interval. Use the menu to switch the price measure and how the financial cost is measured.</p>
-{_div(fig_canales(d, L), 'g-canales', L)}
+<section><h2>3. How much each channel weighed: the two-stage chain</h2>
+<p><strong>Sterilization and the loan rate are not parallel channels: one causes the other.</strong> To absorb pesos, the central bank and the Treasury pay banks a rate high enough for them to buy their paper or do repos (Leliq, repos, LEFI, Lecap). Every peso a bank lends to a household is a peso that stops earning that risk-free rate, so what the State pays is the floor of household rates. If sterilization and the rate enter the delinquency equation together, the effect that runs through the rate is counted in the rate and sterilization keeps only the remainder, which is close to nothing. So the weighting is done in two steps: first what raised the rate, then what raised delinquency.</p>
+
+<h3>Stage 1: what raised the rate</h3>
+<p>The real all-in cost (CFT) of personal loans splits exactly into three parts: what the State pays (in real terms), the premium banks charge over the State, and VAT on interest. Between {cad['meses_tasa'][0]} and {cad['meses_tasa'][1]} (the months that, with stage 2's {cad['rezago']}-month lag, drive delinquency in the window) the real rate averaged {cad['tasa_vent']}%, against {cad['tasa_prev']}% before: <strong>+{cad['tasa_suba']} pp</strong>.</p>
+{_div(fig_etapa1(d, L), 'g-etapa1', L)}
 <ul>
-<li><strong>Financial cost is the dominant channel</strong> under all three measures: +{rango('base', 'costo_financiero')} pp (p = {pv('base', 'costo_financiero')}).</li>
-<li>Split in two, <strong>what the State pays contributes +{rango('costo_oportunidad', 'rendimiento_estado')} pp and is significant</strong> (p = {pv('costo_oportunidad', 'rendimiento_estado')}). The household-specific premium adds +{rango('costo_oportunidad', 'prima_familias')} pp but is not significant. Sterilization works through the floor it sets on rates, not through BADLAR.</li>
-<li><strong>Purchasing power weighs more the more realistic the price measure</strong>: in the base equation it contributes +{pp(aporte('base', 'publico', 'poder_compra'))} pp with the official index (p = {num(aporte('base', 'publico', 'poder_compra', 'pvalor'), L, 3)}) and +{pp(aporte('base', 'seleccionado', 'poder_compra'))} pp with the updated basket (p = {num(aporte('base', 'seleccionado', 'poder_compra', 'pvalor'), L, 3)}).</li>
-<li>FX anchor and direct absorption: no stable significance across specifications.</li>
+<li><strong>What the State pays explains {cad['peso_estado']}% of the rise in the rate</strong> (+{cad['exc_estado']} pp). The bank premium explains {cad['peso_prima']}% (+{cad['exc_prima']} pp) and VAT {cad['peso_impuestos']}% (+{cad['exc_impuestos']} pp), which grows on its own because it is charged on a higher rate.</li>
+<li><strong>The floor passes through in full.</strong> Each extra point the State pays raises the real loan rate by {cad['beta']} points (year-on-year changes since 2018, p &lt; 0.001), controlling for past delinquency. Past delinquency does not explain the rate (p &gt; {cad['p_mora_previa']}): the premium did not rise because of past risk.</li>
 </ul>
+
+<h3>Stage 2: what raised delinquency</h3>
+<p>Equation for the monthly change in the (logit) NPL ratio with the real CFT, the real wage, the real exchange rate and real credit, with BIC-selected lags. Each channel's contribution is simulated delinquency with actual data minus simulated delinquency with that channel held neutral. The rate's contribution is split among its stage-1 parts by setting each part to its prior average. Window: from the {cad['ventana'][0]} low ({cad['mora_ini']}%) to {cad['ventana'][1]} ({cad['mora_fin']}%). Bars show the 95% interval.</p>
+{_div(fig_etapa2(d, L), 'g-etapa2', L)}
+<ul>
+<li><strong>The rate is the dominant channel:</strong> +{cad['tasa']} pp (p = {cad['tasa_p']}). Of that, <strong>what the State pays contributes +{cad['mora_estado']} pp</strong>, the bank premium +{cad['mora_prima']} pp and VAT +{cad['mora_impuestos']} pp.</li>
+<li>Robustness: estimating a separate coefficient for what the State pays, instead of splitting the rate's, gives +{cad['rob']} pp (p = {cad['rob_p']}).</li>
+<li><strong>Purchasing power weighs more the more realistic the price measure:</strong> +{cad['poder_compra']['publico']} pp with the official index (p = {cad['poder_compra_p']['publico']}) and +{cad['poder_compra']['seleccionado']} pp with the updated basket (p = {cad['poder_compra_p']['seleccionado']}).</li>
+<li>FX anchor: +{cad['ancla_cambiaria_rg']} pp, significant only with the updated basket (p = {cad['ancla_cambiaria_p']['seleccionado']}). Credit cycle: +{cad['cosecha_dilucion_rg']} pp.</li>
+</ul>
+<p class="nota">The quantity absorbed (stock of securities and repos) is left out of stage 2 because it works through the price: in a single equation with the rate included, its direct contribution is indistinguishable from zero. Intervals for the rate's parts move with the rate coefficient and are wide. What the State pays also reflects inflation expectations and sovereign risk, not only the decision to sterilize.</p>
 </section>
 
 <section><h2>4. The recent leveling-off is largely an accounting effect</h2>
@@ -455,6 +535,7 @@ main{max-width:920px;margin:0 auto;padding:24px 16px 64px}
 header{display:flex;justify-content:space-between;align-items:baseline;gap:16px;flex-wrap:wrap}
 h1{font-size:2rem;line-height:1.2;margin:8px 0}
 h2{font-size:1.35rem;margin:48px 0 8px}
+h3{font-size:1.1rem;margin:28px 0 6px}
 .sub{color:var(--text2);max-width:720px;margin:0 0 24px}
 a{color:var(--accent)}
 .idioma{font-size:.9rem}

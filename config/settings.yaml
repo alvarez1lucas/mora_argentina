@@ -276,6 +276,15 @@ canales:
     tasa_real_estado: media_previa
     prima_sobre_estado: media_previa
 
+# Ponderación en dos etapas (mora.cadena): la esterilización explica la tasa (etapa 1) y la tasa,
+# junto con los demás canales, explica la mora (etapa 2). La absorción no entra en la etapa 2.
+cadena:
+  grilla_mora:
+    salario_real_ia: [3, 6, 9]
+    tasa_real_cft: [3, 6, 9, 12]
+    tcr_ia: [3, 6, 9, 12]
+    credito_real_ia: [12, 15, 18]
+
 ajuste:
   desde: "2023-11-01"     # ventana principal del análisis: desde el mes previo a la devaluación de dic-2023
   meses_castigos: 8

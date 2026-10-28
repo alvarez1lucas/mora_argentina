@@ -51,6 +51,9 @@ jobs:
       - name: Ponderación de canales
         run: python -m mora.canales
 
+      - name: Cadena en dos etapas (esterilización → tasa → mora)
+        run: python -m mora.cadena
+
       - name: Ventana del ajuste (nov-23 en adelante)
         run: python -m mora.ajuste
 

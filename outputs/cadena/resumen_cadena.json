@@ -1,0 +1,104 @@
+{
+  "publico": {
+    "deflactor": "publico",
+    "especificacion": "salario_real_ia(t-6), tasa_real_cft(t-6), tcr_ia(t-9), credito_real_ia(t-15) | AR(2)",
+    "signos_ok": true,
+    "n": 80,
+    "r2_ajustado": 0.5802964026060291,
+    "ventana": [
+      "2024-10-01",
+      "2026-08-01"
+    ],
+    "mora_inicio": 2.489310113996647,
+    "mora_fin": 12.814578878881402,
+    "rezago_tasa": 6,
+    "meses_tasa": [
+      "2024-05-01",
+      "2026-02-01"
+    ],
+    "tasa_real_previa_pp": 25.353855955464855,
+    "tasa_real_ventana_pp": 61.84478757338961,
+    "aporte_tasa_pp": 8.277690712220945,
+    "coef_tasa": 0.0006213398591185143,
+    "p_tasa": 0.026035095809019675,
+    "traspaso": {
+      "beta_estado": 1.0524805711703504,
+      "se_estado": 0.10339241580986999,
+      "p_estado": 2.4487749440094645e-24,
+      "beta_mora_previa": 0.14657071477788647,
+      "p_mora_previa": 0.8297300107219325,
+      "r2": 0.630827660846933,
+      "n": 100,
+      "desde": "2018-04-01",
+      "hasta": "2026-07-01"
+    }
+  },
+  "seleccionado": {
+    "deflactor": "seleccionado",
+    "especificacion": "salario_real_ia(t-6), tasa_real_cft(t-6), tcr_ia(t-9), credito_real_ia(t-15) | AR(2)",
+    "signos_ok": true,
+    "n": 80,
+    "r2_ajustado": 0.5938010174205068,
+    "ventana": [
+      "2024-10-01",
+      "2026-08-01"
+    ],
+    "mora_inicio": 2.489310113996647,
+    "mora_fin": 12.814578878881402,
+    "rezago_tasa": 6,
+    "meses_tasa": [
+      "2024-05-01",
+      "2026-02-01"
+    ],
+    "tasa_real_previa_pp": 25.597301560439433,
+    "tasa_real_ventana_pp": 60.56814722364716,
+    "aporte_tasa_pp": 8.276519979806995,
+    "coef_tasa": 0.0007100969858923591,
+    "p_tasa": 0.00685711243024981,
+    "traspaso": {
+      "beta_estado": 1.0832784184604618,
+      "se_estado": 0.11088757548429214,
+      "p_estado": 1.5271359589036526e-22,
+      "beta_mora_previa": 0.11160206931581171,
+      "p_mora_previa": 0.8716991955126249,
+      "r2": 0.6491710549421026,
+      "n": 100,
+      "desde": "2018-04-01",
+      "hasta": "2026-07-01"
+    }
+  },
+  "mix": {
+    "deflactor": "mix",
+    "especificacion": "salario_real_ia(t-6), tasa_real_cft(t-6), tcr_ia(t-9), credito_real_ia(t-15) | AR(2)",
+    "signos_ok": true,
+    "n": 80,
+    "r2_ajustado": 0.5864752949510759,
+    "ventana": [
+      "2024-10-01",
+      "2026-08-01"
+    ],
+    "mora_inicio": 2.489310113996647,
+    "mora_fin": 12.814578878881402,
+    "rezago_tasa": 6,
+    "meses_tasa": [
+      "2024-05-01",
+      "2026-02-01"
+    ],
+    "tasa_real_previa_pp": 25.472326879596622,
+    "tasa_real_ventana_pp": 61.20404540150696,
+    "aporte_tasa_pp": 8.31890410779887,
+    "coef_tasa": 0.0006669170662197028,
+    "p_tasa": 0.014380507771283853,
+    "traspaso": {
+      "beta_estado": 1.0681155888577116,
+      "se_estado": 0.10718878720215422,
+      "p_estado": 2.1729525017493847e-23,
+      "beta_mora_previa": 0.1293649925084509,
+      "p_mora_previa": 0.8505054456014269,
+      "r2": 0.6398387809004127,
+      "n": 100,
+      "desde": "2018-04-01",
+      "hasta": "2026-07-01"
+    }
+  }
+}

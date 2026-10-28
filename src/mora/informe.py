@@ -16,7 +16,7 @@ import plotly.graph_objects as go
 
 from mora.config import ROOT, settings
 from mora.sitio import (CSS, JS_TEMA, LIMITACIONES, MEDICIONES, PLOTLY_ES, PLOTLY_JS, SERIES, TINTA, T, _div, _json,
-                        datos, fig_canales, fig_escenarios, mes, num)
+                        cadena_cifras, datos, fig_escenarios, fig_etapa2, mes, num)
 
 
 def pval(p: float, L: str) -> str:
@@ -27,12 +27,8 @@ def pval(p: float, L: str) -> str:
 def cifras(d: dict, L: str) -> dict:
     """Números clave formateados para el idioma `L`. Cada uno sale de outputs/."""
     desc, aj, rend, esc = d["desc"], d["ajuste"], d["rend"], d["esc"]
-    a = d["canales"]
     pp = lambda x, k=1: num(x, L, k)  # noqa: E731
-
-    def canal(v, c, campo="aporte_pp"):
-        vals = [float(a[(a["variante"] == v) & (a["deflactor"] == m) & (a["canal"] == c)][campo].iloc[0]) for m in MEDICIONES]
-        return min(vals), max(vals)
+    cad = cadena_cifras(d, L)
 
     oos = d["oos"]
     o12 = oos[(oos["especificacion"] == "base") & (oos["muestra"] == "larga") & (oos["h"] == 12)].set_index("modelo")
@@ -46,24 +42,18 @@ def cifras(d: dict, L: str) -> dict:
     dml = pd.read_csv(ROOT / "outputs/panel_ml/double_ml_cosecha.csv").iloc[0]
     cf = d["panel_ml"]["causal_forest_ate"]
     ew = pd.read_csv(ROOT / "outputs/panel_ml/alerta_temprana_evaluacion.csv").set_index("modelo")
-    rc = _json("canales/resumen_canales.json")["base_publico"]
-    rango = lambda t: f"{pp(t[0])}–{pp(t[1])}"  # noqa: E731
     return {
         "fecha": mes(desc["ultimo_dato"], L), "mora": pp(desc["mora_familias"]),
         "multiplo": pp(desc["mora_familias"] / aj["mora_familias"]["inicio"]), "mora_ini": pp(aj["mora_familias"]["inicio"]),
         "fecha_ini": mes(aj["ventana"][0], L), "max": pp(desc["maximo_de_la_serie"]), "fecha_max": mes(desc["fecha_maximo"], L),
         "pers": pp(desc["mora_por_linea"]["personales"]), "tarj": pp(desc["mora_por_linea"]["tarjetas_de_credito"]),
         "num": pp(desc["efecto_numerador_12m"]), "den": pp(desc["efecto_denominador_12m"], 2),
-        "v_ini": mes(rc["ventana"][0], L), "v_fin": mes(rc["ventana"][1], L),
-        "v_mora_ini": pp(rc["mora_inicio"]), "v_mora_fin": pp(rc["mora_fin"]),
-        "costo": rango(canal("base", "costo_financiero")), "costo_p": f"{num(canal('base', 'costo_financiero', 'pvalor')[0], L, 3)}–{num(canal('base', 'costo_financiero', 'pvalor')[1], L, 3)}",
-        "estado": rango(canal("costo_oportunidad", "rendimiento_estado")),
-        "estado_p": f"{num(canal('costo_oportunidad', 'rendimiento_estado', 'pvalor')[0], L, 3)}–{num(canal('costo_oportunidad', 'rendimiento_estado', 'pvalor')[1], L, 3)}",
-        "prima": rango(canal("costo_oportunidad", "prima_familias")),
-        "poder_pub": pp(float(a[(a["variante"] == "base") & (a["deflactor"] == "publico") & (a["canal"] == "poder_compra")]["aporte_pp"].iloc[0])),
-        "poder_sel": pp(float(a[(a["variante"] == "base") & (a["deflactor"] == "seleccionado") & (a["canal"] == "poder_compra")]["aporte_pp"].iloc[0])),
-        "poder_pub_p": num(float(a[(a["variante"] == "base") & (a["deflactor"] == "publico") & (a["canal"] == "poder_compra")]["pvalor"].iloc[0]), L, 3),
-        "poder_sel_p": num(float(a[(a["variante"] == "base") & (a["deflactor"] == "seleccionado") & (a["canal"] == "poder_compra")]["pvalor"].iloc[0]), L, 3),
+        "v_ini": cad["ventana"][0], "v_fin": cad["ventana"][1], "v_mora_ini": cad["mora_ini"], "v_mora_fin": cad["mora_fin"],
+        "costo": cad["tasa"], "costo_p": cad["tasa_p"], "estado": cad["mora_estado"], "prima": cad["mora_prima"],
+        "iva": cad["mora_impuestos"], "peso_estado": cad["peso_estado"], "tasa_suba": cad["tasa_suba"],
+        "tasa_prev": cad["tasa_prev"], "tasa_vent": cad["tasa_vent"], "beta": cad["beta"], "rob": cad["rob"], "rob_p": cad["rob_p"],
+        "poder_pub": cad["poder_compra"]["publico"], "poder_sel": cad["poder_compra"]["seleccionado"],
+        "poder_pub_p": cad["poder_compra_p"]["publico"], "poder_sel_p": cad["poder_compra_p"]["seleccionado"],
         "estado_25": pp(rend["promedios_anuales"]["2025"]["tea_estado_3m"]), "badlar_25": pp(rend["promedios_anuales"]["2025"]["tea_badlar"]),
         "pers_25": pp(rend["promedios_anuales"]["2025"]["tea_personales_nuevos"]),
         "prima_25": pp(rend["promedios_anuales"]["2025"]["prima_personales_sobre_estado_pp"]),
@@ -114,8 +104,7 @@ What explains the 2024-2026 surge in household non-performing loans in Argentina
 
 - **Delinquency multiplied by {c['multiplo']}.** The household NPL ratio (BCRA situations 3-5) rose from {c['mora_ini']}% in {c['fecha_ini']} to {c['mora']}% in {c['fecha']}, the highest since the series starts in 2010 (peak {c['max']}% in {c['fecha_max']}). Personal loans: {c['pers']}%; credit cards: {c['tarj']}%.
 - **It is unpaid debt, not a shrinking portfolio.** Of the 12-month rise, +{c['num']} pp is the numerator (real growth in non-performing debt) and {c['den']} pp the denominator.
-- **Financial cost is the dominant channel.** In a counterfactual historical decomposition of the rise from {c['v_ini']} ({c['v_mora_ini']}%) to {c['v_fin']} ({c['v_mora_fin']}%), the real all-in cost of personal loans contributes +{c['costo']} pp (p = {c['costo_p']}) under all three price measures.
-- **Sterilization works through the floor it sets on lending rates.** Banks' implied yield on peso government securities and central-bank repos (from their income statements, restated for inflation) averaged {c['estado_25']}% in 2025, above BADLAR ({c['badlar_25']}%); it beat BADLAR in {c['estado_badlar_pct']}% of months since Nov-23. Splitting the loan rate into *what the State pays* and *the household premium*, the former contributes +{c['estado']} pp and is significant (p = {c['estado_p']}); the premium adds +{c['prima']} pp but is not significant.
+- **Two-stage chain: sterilization raises the rate, the rate raises delinquency.** Sterilization and the loan rate are not competing channels, so they are weighted in sequence. *Stage 1:* the real all-in cost (CFT) of personal loans rose {c['tasa_suba']} pp (from {c['tasa_prev']}% to {c['tasa_vent']}% in the months that drive the window); what the State pays banks on peso securities and repos (from their income statements, restated for inflation) explains {c['peso_estado']}% of that rise, and it passes through to loan rates one for one (β = {c['beta']}, p < 0.001). In 2025 it averaged {c['estado_25']}%, above BADLAR ({c['badlar_25']}%), and it beat BADLAR in {c['estado_badlar_pct']}% of months since Nov-23. *Stage 2:* in a counterfactual historical decomposition of the rise from {c['v_ini']} ({c['v_mora_ini']}%) to {c['v_fin']} ({c['v_mora_fin']}%), the real rate is the dominant channel, +{c['costo']} pp (p = {c['costo_p']}): +{c['estado']} pp from what the State pays, +{c['prima']} pp from the bank premium and +{c['iva']} pp from VAT. With a separate coefficient for what the State pays, its contribution is +{c['rob']} pp (p = {c['rob_p']}).
 - **Purchasing power matters more under realistic price measures.** The real registered wage is {c['sal_pub']}% below Nov-23 with the official CPI, {c['sal_mix']}% with the mix and {c['sal_sel']}% with an updated-weights basket. Its contribution goes from +{c['poder_pub']} pp (p = {c['poder_pub_p']}) to +{c['poder_sel']} pp (p = {c['poder_sel_p']}).
 - **The recent leveling-off is largely write-offs.** In {c['k_meses']} household non-performing debt grew {c['k_obs']} billion constant pesos while about {c['k_cast']} billion were written off; without write-offs it would have grown {c['k_sin']} billion. For the total private sector, the {c['ct_fecha']} ratio would be {c['ct_aj']}% instead of {c['ct_of']}%.
 - **Vintage (cosecha) effect at bank level.** Across {c['n_ent']} banks with entity and month fixed effects, 10 pp more real consumer-credit growth 12-24 months earlier adds {c['fe']} pp to the annual change in NPLs ({c['fe_p']}); Double ML: {c['dml']} pp ({c['dml_p']}); causal forest ATE: {c['cf']} pp (95% CI {c['cf_lo']} to {c['cf_hi']}).
@@ -186,8 +175,7 @@ Author: Lucas Alvarez · [GitHub](https://github.com/alvarez1lucas)
 
 - **La mora se multiplicó por {c['multiplo']}.** La mora de familias (situación 3 a 5, BCRA) pasó de {c['mora_ini']}% en {c['fecha_ini']} a {c['mora']}% en {c['fecha']}, el máximo desde que empieza la serie en 2010 (pico de {c['max']}% en {c['fecha_max']}). Préstamos personales: {c['pers']}%; tarjetas: {c['tarj']}%.
 - **Es deuda impaga, no una cartera que se achica.** De la suba de 12 meses, +{c['num']} pp son del numerador (crecimiento real de la deuda irregular) y {c['den']} pp del denominador.
-- **El costo financiero es el canal dominante.** En la descomposición histórica contrafáctica de la suba de {c['v_ini']} ({c['v_mora_ini']}%) a {c['v_fin']} ({c['v_mora_fin']}%), el costo real de los préstamos personales aporta +{c['costo']} pp (p = {c['costo_p']}) con las tres mediciones de precios.
-- **La esterilización actúa por el piso que pone a la tasa.** Lo que los bancos ganaron con títulos públicos y pases con el BCRA en pesos (cuentas de resultados reexpresadas por inflación) promedió {c['estado_25']}% en 2025, por encima de la BADLAR ({c['badlar_25']}%), y le ganó a la BADLAR en el {c['estado_badlar_pct']}% de los meses desde nov-23. Separando la tasa a familias en *lo que paga el Estado* y *la prima de familias*, lo primero aporta +{c['estado']} pp y es significativo (p = {c['estado_p']}); la prima suma +{c['prima']} pp sin ser significativa.
+- **Cadena en dos etapas: la esterilización sube la tasa y la tasa sube la mora.** La esterilización y la tasa no compiten como canales, así que se ponderan en secuencia. *Etapa 1:* la tasa real del CFT de préstamos personales subió {c['tasa_suba']} pp (de {c['tasa_prev']}% a {c['tasa_vent']}% en los meses que mueven la ventana); lo que el Estado les paga a los bancos por títulos y pases en pesos (cuentas de resultados reexpresadas por inflación) explica el {c['peso_estado']}% de esa suba, y se traslada uno a uno a la tasa de los préstamos (β = {c['beta']}, p < 0,001). En 2025 promedió {c['estado_25']}%, por encima de la BADLAR ({c['badlar_25']}%), y le ganó a la BADLAR en el {c['estado_badlar_pct']}% de los meses desde nov-23. *Etapa 2:* en la descomposición histórica contrafáctica de la suba de {c['v_ini']} ({c['v_mora_ini']}%) a {c['v_fin']} ({c['v_mora_fin']}%), la tasa real es el canal dominante, +{c['costo']} pp (p = {c['costo_p']}): +{c['estado']} pp por lo que paga el Estado, +{c['prima']} pp por la prima del banco y +{c['iva']} pp por el IVA. Con un coeficiente propio para lo que paga el Estado, su aporte es +{c['rob']} pp (p = {c['rob_p']}).
 - **El poder de compra pesa más con mediciones de precios realistas.** El salario registrado real está {c['sal_pub']}% abajo de nov-23 con el IPC oficial, {c['sal_mix']}% con el mix y {c['sal_sel']}% con la canasta actualizada. Su aporte pasa de +{c['poder_pub']} pp (p = {c['poder_pub_p']}) a +{c['poder_sel']} pp (p = {c['poder_sel_p']}).
 - **El freno reciente es, en buena parte, castigos.** En {c['k_meses']} la deuda irregular de familias creció {c['k_obs']} mil millones de pesos constantes, mientras se castigaban unos {c['k_cast']} mil millones; sin castigos habría crecido {c['k_sin']} mil millones. Para el sector privado total, la mora de {c['ct_fecha']} sería {c['ct_aj']}% en lugar de {c['ct_of']}%.
 - **Efecto cosecha a nivel banco.** En {c['n_ent']} entidades con efectos fijos de entidad y mes, 10 pp más de crecimiento real del crédito al consumo 12-24 meses antes suman {c['fe']} pp a la variación interanual de la mora ({c['fe_p']}); Double ML: {c['dml']} pp ({c['dml_p']}); Causal Forest (ATE): {c['cf']} pp (IC 95%: {c['cf_lo']} a {c['cf_hi']}).
@@ -278,12 +266,12 @@ footer{margin-top:10px;padding-top:6px;font-size:8pt}
 
 def _figs_informe(d: dict, L: str) -> tuple[go.Figure, go.Figure]:
     esc = fig_escenarios(d, L)
-    can = fig_canales(d, L)
-    # Versión estática: sin menú; escenarios con la medición pública, canales con Estado + prima (mix)
+    can = fig_etapa2(d, L)
+    # Versión estática: sin menú; escenarios con la medición pública, cadena con la mix (2 trazas por medición)
     n_can = len(can.data)
-    elegido = 3 + MEDICIONES.index("mix")  # orden de trazas: base × 3 mediciones, costo_oportunidad × 3
+    elegido = MEDICIONES.index("mix")
     for i, tr in enumerate(can.data):
-        tr.visible = i == elegido
+        tr.visible = i // 2 == elegido
     # Ancho fijo: en la impresión el autoajuste de Plotly no ve el ancho de la columna
     for f in (esc, can):
         f.layout.updatemenus = ()
@@ -291,7 +279,7 @@ def _figs_informe(d: dict, L: str) -> tuple[go.Figure, go.Figure]:
                         font=dict(size=10), legend=dict(y=-0.25, font=dict(size=9)))
     can.update_layout(margin=dict(l=8, r=10, t=8, b=36))
     esc.update_yaxes(title_text="%")
-    assert n_can == 6
+    assert n_can == 2 * len(MEDICIONES)
     return esc, can
 
 
@@ -312,7 +300,7 @@ def informe_html(d: dict, L: str) -> str:
 <div class="tiles">
 <div class="tile"><div class="tile-valor">{c['mora']}%</div><div class="tile-etq">Mora de familias, {c['fecha']}</div><div class="tile-nota">{c['mora_ini']}% en {c['fecha_ini']}</div></div>
 <div class="tile"><div class="tile-valor">+{c['num']} pp</div><div class="tile-etq">Suba de 12 meses por más deuda impaga</div><div class="tile-nota">Denominador: {c['den']} pp</div></div>
-<div class="tile"><div class="tile-valor">+{c['estado']} pp</div><div class="tile-etq">Aporte de lo que paga el Estado</div><div class="tile-nota">p = {c['estado_p']}</div></div>
+<div class="tile"><div class="tile-valor">{c['peso_estado']}%</div><div class="tile-etq">De la suba de la tasa, por lo que paga el Estado</div><div class="tile-nota">Traspaso a la tasa: β = {c['beta']}</div></div>
 <div class="tile"><div class="tile-valor">{c['esc']['publico']['base']}%</div><div class="tile-etq">Escenario base, {c['esc_fin']}</div><div class="tile-nota">Banda 90%: {c['esc']['publico']['p05']}–{c['esc']['publico']['p95']}%</div></div>
 </div>
 <h2>Qué pasó</h2>
@@ -324,11 +312,11 @@ def informe_html(d: dict, L: str) -> str:
 <li><strong>El salario no acompañó.</strong> El salario registrado real está {c['sal_pub']}% abajo de nov-23 con el IPC oficial y {c['sal_sel']}% con la canasta actualizada.</li>
 </ul>
 <div class="fig">{_div(can_fig, 'i-can', L)}{_div(esc_fig, 'i-esc', L)}</div>
-<p class="nota">Izquierda: aporte de cada canal a la suba de la mora entre {c['v_ini']} y {c['v_fin']} (medición mix; barras: IC 95%). Derecha: escenarios con la medición pública (banda: 90% de las simulaciones del base).</p>
+<p class="nota">Izquierda: aporte de cada canal a la suba de la mora entre {c['v_ini']} y {c['v_fin']}, con la tasa repartida entre sus partes (medición mix; barras: IC 95%). Derecha: escenarios con la medición pública (banda: 90% de las simulaciones del base).</p>
 <h2>Cuánto pesó cada canal</h2>
 <ul>
-<li><strong>Costo financiero:</strong> +{c['costo']} pp (p = {c['costo_p']}), el canal dominante con las tres mediciones de precios.</li>
-<li><strong>Separado:</strong> lo que paga el Estado aporta +{c['estado']} pp (p = {c['estado_p']}); la prima propia de las familias, +{c['prima']} pp (no significativa). La esterilización encarece el crédito por el piso que pone a la tasa, no por la BADLAR.</li>
+<li><strong>Etapa 1, qué subió la tasa:</strong> la tasa real del CFT subió {c['tasa_suba']} pp; lo que paga el Estado explica el {c['peso_estado']}% y se traslada uno a uno (β = {c['beta']}). La esterilización actúa por el piso que pone a la tasa, no compite con ella.</li>
+<li><strong>Etapa 2, qué subió la mora:</strong> la tasa aporta +{c['costo']} pp (p = {c['costo_p']}), el canal dominante: +{c['estado']} pp por lo que paga el Estado, +{c['prima']} pp por la prima del banco y +{c['iva']} pp por el IVA.</li>
 <li><strong>Poder de compra:</strong> +{c['poder_pub']} pp con el IPC oficial (p = {c['poder_pub_p']}) y +{c['poder_sel']} pp con la canasta actualizada (p = {c['poder_sel_p']}). La estadística oficial subestima este canal.</li>
 <li><strong>Cosecha (panel de {c['n_ent']} bancos):</strong> 10 pp más de crecimiento del crédito 12-24 meses antes suman {c['fe']} pp de mora (efectos fijos, {c['fe_p']}); {c['dml']} pp con Double ML y {c['cf']} pp con Causal Forest.</li>
 </ul>
@@ -352,7 +340,7 @@ def informe_html(d: dict, L: str) -> str:
 <div class="tiles">
 <div class="tile"><div class="tile-valor">{c['mora']}%</div><div class="tile-etq">Household NPL ratio, {c['fecha']}</div><div class="tile-nota">{c['mora_ini']}% in {c['fecha_ini']}</div></div>
 <div class="tile"><div class="tile-valor">+{c['num']} pp</div><div class="tile-etq">12-month rise from more unpaid debt</div><div class="tile-nota">Denominator: {c['den']} pp</div></div>
-<div class="tile"><div class="tile-valor">+{c['estado']} pp</div><div class="tile-etq">Contribution of what the State pays</div><div class="tile-nota">p = {c['estado_p']}</div></div>
+<div class="tile"><div class="tile-valor">{c['peso_estado']}%</div><div class="tile-etq">Of the rate rise, from what the State pays</div><div class="tile-nota">Pass-through to the rate: β = {c['beta']}</div></div>
 <div class="tile"><div class="tile-valor">{c['esc']['publico']['base']}%</div><div class="tile-etq">Baseline scenario, {c['esc_fin']}</div><div class="tile-nota">90% band: {c['esc']['publico']['p05']}–{c['esc']['publico']['p95']}%</div></div>
 </div>
 <h2>What happened</h2>
@@ -364,11 +352,11 @@ def informe_html(d: dict, L: str) -> str:
 <li><strong>Wages did not keep up.</strong> The real registered wage is {c['sal_pub']}% below Nov-23 with the official CPI and {c['sal_sel']}% with the updated basket.</li>
 </ul>
 <div class="fig">{_div(can_fig, 'i-can', L)}{_div(esc_fig, 'i-esc', L)}</div>
-<p class="nota">Left: each channel's contribution to the rise between {c['v_ini']} and {c['v_fin']} (mix measure; bars: 95% CI). Right: scenarios with the official measure (band: 90% of baseline simulations).</p>
+<p class="nota">Left: each channel's contribution to the rise between {c['v_ini']} and {c['v_fin']}, with the rate split into its parts (mix measure; bars: 95% CI). Right: scenarios with the official measure (band: 90% of baseline simulations).</p>
 <h2>How much each channel weighed</h2>
 <ul>
-<li><strong>Financial cost:</strong> +{c['costo']} pp (p = {c['costo_p']}), the dominant channel under all three price measures.</li>
-<li><strong>Split:</strong> what the State pays contributes +{c['estado']} pp (p = {c['estado_p']}); the household-specific premium +{c['prima']} pp (not significant). Sterilization makes credit dearer through the floor it sets on rates, not through BADLAR.</li>
+<li><strong>Stage 1, what raised the rate:</strong> the real CFT rose {c['tasa_suba']} pp; what the State pays explains {c['peso_estado']}% and passes through one for one (β = {c['beta']}). Sterilization works through the floor it sets on the rate; it does not compete with it.</li>
+<li><strong>Stage 2, what raised delinquency:</strong> the rate contributes +{c['costo']} pp (p = {c['costo_p']}), the dominant channel: +{c['estado']} pp from what the State pays, +{c['prima']} pp from the bank premium and +{c['iva']} pp from VAT.</li>
 <li><strong>Purchasing power:</strong> +{c['poder_pub']} pp with the official CPI (p = {c['poder_pub_p']}) and +{c['poder_sel']} pp with the updated basket (p = {c['poder_sel_p']}). Official statistics understate this channel.</li>
 <li><strong>Vintage effect ({c['n_ent']}-bank panel):</strong> 10 pp more credit growth 12-24 months earlier adds {c['fe']} pp of NPLs (fixed effects, {c['fe_p']}); {c['dml']} pp with Double ML and {c['cf']} pp with a causal forest.</li>
 </ul>
