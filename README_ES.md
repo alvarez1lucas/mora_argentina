@@ -1,6 +1,6 @@
 # Mora de los hogares en Argentina
 
-**[Sitio](https://alvarez1lucas.github.io/mora-hogares-argentina/)** · **[Informe de 2 páginas (PDF)](https://alvarez1lucas.github.io/mora-hogares-argentina/informe.pdf)** · [English version](README.md)
+**[Sitio](https://alvarez1lucas.github.io/mora_argentina/)** · **[Informe de 2 páginas (PDF)](https://alvarez1lucas.github.io/mora_argentina/informe.pdf)** · [English version](README.md)
 
 ¿Qué explica la suba de la mora de las familias en Argentina entre 2024 y 2026, y qué puede pasar en los próximos 12 meses? El proyecto responde sólo con datos públicos (BCRA, INDEC, IPCBA, A3 Mercados), econometría de series de tiempo y de panel, ML causal y validación fuera de muestra. Todos los números de este archivo los genera `python -m mora.informe` desde `outputs/`; el pipeline se actualiza todas las semanas con GitHub Actions.
 

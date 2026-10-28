@@ -7,7 +7,7 @@ paths:
   outputs: outputs         # resultados del análisis que lee el sitio web, se versionan
 
 http:
-  user_agent: "Mozilla/5.0 (mora-hogares-argentina; +https://github.com/alvarez1lucas)"
+  user_agent: "Mozilla/5.0 (mora_argentina; +https://github.com/alvarez1lucas/mora_argentina)"
   timeout: 120
   retries: 4
   backoff: 2.0
@@ -383,8 +383,8 @@ escenarios:
 
 sitio:
   destino: site                  # GitHub Pages publica esta carpeta (workflow de Pages)
-  repo_url: "https://github.com/alvarez1lucas/mora-hogares-argentina"   # se confirma al crear el repo
-  url: "https://alvarez1lucas.github.io/mora-hogares-argentina/"
+  repo_url: "https://github.com/alvarez1lucas/mora_argentina"
+  url: "https://alvarez1lucas.github.io/mora_argentina/"
 
 # Análisis complementarios (mora.complementos): fuera del sitio, el README y el workflow semanal
 complementos:

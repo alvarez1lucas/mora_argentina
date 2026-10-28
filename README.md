@@ -1,6 +1,6 @@
 # Household loan delinquency in Argentina
 
-**[Live site](https://alvarez1lucas.github.io/mora-hogares-argentina/)** · **[2-page report (PDF)](https://alvarez1lucas.github.io/mora-hogares-argentina/informe-en.pdf)** · [Versión en español](README_ES.md)
+**[Live site](https://alvarez1lucas.github.io/mora_argentina/)** · **[2-page report (PDF)](https://alvarez1lucas.github.io/mora_argentina/informe-en.pdf)** · [Versión en español](README_ES.md)
 
 What explains the 2024-2026 surge in household non-performing loans in Argentina, and what may happen over the next 12 months? This project answers with public data only (BCRA, INDEC, Buenos Aires City statistics, A3 Mercados), time-series and panel econometrics, causal ML, and out-of-sample validation. Every number below is generated from `outputs/` by `python -m mora.informe`; the pipeline refreshes weekly via GitHub Actions.
 
