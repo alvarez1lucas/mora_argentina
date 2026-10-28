@@ -46,6 +46,7 @@ bcra_api:
     tasa_tamar_privados:       {id: 44,  agg: mean}   # % TNA, desde oct-2024
     tasa_politica_monetaria:   {id: 160, agg: mean}   # % TNA, discontinuada jul-2025
     tipo_cambio_mayorista:     {id: 5,   agg: mean}   # ARS/USD
+    tipo_cambio_mayorista_fin: {id: 5,   agg: last}   # ARS/USD, último día del mes (para pasar a pesos stocks en dólares)
     inflacion_esperada_rem:    {id: 29,  agg: last}   # % i.a., mediana del REM a 12 meses (IPC oficial)
     tasa_pases_terceros_1d:    {id: 150, agg: mean}   # % TNA, proxy de la caución
     tasa_pases_terceros_1d_max: {id: 150, agg: max}   # máximo mensual (picos de iliquidez)
@@ -161,6 +162,10 @@ transparencia:
   base_url: "https://api.bcra.gob.ar/transparencia/v1.0"
   productos: [Personales, Prendarios, Hipotecarios]
   antiguedad_max_dias: 180
+
+# Deuda del Tesoro (Secretaría de Finanzas): boletín mensual de la deuda bruta (Excel, URL cambia cada mes)
+finanzas:
+  pagina: "https://www.argentina.gob.ar/economia/finanzas/datos-mensuales"
 
 # Resumen mensual de la industria de FCI (CAFCI): tenencia de títulos públicos fuera de los bancos
 cafci:
@@ -332,6 +337,10 @@ alertas:
   validacion_hasta: "2023-12-01"          # para la prueba fuera de muestra: lo que se sabía a fines de 2023
   antiguedad_maxima_meses: 3  # lectura vigente: último dato de cada indicador, con hasta 3 meses de antigüedad
   grados: {sin_alerta: 0.25, vigilancia: 0.5, alerta: 0.75, alerta_grave: 1.01}
+
+# Deuda del Tesoro en pesos (mora.deuda)
+deuda:
+  horizontes: [1, 3, 6]
 
 # Carga financiera agregada (mora.carga): cuota de préstamos personales sobre la masa salarial
 carga:
