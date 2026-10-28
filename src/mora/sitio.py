@@ -99,6 +99,7 @@ def datos() -> dict:
         "expect": _csv("expectativas/comparacion.csv", index_col="medida"),
         "carga": _csv("carga/carga_financiera.csv", index_col=0, parse_dates=True),
         "carga_res": _json("carga/resumen_carga.json"),
+        "puente": _json("puente_homecredit/resumen_puente.json"),
         "familias": _csv("descriptivo/familias_por_linea.csv", parse_dates=["fecha"]),
         "castigos_total": _csv("descriptivo/mora_ajustada_castigos.csv", parse_dates=["fecha"]).dropna(),
         "castigos": _csv("ajuste/castigos_recientes.csv", parse_dates=["fecha"]),
@@ -537,6 +538,15 @@ def seccion_decision(d: dict, L: str) -> str:
                     corte("tarjetas_de_credito", "base", ttc) + "%"] for ttc in (10, 20)]
     m_base = central.loc["base", "colchon_pp"]
     sg = lambda x: ("+" if x >= 0 else "") + pp(x)  # noqa: E731
+    pu = d["puente"]
+    pt = {(r["escenario"], r["regla"]): r for r in pu["tabla"]}
+    nom_esc = {"es": {"ttc": "Año normal", "hoy": "Hoy", "base": "Base", "adverso": "Adverso"},
+               "en": {"ttc": "Normal year", "hoy": "Today", "base": "Baseline", "adverso": "Adverse"}}[L]
+    filas_puente = [[nom_esc[e], f"{pp(pt[(e, 'solo_perdida_esperada')]['aprobacion_pct'], 0)}%",
+                     f"{pp(pt[(e, 'solo_perdida_esperada')]['pd_media_aprobados_pct'])}%",
+                     f"{pp(pt[(e, 'con_costo_de_oportunidad')]['aprobacion_pct'], 0)}%",
+                     f"{pp(pt[(e, 'con_costo_de_oportunidad')]['pd_media_aprobados_pct'])}%"] for e in ("ttc", "hoy", "base", "adverso")]
+    url_hc = "https://github.com/alvarez1lucas/homecredit-pd-validation"
     if L == "es":
         return f"""
 <section><h2>7. Qué hacer con esto en un banco</h2>
@@ -555,6 +565,10 @@ def seccion_decision(d: dict, L: str) -> str:
 <li>Por eso los bancos racionan y segmentan: prestan sobre todo a clientes que cobran el sueldo en el banco, que tienen menos riesgo que el promedio.</li>
 <li>Supuestos: recupero del {pp(100 * (1 - dec['lgd_central']), 0)}% y costo operativo de {pp(dec['costo_central_pp'], 0)} puntos, que no salen de datos públicos. Con otros valores razonables el margen del escenario base va de {sg(base_grid['colchon_pp'].min())} a {sg(base_grid['colchon_pp'].max())} puntos: la conclusión "estamos en el límite" se sostiene, el signo exacto no.</li>
 </ul>
+<h3>Aplicado a un modelo de scoring real</h3>
+<p>Para ver el efecto sobre solicitudes concretas, se tomaron las PD calibradas de {num(pu['n_solicitudes'], L, 0)} solicitudes del modelo de <a href="{url_hc}">homecredit-pd-validation</a> (otro proyecto de este portfolio, sobre datos públicos de Home Credit) como si fueran las de un modelo calibrado en un año normal. Se les aplicó el ajuste de cada escenario y se compararon dos reglas: aprobar mientras el préstamo cubra la pérdida esperada (corte en PD de {pp(pu['cortes_pd_pct']['solo_perdida_esperada'])}%) o exigir además que le gane a prestarle al Estado (corte en {pp(pu['cortes_pd_pct']['con_costo_de_oportunidad'])}%).</p>
+{_tabla(['Escenario', 'Aprobación (sólo pérdida esperada)', 'PD media de los aprobados', 'Aprobación (con costo de oportunidad)', 'PD media de los aprobados'], filas_puente)}
+<p><strong>Si se ignora lo que paga el Estado, en el escenario base se aprobaría al {pp(pt[('base', 'solo_perdida_esperada')]['aprobacion_pct'], 0)}% de los solicitantes, con una PD media de {pp(pt[('base', 'solo_perdida_esperada')]['pd_media_aprobados_pct'])}%: por encima del {pp(pu['cortes_pd_pct']['con_costo_de_oportunidad'])}% en el que prestar empata con el Estado.</strong> Teniéndolo en cuenta, se aprueba al {pp(pt[('base', 'con_costo_de_oportunidad')]['aprobacion_pct'], 0)}%. Home Credit no es una cartera argentina: el ejercicio muestra la forma del efecto, no su nivel exacto.</p>
 <p class="nota">La PD es la mora de la cartera (incluye deuda impaga todavía no castigada), así que probablemente sobreestima el riesgo y la tasa mínima. El cálculo es a un año, sin capital regulatorio ni el valor de la relación con el cliente. Detalle en <code>docs/fase9_decision.md</code>.</p>
 </section>
 """
@@ -575,6 +589,10 @@ def seccion_decision(d: dict, L: str) -> str:
 <li>That is why banks ration and segment: they lend mostly to borrowers who receive their salary at the bank, who are less risky than average.</li>
 <li>Assumptions: {pp(100 * (1 - dec['lgd_central']), 0)}% recovery and a {pp(dec['costo_central_pp'], 0)}-point operating cost, which are not public data. With other reasonable values the baseline margin ranges from {sg(base_grid['colchon_pp'].min())} to {sg(base_grid['colchon_pp'].max())} points: "we are at the break-even line" holds, the exact sign does not.</li>
 </ul>
+<h3>Applied to a real scoring model</h3>
+<p>To see the effect on actual applications, the calibrated PDs of {num(pu['n_solicitudes'], L, 0)} applications from the <a href="{url_hc}">homecredit-pd-validation</a> model (another project in this portfolio, on public Home Credit data) were treated as those of a model calibrated on a normal year. Each scenario's adjustment was applied and two rules were compared: approve as long as the loan covers expected loss (PD cutoff {pp(pu['cortes_pd_pct']['solo_perdida_esperada'])}%), or also require it to beat lending to the State (cutoff {pp(pu['cortes_pd_pct']['con_costo_de_oportunidad'])}%).</p>
+{_tabla(['Scenario', 'Approval (expected loss only)', 'Mean PD of approved', 'Approval (with opportunity cost)', 'Mean PD of approved'], filas_puente)}
+<p><strong>Ignoring what the State pays, the baseline would approve {pp(pt[('base', 'solo_perdida_esperada')]['aprobacion_pct'], 0)}% of applicants with a mean PD of {pp(pt[('base', 'solo_perdida_esperada')]['pd_media_aprobados_pct'])}%: above the {pp(pu['cortes_pd_pct']['con_costo_de_oportunidad'])}% at which lending breaks even with the State.</strong> Taking it into account, {pp(pt[('base', 'con_costo_de_oportunidad')]['aprobacion_pct'], 0)}% are approved. Home Credit is not an Argentine portfolio: the exercise shows the shape of the effect, not its exact level.</p>
 <p class="nota">The PD is the portfolio delinquency ratio (it includes unpaid debt not yet written off), so it probably overstates risk and the minimum rate. The calculation is one-year, without regulatory capital or the value of the customer relationship. Details in <code>docs/fase9_decision.md</code>.</p>
 </section>
 """

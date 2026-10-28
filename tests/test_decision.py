@@ -44,3 +44,14 @@ def test_sensibilidad_linea_recupera_beta():
     linea = pd.Series(100 * inv_logit(1.2 * z + 0.5 + rng.normal(0, 0.01, 120)), index=idx)
     s = sensibilidad_linea(pd.DataFrame({"total": total, "x": linea}), "x", "2015-01-01")
     assert s["beta"] == pytest.approx(1.2, abs=0.05)
+
+
+def test_puente_aprobacion_con_y_sin_ajuste():
+    from mora.puente_homecredit import evaluar
+    tramos = pd.DataFrame({"pd_media": [0.02, 0.10, 0.40], "n": [50, 30, 20]})
+    deltas = {"ttc": 0.0, "hoy": 0.0, "base": 2.0, "adverso": 3.0}
+    r = evaluar(tramos, deltas, {"corte": 0.2}).set_index("escenario")
+    # sin ajuste se aprueban los dos primeros tramos (80%); con Δ = 2 el de 10% pasa a 45% y queda afuera
+    assert r.loc["ttc", "aprobacion_pct"] == pytest.approx(80.0)
+    assert r.loc["base", "aprobacion_pct"] == pytest.approx(50.0)
+    assert r.loc["ttc", "pd_media_aprobados_pct"] == pytest.approx(100 * (50 * 0.02 + 30 * 0.10) / 80)

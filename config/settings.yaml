@@ -308,6 +308,11 @@ canales:
     tasa_real_estado: media_previa
     prima_sobre_estado: media_previa
 
+# Puente con homecredit-pd-validation (mora.puente_homecredit): distribución de PD de un modelo real
+puente_homecredit:
+  predicciones: "F:/Home-credit-default/homecredit-model-validation/reports/dashboard/test_predictions.parquet"
+  cuantiles: 500
+
 # Carga financiera agregada (mora.carga): cuota de préstamos personales sobre la masa salarial
 carga:
   desde: "2017-01-01"

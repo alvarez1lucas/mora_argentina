@@ -17,14 +17,14 @@ Todo lo propuesto durante el proyecto, clasificado. Estados: **hecho**, **ahora*
 
 | Ítem | Estado | Notas |
 |---|---|---|
-| Expectativas de inflación (REM, BCRA) | en su fase (5) | Reemplaza la inflación de 3 meses anualizada como expectativa |
-| Carga financiera de los hogares (cuotas / masa salarial) | en su fase (5) | Stock × CFT sobre masa salarial SIPA |
+| Expectativas de inflación (REM, BCRA) | hecho (chequeo) | `mora.expectativas`: refuerza la conclusión; destapó el error del traspaso en reales (docs/expectativas.md) |
+| Carga financiera de los hogares (cuotas / masa salarial) | hecho | `mora.carga`: agregada; no verifica el "~25% del salario" de los endeudados (docs/carga.md) |
 | Stock de deuda del Tesoro en pesos e intereses capitalizados | en su fase (5) | Secretaría de Finanzas, Boletín de deuda |
 | Licitaciones del Tesoro (rollover, tasas) y emisión dollar-linked | en su fase (5) | La prensa indica que el dollar-linked reemplazó a los futuros en 2026 |
 | Mercado de trabajo informal (EPH) | en su fase (5) | El salario registrado no capta a los deudores informales |
 | Posición oficial del BCRA en futuros | fuera de alcance por ahora | No se encontró el archivo fuente; se usan puntos de control de prensa |
 | Cheques rechazados | fuera de alcance por ahora | No está en la API del BCRA |
-| Mora de PNFC/fintech | contexto | Sin serie primaria; sólo la foto de CFT del régimen de transparencia |
+| Mora de PNFC/fintech | hecho | Cinco fechas de los informes semestrales del BCRA, con citas verificables (docs/no_bancario.md) |
 
 ## Fases
 
@@ -39,4 +39,6 @@ Todo lo propuesto durante el proyecto, clasificado. Estados: **hecho**, **ahora*
 | 6 Escenarios | hecho |
 | 7 Sitio web (Python + Plotly, selector de medición) | hecho; falta publicar |
 | 8 Informe y README | hecho; falta publicar |
-| 9 Capa de decisión (PD por escenario, tasa mínima de originación) | hecho (`mora.decision`, docs/fase9_decision.md); no está en el sitio ni en el README |
+| 9 Capa de decisión (PD por escenario, tasa mínima de originación) | hecho; en el sitio (sección 7), con el puente a homecredit-pd-validation |
+| 10 Seguimiento de pronósticos (retrospectiva y registro) | hecho (`mora.seguimiento`, docs/seguimiento.md) |
+| 11 Fuera de los bancos (FCI, billeteras, PNFC) | hecho (`mora.no_bancario`, docs/no_bancario.md) |

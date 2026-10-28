@@ -1,0 +1,85 @@
+{
+  "tea_mercado_pct": 83.77659775730028,
+  "tea_estado_pct": 38.00794823069623,
+  "lgd": 0.75,
+  "costo_operativo_pp": 12.0,
+  "cortes_pd_pct": {
+    "solo_perdida_esperada": 52.76,
+    "con_costo_de_oportunidad": 21.27
+  },
+  "delta_logit": {
+    "ttc": 0.0,
+    "hoy": 1.259,
+    "base": 1.507,
+    "adverso": 1.76
+  },
+  "pd_media_homecredit_pct": 7.94,
+  "default_observado_homecredit_pct": 8.07,
+  "n_solicitudes": 61503,
+  "tabla": [
+    {
+      "escenario": "ttc",
+      "regla": "solo_perdida_esperada",
+      "corte_pd_pct": 52.76,
+      "pd_media_cartera_pct": 7.94,
+      "aprobacion_pct": 100.0,
+      "pd_media_aprobados_pct": 7.94
+    },
+    {
+      "escenario": "ttc",
+      "regla": "con_costo_de_oportunidad",
+      "corte_pd_pct": 21.27,
+      "pd_media_cartera_pct": 7.94,
+      "aprobacion_pct": 93.4,
+      "pd_media_aprobados_pct": 6.43
+    },
+    {
+      "escenario": "hoy",
+      "regla": "solo_perdida_esperada",
+      "corte_pd_pct": 52.76,
+      "pd_media_cartera_pct": 20.96,
+      "aprobacion_pct": 95.2,
+      "pd_media_aprobados_pct": 18.91
+    },
+    {
+      "escenario": "hoy",
+      "regla": "con_costo_de_oportunidad",
+      "corte_pd_pct": 21.27,
+      "pd_media_cartera_pct": 20.96,
+      "aprobacion_pct": 61.6,
+      "pd_media_aprobados_pct": 11.28
+    },
+    {
+      "escenario": "base",
+      "regla": "solo_perdida_esperada",
+      "corte_pd_pct": 52.76,
+      "pd_media_cartera_pct": 24.7,
+      "aprobacion_pct": 92.2,
+      "pd_media_aprobados_pct": 21.48
+    },
+    {
+      "escenario": "base",
+      "regla": "con_costo_de_oportunidad",
+      "corte_pd_pct": 21.27,
+      "pd_media_cartera_pct": 24.7,
+      "aprobacion_pct": 52.0,
+      "pd_media_aprobados_pct": 12.16
+    },
+    {
+      "escenario": "adverso",
+      "regla": "solo_perdida_esperada",
+      "corte_pd_pct": 52.76,
+      "pd_media_cartera_pct": 28.9,
+      "aprobacion_pct": 88.0,
+      "pd_media_aprobados_pct": 24.12
+    },
+    {
+      "escenario": "adverso",
+      "regla": "con_costo_de_oportunidad",
+      "corte_pd_pct": 21.27,
+      "pd_media_cartera_pct": 28.9,
+      "aprobacion_pct": 41.8,
+      "pd_media_aprobados_pct": 12.99
+    }
+  ]
+}

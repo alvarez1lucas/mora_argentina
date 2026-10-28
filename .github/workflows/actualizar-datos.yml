@@ -75,6 +75,9 @@ jobs:
       - name: Capa de decisión (PD por escenario y tasa mínima de originación)
         run: python -m mora.decision
 
+      - name: Puente con homecredit-pd-validation (cuantiles versionados)
+        run: python -m mora.puente_homecredit
+
       - name: README e informe (cifras desde outputs)
         run: python -m mora.informe
 
