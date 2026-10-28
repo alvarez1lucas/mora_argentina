@@ -32,7 +32,7 @@ import pandas as pd
 
 from mora.config import path, settings
 from mora.deflactores import DEFLACTORES
-from mora.satelite import Spec, build_dataset, design, evaluate_oos, fit, inv_logit, oos_summary, select_spec, signs_ok
+from mora.satelite import Spec, build_dataset, design, evaluate_oos, fit, inv_logit, oos_summary, residuos, select_spec, signs_ok
 
 ESCENARIOS = ("base", "adverso", "favorable")
 
@@ -125,8 +125,7 @@ def simular(res, df: pd.DataFrame, regresores: pd.DataFrame, spec: Spec, origen:
         params, eps, n = res.params.values[None, :], np.zeros((1, len(fechas))), 1
     else:
         params = rng.multivariate_normal(res.params.values, res.cov_params().values, size=n)
-        y_obs, X_obs = design(df, spec)
-        resid = (y_obs - X_obs[nombres].mul(res.params).sum(axis=1)).dropna().values
+        resid = residuos(res.params, df, spec).values
         eps = rng.choice(resid, size=(n, len(fechas)))
     dy_hist = df["dy"].loc[:origen].values
     lags_dy = np.tile(dy_hist[::-1][: spec.ar], (n, 1))  # columnas: dy_{t-1}, dy_{t-2}, ...

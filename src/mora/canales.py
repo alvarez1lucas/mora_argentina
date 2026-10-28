@@ -31,7 +31,7 @@ from mora.config import path, settings
 from mora.deflactores import DEFLACTORES
 from mora.features import precios
 from mora.rendimientos import comparacion, sistema
-from mora.satelite import build_dataset, design, fit, inv_logit, select_spec, signs_ok
+from mora.satelite import build_dataset, design, fit, inv_logit, residuos, select_spec, signs_ok
 
 CANAL_DE = {
     "salario_real_ia": "poder_compra",
@@ -108,8 +108,7 @@ def historical_decomposition(res, df: pd.DataFrame, spec, desde: pd.Timestamp, h
     Las filas de la ventana que quedaron fuera de la estimación no tienen residuo: se toma cero.
     Bandas: el mismo contrafáctico con el coeficiente del canal en los extremos de su IC 95%.
     """
-    y, X = design(df, spec)
-    resid = (y - X[res.params.index].mul(res.params).sum(axis=1)).dropna()
+    resid = residuos(res.params, df, spec)
     base = simulate(res.params, df, spec, desde, hasta, resid)
     ci = res.conf_int()
     rows = []

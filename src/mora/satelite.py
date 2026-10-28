@@ -158,6 +158,13 @@ def design(df: pd.DataFrame, spec: Spec) -> tuple[pd.Series, pd.DataFrame]:
     return y, sm.add_constant(X)
 
 
+def residuos(params: pd.Series, df: pd.DataFrame, spec: Spec) -> pd.Series:
+    """Residuos y − X·β sólo en las filas con todos los regresores (sum() trataría los faltantes como cero)."""
+    y, X = design(df, spec)
+    X = X[params.index]
+    return (y - X.mul(params).sum(axis=1))[X.notna().all(axis=1) & y.notna()]
+
+
 def signs_ok(res, spec: Spec, expected: dict[str, int]) -> bool:
     return all(np.sign(res.params[f"{v}_l{l}"]) == expected[v] for v, l in spec.lags.items() if expected.get(v, 0) != 0)
 

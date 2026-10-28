@@ -18,9 +18,9 @@
 
 | Medición | Muestra | Base | Banda 90% | Adverso | Favorable | Ponderado NIIF 9 |
 |---|---|---|---|---|---|---|
-| Pública (INDEC) | 2010+ | 15,9% | 9,5–20,7% | 19,7% | 13,3% | 15,7% |
-| Mix | 2010+ | 15,7% | 9,2–20,7% | 19,2% | 13,3% | 15,5% |
-| Seleccionada (canasta actualizada) | 2017+ | 13,9% | 7,1–20,5% | 16,2% | 12,2% | 14,2% |
+| Pública (INDEC) | 2010+ | 15,9% | 10,4–22,0% | 19,7% | 13,3% | 16,5% |
+| Mix | 2010+ | 15,7% | 10,0–22,1% | 19,2% | 13,3% | 16,3% |
+| Seleccionada (canasta actualizada) | 2017+ | 13,9% | 7,4–20,5% | 16,2% | 12,2% | 14,2% |
 
 El modelo satélite le gana al AR(1) y al paseo aleatorio fuera de muestra (RMSE a 12 meses: 2,25 pp contra 2,92 y 3,12). Pesos NIIF 9: 60% base, 25% adverso, 15% favorable. **En el base la mora sigue subiendo**, porque la tasa real queda cerca de máximos históricos; sólo baja si baja la tasa real.
 

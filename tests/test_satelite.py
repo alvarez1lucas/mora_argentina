@@ -58,3 +58,18 @@ def test_forecast_path_matches_manual_recursion():
         dy = p["const"] + p["dy_l1"] * dy + p["x_l6"] * df["x"].shift(6).loc[t]
         y += dy
         assert path[t] == pytest.approx(float(inv_logit(y)))
+
+
+def test_residuos_solo_en_filas_completas():
+    from mora.satelite import Spec, design, fit, residuos
+
+    idx = pd.date_range("2015-01-01", periods=60, freq="MS")
+    rng = np.random.default_rng(3)
+    df = pd.DataFrame({"x": rng.normal(size=60)}, index=idx)
+    df["dy"] = 0.01 * df["x"].shift(3).fillna(0) + rng.normal(0, 0.01, 60)
+    df["excluir"] = False
+    spec = Spec({"x": 3}, 1)
+    r = residuos(fit(df, spec).params, df, spec)
+    _, X = design(df, spec)
+    assert r.index.min() == X.dropna().index.min()  # sin residuos "contaminados" al inicio
+    assert np.isfinite(r).all()

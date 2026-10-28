@@ -18,9 +18,9 @@ What explains the 2024-2026 surge in household non-performing loans in Argentina
 
 | Price measure | Sample | Baseline | 90% band | Adverse | Favorable | IFRS 9 weighted |
 |---|---|---|---|---|---|---|
-| Official (INDEC) | 2010+ | 15.9% | 9.5–20.7% | 19.7% | 13.3% | 15.7% |
-| Mix | 2010+ | 15.7% | 9.2–20.7% | 19.2% | 13.3% | 15.5% |
-| Selected (updated basket) | 2017+ | 13.9% | 7.1–20.5% | 16.2% | 12.2% | 14.2% |
+| Official (INDEC) | 2010+ | 15.9% | 10.4–22.0% | 19.7% | 13.3% | 16.5% |
+| Mix | 2010+ | 15.7% | 10.0–22.1% | 19.2% | 13.3% | 16.3% |
+| Selected (updated basket) | 2017+ | 13.9% | 7.4–20.5% | 16.2% | 12.2% | 14.2% |
 
 The satellite model beats the AR(1) and the random walk out of sample (12-month RMSE 2.25 pp vs 2.92 and 3.12). IFRS 9 weights: 60% baseline, 25% adverse, 15% favorable. **In the baseline, delinquency keeps rising** because the real loan rate stays near historical highs; it only falls if real rates fall.
 
