@@ -15,4 +15,4 @@
 
 **Lectura:** la carga casi se duplicó desde nov-23 (×1,8), por el boom de crédito con tasas reales altas. El máximo de la serie fue en oct-18, en plena suba anterior de la mora (de 3,0% a 4,8% entre ene-18 y jul-19).
 
-**Lo que no permite decir:** como divide por todos los trabajadores registrados, tengan deuda o no, no verifica la cifra de "~25% del salario" que circula para los hogares endeudados. Para eso hacen falta datos por deudor (la Central de Deudores no se usa, por privacidad) o encuestas como la de Finanzas de los Hogares, que no tienen una edición reciente.
+**Lo que no permite decir:** como divide por todos los trabajadores registrados, tengan deuda o no, no verifica la cifra de "~25% del salario" que circula para los hogares endeudados. Para eso hacen falta datos por deudor (la Central de Deudores no se usa, por privacidad).
