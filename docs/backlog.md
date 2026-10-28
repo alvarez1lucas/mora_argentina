@@ -35,7 +35,7 @@ Todo lo propuesto durante el proyecto, clasificado. Estados: **hecho**, **ahora*
 | 3 Descriptivo | hecho |
 | 4 Modelo satélite | hecho |
 | 4b Robustez de medición | hecho |
-| 5 Causal y panel (DiD con exposición, Double ML, Causal Forest, LightGBM + SHAP, mediación, costo de oportunidad) | hecho; pendientes opcionales: proyecciones locales, ARDL/bounds, bandas por bootstrap |
+| 5 Causal y panel (DiD con exposición, Double ML, Causal Forest, LightGBM + SHAP, mediación, costo de oportunidad) | hecho; proyecciones locales, ARDL/bounds y bootstrap de canales en `mora.complementos` (no integrados al sitio ni al workflow; ver docs/complementos.md) |
 | 6 Escenarios | hecho |
 | 7 Sitio web (Python + Plotly, selector de medición) | hecho; falta publicar |
 | 8 Informe y README | hecho; falta publicar |

@@ -297,3 +297,22 @@ sitio:
   destino: site                  # GitHub Pages publica esta carpeta (workflow de Pages)
   repo_url: "https://github.com/alvarez1lucas/mora-hogares-argentina"   # se confirma al crear el repo
   url: "https://alvarez1lucas.github.io/mora-hogares-argentina/"
+
+# Análisis complementarios (mora.complementos): fuera del sitio, el README y el workflow semanal
+complementos:
+  ardl:
+    muestras: [larga, limpia]
+    regresores: [tasa_real_cft, log_salario_real, log_credito_real]
+    max_rezago: 6
+  proyecciones_locales:
+    horizontes: 18
+    rezagos: 3
+    # shock: controles (en rezagos)
+    shocks:
+      tasa_real_cft: [salario_real_ia, emae_ia]
+      salario_real_ia: [tasa_real_cft, emae_ia]
+  bootstrap_canales:
+    variantes: [base, costo_oportunidad]
+    repeticiones: 300
+    bloque_meses: 12
+    semilla: 20261028

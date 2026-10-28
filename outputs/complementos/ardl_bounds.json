@@ -1,0 +1,140 @@
+[
+  {
+    "deflactor": "publico",
+    "muestra": "larga",
+    "n": 125,
+    "rezagos_y": 5,
+    "rezagos_x": {
+      "tasa_real_cft": 1,
+      "log_salario_real": 1,
+      "log_credito_real": 1
+    },
+    "F": 5.649935320836933,
+    "pvalor_cota_I1": 0.0036834504354615882,
+    "cv95_inferior_I0": 2.877209,
+    "cv95_superior_I1": 4.0104999,
+    "conclusion": "cointegracion",
+    "velocidad_ajuste": -0.08391546676677251,
+    "velocidad_ajuste_p": 7.623659889050943e-06,
+    "largo_plazo": {
+      "tasa_real_cft": 0.0031667929778625425,
+      "log_salario_real": -4.846723601748816,
+      "log_credito_real": 1.8262491734260615
+    }
+  },
+  {
+    "deflactor": "seleccionado",
+    "muestra": "larga",
+    "n": 126,
+    "rezagos_y": 4,
+    "rezagos_x": {
+      "tasa_real_cft": 1,
+      "log_salario_real": 5,
+      "log_credito_real": 4
+    },
+    "F": 10.658272273732397,
+    "pvalor_cota_I1": 4.5190656605686996e-07,
+    "cv95_inferior_I0": 2.877209,
+    "cv95_superior_I1": 4.0104999,
+    "conclusion": "cointegracion",
+    "velocidad_ajuste": -0.16662898050170954,
+    "velocidad_ajuste_p": 8.438041356631143e-08,
+    "largo_plazo": {
+      "tasa_real_cft": 0.0011707635583524743,
+      "log_salario_real": -4.822462783005296,
+      "log_credito_real": 1.7363195078984557
+    }
+  },
+  {
+    "deflactor": "mix",
+    "muestra": "larga",
+    "n": 126,
+    "rezagos_y": 4,
+    "rezagos_x": {
+      "tasa_real_cft": 1,
+      "log_salario_real": 5,
+      "log_credito_real": 4
+    },
+    "F": 11.119339214524217,
+    "pvalor_cota_I1": 1.9362690983903974e-07,
+    "cv95_inferior_I0": 2.877209,
+    "cv95_superior_I1": 4.0104999,
+    "conclusion": "cointegracion",
+    "velocidad_ajuste": -0.16541056395838563,
+    "velocidad_ajuste_p": 2.6041052760320263e-08,
+    "largo_plazo": {
+      "tasa_real_cft": 0.001508171842543369,
+      "log_salario_real": -4.8835123354158965,
+      "log_credito_real": 1.791976626690281
+    }
+  },
+  {
+    "deflactor": "publico",
+    "muestra": "limpia",
+    "n": 111,
+    "rezagos_y": 4,
+    "rezagos_x": {
+      "tasa_real_cft": 1,
+      "log_salario_real": 5,
+      "log_credito_real": 4
+    },
+    "F": 10.699548639392576,
+    "pvalor_cota_I1": 4.18879944508177e-07,
+    "cv95_inferior_I0": 2.877209,
+    "cv95_superior_I1": 4.0104999,
+    "conclusion": "cointegracion",
+    "velocidad_ajuste": -0.16949712298361727,
+    "velocidad_ajuste_p": 7.62688381608244e-09,
+    "largo_plazo": {
+      "tasa_real_cft": 0.001925181676673751,
+      "log_salario_real": -4.880165605047547,
+      "log_credito_real": 1.8236116193053276
+    }
+  },
+  {
+    "deflactor": "seleccionado",
+    "muestra": "limpia",
+    "n": 111,
+    "rezagos_y": 4,
+    "rezagos_x": {
+      "tasa_real_cft": 1,
+      "log_salario_real": 5,
+      "log_credito_real": 4
+    },
+    "F": 10.00391501545288,
+    "pvalor_cota_I1": 1.504915037364718e-06,
+    "cv95_inferior_I0": 2.877209,
+    "cv95_superior_I1": 4.0104999,
+    "conclusion": "cointegracion",
+    "velocidad_ajuste": -0.17178585010567746,
+    "velocidad_ajuste_p": 1.808595505485353e-08,
+    "largo_plazo": {
+      "tasa_real_cft": 0.001255811670026609,
+      "log_salario_real": -4.95062002276712,
+      "log_credito_real": 1.7358611751881214
+    }
+  },
+  {
+    "deflactor": "mix",
+    "muestra": "limpia",
+    "n": 111,
+    "rezagos_y": 4,
+    "rezagos_x": {
+      "tasa_real_cft": 1,
+      "log_salario_real": 5,
+      "log_credito_real": 4
+    },
+    "F": 10.382257373963927,
+    "pvalor_cota_I1": 7.506782666588663e-07,
+    "cv95_inferior_I0": 2.877209,
+    "cv95_superior_I1": 4.0104999,
+    "conclusion": "cointegracion",
+    "velocidad_ajuste": -0.17087546016653193,
+    "velocidad_ajuste_p": 1.0193097673119282e-08,
+    "largo_plazo": {
+      "tasa_real_cft": 0.001585829911712462,
+      "log_salario_real": -4.922335062151407,
+      "log_credito_real": 1.7826238374530403
+    }
+  }
+]
