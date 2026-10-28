@@ -97,6 +97,8 @@ def datos() -> dict:
         "retro_m": _csv("seguimiento/metricas_retrospectiva.csv"),
         "seg": _json("seguimiento/resumen_seguimiento.json"),
         "expect": _csv("expectativas/comparacion.csv", index_col="medida"),
+        "carga": _csv("carga/carga_financiera.csv", index_col=0, parse_dates=True),
+        "carga_res": _json("carga/resumen_carga.json"),
         "familias": _csv("descriptivo/familias_por_linea.csv", parse_dates=["fecha"]),
         "castigos_total": _csv("descriptivo/mora_ajustada_castigos.csv", parse_dates=["fecha"]).dropna(),
         "castigos": _csv("ajuste/castigos_recientes.csv", parse_dates=["fecha"]),
@@ -163,6 +165,15 @@ def fig_tasas(d: dict, lang: str) -> go.Figure:
         _linea(r.index, r["tea_badlar"], n[2], "s3"),
     ])
     return _layout(fig, lang, {"es": "Tasa efectiva anual (%)", "en": "Effective annual rate (%)"}[lang])
+
+
+def fig_carga(d: dict, lang: str) -> go.Figure:
+    c = d["carga"]
+    plazo = d["carga_res"]["plazo_central_meses"]
+    n = {"es": f"Cuota de préstamos personales (plazo promedio de {plazo} meses)",
+         "en": f"Personal loan payments ({plazo}-month average term)"}[lang]
+    fig = go.Figure([_linea(c.index, c[f"cuota_personales_pct_masa_{plazo}m"], n, "s2")])
+    return _layout(fig, lang, {"es": "% de la masa salarial registrada", "en": "% of the registered wage bill"}[lang], alto=320)
 
 
 def fig_salario(d: dict, lang: str) -> go.Figure:
@@ -576,6 +587,7 @@ def contenido(d: dict, lang: str) -> str:
     pp = lambda x, k=1: num(x, L, k)  # noqa: E731
 
     cad = cadena_cifras(d, L)
+    cr = d["carga_res"]
     nbe = d["nb"]["exposicion"]
     nbc = d["nb"]["credito_integrado"]
     nb_ult, nb_ini = max(nbc), min(nbc)
@@ -617,6 +629,9 @@ def contenido(d: dict, lang: str) -> str:
 <p><strong>Fuera de los bancos también se le presta al Estado.</strong> Los fondos comunes de inversión tenían deuda nacional por {pp(nbe['fci_deuda_nacional_pbi'])}% del PBI en {mes(nbe['ultimo'], L)} (máximo: {pp(nbe['maximo_fci_deuda_nacional_pbi'])}% en {mes(nbe['fecha_maximo_fci'], L)}; datos de la CAFCI). Sumados a los bancos, la exposición al Estado llega a {pp(nbe['total_pbi'])}% del PBI, contra {pp(nbe['credito_privado_bancos_pbi'])}% de crédito bancario al sector privado. Los fondos money market, donde las billeteras virtuales colocan el saldo de sus usuarios, tienen sólo {pp(nbe['fci_money_market_titulos_pct'])}% en títulos públicos y {pp(nbe['fci_money_market_plazo_pct'], 0)}% en plazos fijos y cauciones: esa plata vuelve a los bancos, y lo que los bancos compran con ella ya está en su exposición. Por eso no se suma, para no contarla dos veces. No hay datos públicos de la tenencia directa por medio de brokers ni de la cartera propia de las fintech.</p>
 <p>Cuando el crédito se reactivó, las familias tomaron deuda a tasas altas justo cuando el salario real no se recuperaba. El salario registrado real está {pp(100 - sal['salario_real_publico'])}% abajo de nov-23 con la medición oficial, {pp(100 - sal['salario_real_mix'])}% con la mix y {pp(100 - sal['salario_real_seleccionado'])}% con la canasta actualizada (ponderadores ENGHo 2017/18).</p>
 {_div(fig_salario(d, L), 'g-salario', L)}
+<p><strong>La cuota pesa casi el doble que antes del ajuste.</strong> Los préstamos personales se llevan {pp(cr['valores_ultimo'][f"cuota_personales_pct_masa_{cr['plazo_central_meses']}m"])}% de la masa salarial registrada en {mes(cr['ultimo'], L)}, contra {pp(cr['nov23'][f"cuota_personales_pct_masa_{cr['plazo_central_meses']}m"])}% en nov-23 y {pp(cr['promedio_2017_2023'])}% en promedio en 2017-2023. El máximo de la serie fue {pp(cr['maximo']['valor'])}% en {mes(cr['maximo']['fecha'], L)}, en plena suba de la mora de 2018-2019 (de 3,0% a 4,8%). Es una medida agregada: divide por todos los trabajadores registrados, tengan deuda o no, así que no sirve para verificar la cifra de "un cuarto del sueldo" que se menciona para los hogares endeudados (para eso hacen falta datos por deudor).</p>
+{_div(fig_carga(d, L), 'g-carga', L)}
+<details class="metodo"><summary>Cómo se calculó</summary><p>Cuota mensual = stock de préstamos personales × (TNA / 12 + 1 / plazo): intereses más una amortización lineal. El plazo promedio no es público: con 18 meses la carga actual sería {pp(cr['valores_ultimo']['cuota_personales_pct_masa_18m'])}% y con 36 meses, {pp(cr['valores_ultimo']['cuota_personales_pct_masa_36m'])}%. Masa salarial = remuneración promedio de los asalariados privados (SIPA, sin el medio aguinaldo de junio y diciembre y con el aguinaldo prorrateado) × trabajadores registrados. Las tarjetas no entran porque no se sabe qué parte del saldo se financia: su saldo equivale a {pp(cr['valores_ultimo']['tarjetas_meses_de_masa'])} meses de masa salarial.</p></details>
 <p><strong>Lo que rinde prestarle al Estado pone un piso a la tasa de las familias.</strong> Como no hay una serie pública de rendimientos de Lecap, se calcula lo que los bancos efectivamente ganaron con títulos públicos y pases en pesos (cuentas de resultados de cada entidad, reexpresadas por inflación). En 2025 el Estado les rindió en promedio {pp(pr['2025']['tea_estado_3m'])}% anual, por encima de la BADLAR ({pp(pr['2025']['tea_badlar'])}%). Y la tasa de préstamos personales nuevos se quedó en {pp(pr['2025']['tea_personales_nuevos'])}%: una prima de {pp(pr['2025']['prima_personales_sobre_estado_pp'])} pp sobre el Estado.</p>
 {_div(fig_tasas(d, L), 'g-tasas', L)}
 </section>
@@ -685,6 +700,9 @@ def contenido(d: dict, lang: str) -> str:
 <p><strong>Lending to the State also happens outside banks.</strong> Mutual funds held national government debt worth {pp(nbe['fci_deuda_nacional_pbi'])}% of GDP in {mes(nbe['ultimo'], L)} (peak: {pp(nbe['maximo_fci_deuda_nacional_pbi'])}% in {mes(nbe['fecha_maximo_fci'], L)}; CAFCI data). Added to banks, exposure to the State reaches {pp(nbe['total_pbi'])}% of GDP, against {pp(nbe['credito_privado_bancos_pbi'])}% for bank credit to the private sector. Money market funds, where digital wallets park their users' balances, hold only {pp(nbe['fci_money_market_titulos_pct'])}% in government securities and {pp(nbe['fci_money_market_plazo_pct'], 0)}% in time deposits and repos: that money goes back to banks, and what banks buy with it is already in their exposure, so it is not added again. There is no public data on direct holdings through brokers or on fintechs' own portfolios.</p>
 <p>When credit came back, households borrowed at high rates just as real wages failed to recover. The real registered wage is {pp(100 - sal['salario_real_publico'])}% below Nov-23 with the official measure, {pp(100 - sal['salario_real_mix'])}% with the mix and {pp(100 - sal['salario_real_seleccionado'])}% with the updated basket (ENGHo 2017/18 weights).</p>
 {_div(fig_salario(d, L), 'g-salario', L)}
+<p><strong>Loan payments weigh almost twice as much as before the adjustment.</strong> Personal loans take {pp(cr['valores_ultimo'][f"cuota_personales_pct_masa_{cr['plazo_central_meses']}m"])}% of the registered wage bill in {mes(cr['ultimo'], L)}, against {pp(cr['nov23'][f"cuota_personales_pct_masa_{cr['plazo_central_meses']}m"])}% in Nov-23 and a 2017-2023 average of {pp(cr['promedio_2017_2023'])}%. The series peak was {pp(cr['maximo']['valor'])}% in {mes(cr['maximo']['fecha'], L)}, in the middle of the 2018-2019 rise in delinquency (from 3.0% to 4.8%). This is an aggregate measure: it divides by all registered workers, indebted or not, so it cannot verify the "a quarter of the salary" figure quoted for indebted households (that needs borrower-level data).</p>
+{_div(fig_carga(d, L), 'g-carga', L)}
+<details class="metodo"><summary>How it was calculated</summary><p>Monthly payment = personal loan stock × (annual rate / 12 + 1 / term): interest plus straight-line amortization. The average term is not public: with 18 months the current burden would be {pp(cr['valores_ultimo']['cuota_personales_pct_masa_18m'])}% and with 36 months {pp(cr['valores_ultimo']['cuota_personales_pct_masa_36m'])}%. Wage bill = average private-sector wage (SIPA, removing the half-month bonus in June and December and spreading it over the year) × registered workers. Credit cards are left out because the financed share of balances is unknown: their balance equals {pp(cr['valores_ultimo']['tarjetas_meses_de_masa'])} months of the wage bill.</p></details>
 <p><strong>What lending to the State pays sets a floor for household rates.</strong> With no public series of Treasury bill (Lecap) yields, the measure is what banks actually earned on peso government securities and repos (income accounts of each bank, restated for inflation). In 2025 the State paid them {pp(pr['2025']['tea_estado_3m'])}% a year on average, above BADLAR ({pp(pr['2025']['tea_badlar'])}%). New personal loans stayed at {pp(pr['2025']['tea_personales_nuevos'])}%, a {pp(pr['2025']['prima_personales_sobre_estado_pp'])} pp premium over the State.</p>
 {_div(fig_tasas(d, L), 'g-tasas', L)}
 </section>

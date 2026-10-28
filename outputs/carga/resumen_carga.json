@@ -1,0 +1,25 @@
+{
+  "plazo_central_meses": 24,
+  "ultimo": "2026-06-01",
+  "valores_ultimo": {
+    "cuota_personales_pct_masa_18m": 7.99,
+    "cuota_personales_pct_masa_24m": 6.99,
+    "cuota_personales_pct_masa_36m": 5.98,
+    "intereses_personales_pct_masa": 3.98,
+    "tarjetas_meses_de_masa": 0.9,
+    "personales_meses_de_masa": 0.72
+  },
+  "promedio_2017_2023": 5.39,
+  "nov23": {
+    "cuota_personales_pct_masa_18m": 4.24,
+    "cuota_personales_pct_masa_24m": 3.89,
+    "cuota_personales_pct_masa_36m": 3.54,
+    "intereses_personales_pct_masa": 2.84,
+    "tarjetas_meses_de_masa": 0.67,
+    "personales_meses_de_masa": 0.25
+  },
+  "maximo": {
+    "fecha": "2018-10-01",
+    "valor": 8.98
+  }
+}

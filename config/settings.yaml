@@ -71,6 +71,7 @@ datos_gob:
     # RIPTE (158.1_REPTE_0_0_5) figura en el catálogo pero la API lo devuelve vacío (oct-2026).
     emae_desest:         "143.3_NO_PR_2004_A_31"         # INDEC, EMAE desestacionalizado
     empleo_registrado:   "151.1_TL_SIN_TAC_2012_M_15"    # SIPA, total de trabajadores registrados, sin estacionalidad
+    remuneracion_privada: "153.1_RNERACIDIO_2009_M_21"   # SIPA, asalariados del sector privado, remuneración promedio en pesos
     # IPC de la Ciudad de Buenos Aires (IDECBA): base jul-11/jun-12 (2012-07 a 2022-02) y base 2021 (2022-02 en adelante)
     ipcba_general_b2012:   "193.1_NIVEL_GENERAL_JULI_0_13"
     ipcba_general_b2021:   "193.2_NIVEL_GENERAL_2021_0_13_2"
@@ -306,6 +307,12 @@ canales:
     spread_personales: media_previa
     tasa_real_estado: media_previa
     prima_sobre_estado: media_previa
+
+# Carga financiera agregada (mora.carga): cuota de préstamos personales sobre la masa salarial
+carga:
+  desde: "2017-01-01"
+  plazos_meses: [18, 24, 36]   # plazo promedio de los préstamos personales: no es público, se sensibiliza
+  plazo_central_meses: 24
 
 # Seguimiento de pronósticos (mora.seguimiento): retrospectiva en tiempo pseudo-real y registro
 seguimiento:

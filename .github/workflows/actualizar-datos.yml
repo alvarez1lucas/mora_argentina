@@ -60,6 +60,9 @@ jobs:
       - name: Ventana del ajuste (nov-23 en adelante)
         run: python -m mora.ajuste
 
+      - name: Carga financiera de las familias
+        run: python -m mora.carga
+
       - name: Fuera de los bancos (FCI, billeteras y proveedores no financieros)
         run: python -m mora.no_bancario
 
