@@ -21,7 +21,7 @@ from mora.config import ROOT, path, settings
 
 OUT = path("outputs")
 PLOTLY_JS = "https://cdn.jsdelivr.net/npm/plotly.js-dist-min@2.35.2/plotly.min.js"
-PLOTLY_ES = "https://cdn.jsdelivr.net/npm/plotly.js-locales@2.35.2/es.js"  # fechas de los ejes en español
+PLOTLY_ES = "https://cdn.jsdelivr.net/npm/plotly.js@2.35.2/dist/plotly-locale-es.js"  # fechas de los ejes en español
 
 # Roles de color: (claro, oscuro)
 SERIES = {"s1": ("#2a78d6", "#3987e5"), "s2": ("#eb6834", "#d95926"), "s3": ("#1baf7a", "#199e70")}
@@ -541,12 +541,15 @@ LIMITACIONES = {
 }
 
 CSS = """
-:root{color-scheme:light;--bg:#f9f9f7;--surface:#fcfcfb;--text:#0b0b0b;--text2:#52514e;--muted:#898781;--line:#e1e0d9;--accent:#2a78d6}
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){color-scheme:dark;--bg:#0d0d0d;--surface:#1a1a19;--text:#f0efec;--text2:#c3c2b7;--muted:#898781;--line:#2c2c2a;--accent:#3987e5}}
-:root[data-theme="dark"]{color-scheme:dark;--bg:#0d0d0d;--surface:#1a1a19;--text:#f0efec;--text2:#c3c2b7;--muted:#898781;--line:#2c2c2a;--accent:#3987e5}
+:root{color-scheme:light;--bg:#f9f9f7;--surface:#fcfcfb;--text:#0b0b0b;--text2:#52514e;--muted:#898781;--line:#e1e0d9;--accent:#2a78d6;--lado1:rgba(42,120,214,.075);--lado2:rgba(235,104,52,.055)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){color-scheme:dark;--bg:#0d0d0d;--surface:#1a1a19;--text:#f0efec;--text2:#c3c2b7;--muted:#898781;--line:#2c2c2a;--accent:#3987e5;--lado1:rgba(57,135,229,.10);--lado2:rgba(217,89,38,.07)}}
+:root[data-theme="dark"]{color-scheme:dark;--bg:#0d0d0d;--surface:#1a1a19;--text:#f0efec;--text2:#c3c2b7;--muted:#898781;--line:#2c2c2a;--accent:#3987e5;--lado1:rgba(57,135,229,.10);--lado2:rgba(217,89,38,.07)}
 *{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:var(--text);font:16px/1.6 system-ui,-apple-system,"Segoe UI",sans-serif}
 main{max-width:920px;margin:0 auto;padding:24px 16px 64px}
+/* Color tenue en los márgenes (sólo pantallas anchas): los dos colores principales de los gráficos */
+@media screen and (min-width:1000px){body::before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;
+background:radial-gradient(50% 85% at 0% 25%,var(--lado1),transparent 72%),radial-gradient(50% 85% at 100% 75%,var(--lado2),transparent 72%)}}
 header{display:flex;justify-content:space-between;align-items:baseline;gap:16px;flex-wrap:wrap}
 h1{font-size:2rem;line-height:1.2;margin:8px 0}
 h2{font-size:1.35rem;margin:48px 0 8px}
