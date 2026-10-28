@@ -38,8 +38,17 @@ jobs:
           pip install -r requirements.txt
           pip install -e .
 
-      - name: Generar sitio
-        run: python -m mora.sitio
+      - name: Generar sitio e informe
+        run: |
+          python -m mora.sitio
+          python -m mora.informe
+
+      - name: Informe en PDF (Chrome headless)
+        run: |
+          for par in "informe.html:informe.pdf" "en/report.html:informe-en.pdf"; do
+            google-chrome --headless=new --no-sandbox --disable-gpu --no-pdf-header-footer               --virtual-time-budget=15000 --print-to-pdf="site/${par#*:}" "file://$PWD/site/${par%%:*}"
+          done
+          ls -la site/*.pdf
 
       - uses: actions/upload-pages-artifact@v3
         with:

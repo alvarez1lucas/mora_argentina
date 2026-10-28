@@ -296,3 +296,4 @@ escenarios:
 sitio:
   destino: site                  # GitHub Pages publica esta carpeta (workflow de Pages)
   repo_url: "https://github.com/alvarez1lucas/mora-hogares-argentina"   # se confirma al crear el repo
+  url: "https://alvarez1lucas.github.io/mora-hogares-argentina/"

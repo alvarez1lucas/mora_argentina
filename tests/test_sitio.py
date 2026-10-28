@@ -25,3 +25,14 @@ def test_pagina_sin_valores_faltantes(lang):
     texto = re.sub(r"<script.*?</script>", "", html, flags=re.S)
     assert not re.search(r"\bnan\b|\bNaN\b|\binf\b", texto)
     assert html.count("plotly-graph-div") >= 7
+
+
+@pytest.mark.skipif(not (path("outputs") / "escenarios" / "resumen_escenarios.json").exists(),
+                    reason="requiere los outputs del pipeline")
+@pytest.mark.parametrize("lang", ["es", "en"])
+def test_readme_e_informe_sin_valores_faltantes(lang):
+    from mora.informe import informe_html, readme
+
+    d = datos()
+    for texto in (readme(d, lang), re.sub(r"<script.*?</script>", "", informe_html(d, lang), flags=re.S)):
+        assert not re.search(r"\bnan\b|\bNaN\b|\binf\b|\{c\[", texto)
