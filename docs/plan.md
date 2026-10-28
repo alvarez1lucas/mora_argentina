@@ -16,7 +16,7 @@
 4. **Modelo satélite:** tests de raíz unitaria (ADF/KPSS, Zivot-Andrews con quiebre), ARDL / modelo de corrección de errores si hay cointegración y modelo en diferencias si no la hay; rezagos por criterio de información con un tope justificado; crecimiento previo del crédito como proxy del efecto cosecha; validación expanding-window fuera de muestra contra benchmarks ingenuos (random walk, AR).
 5. **Canales monetarios y financieros (fase causal, separada del satélite).** Ver abajo.
 6. **Escenarios:** base, adverso y favorable, con intervalos de confianza (lógica forward-looking de NIIF 9 y stress test).
-7. **Sitio web y automatización:** sitio estático (Quarto + gráficos Plotly) publicado en GitHub Pages, bilingüe ES/EN, que lee sólo `data/processed/` y `outputs/`. GitHub Actions corre la ingesta, el modelo y el render, y publica. Reemplaza a Streamlit: carga instantánea sin servidor, se ve como una publicación y no como una demo, y el informe de 2 páginas (PDF) sale del mismo código fuente.
+7. **Sitio web y automatización:** sitio estático (generado con Python + Plotly por `mora.sitio`; se descartó Quarto para no sumar una herramienta externa) publicado en GitHub Pages, bilingüe ES/EN, que lee sólo `data/processed/` y `outputs/`. GitHub Actions corre la ingesta, el modelo y el render, y publica. Reemplaza a Streamlit: carga instantánea sin servidor, se ve como una publicación y no como una demo, y el informe de 2 páginas (PDF, impreso con Chrome en CI) sale de los mismos outputs (`mora.informe`).
 8. **Informe de 2 páginas y README (EN + ES).**
 
 ## Fase 5: canales monetarios y financieros

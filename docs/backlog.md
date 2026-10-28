@@ -34,8 +34,8 @@ Todo lo propuesto durante el proyecto, clasificado. Estados: **hecho**, **ahora*
 | 2 Ingesta | hecho |
 | 3 Descriptivo | hecho |
 | 4 Modelo satélite | hecho |
-| 4b Robustez de medición | en curso |
-| 5 Causal y panel (DiD con exposición, Double ML, Causal Forest, LightGBM + SHAP, proyecciones locales, ARDL/bounds) | pendiente |
-| 6 Escenarios | pendiente |
-| 7 Sitio web (Quarto, selector de medición) | pendiente |
-| 8 Informe y README | pendiente |
+| 4b Robustez de medición | hecho |
+| 5 Causal y panel (DiD con exposición, Double ML, Causal Forest, LightGBM + SHAP, mediación, costo de oportunidad) | hecho; pendientes opcionales: proyecciones locales, ARDL/bounds, bandas por bootstrap |
+| 6 Escenarios | hecho |
+| 7 Sitio web (Python + Plotly, selector de medición) | hecho; falta publicar |
+| 8 Informe y README | hecho; falta publicar |
