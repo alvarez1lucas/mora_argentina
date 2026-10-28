@@ -560,7 +560,7 @@ def contenido(d: dict, lang: str) -> str:
 </ul>
 
 <h3>Etapa 2: qué subió la mora</h3>
-<p>Ecuación de la variación mensual de la mora (logit) con la tasa real del CFT, el salario real, el tipo de cambio real y el crédito real, con rezagos elegidos por BIC. El aporte de cada canal es la mora simulada con los datos reales menos la simulada con ese canal en un valor neutral. El aporte de la tasa se reparte entre sus partes de la etapa 1, poniendo cada parte en su promedio previo. Ventana: del mínimo de {cad['ventana'][0]} ({cad['mora_ini']}%) a {cad['ventana'][1]} ({cad['mora_fin']}%). Las barras muestran el intervalo del 95%.</p>
+<p>Para medir cuánto aportó cada factor se simula la mora como si ese factor no se hubiera movido: la diferencia con lo que pasó es su aporte. El aporte de la tasa se reparte entre las tres partes de la etapa 1. Ventana: del mínimo de {cad['ventana'][0]} ({cad['mora_ini']}%) a {cad['ventana'][1]} ({cad['mora_fin']}%). Las barras muestran el intervalo del 95%.</p>
 {_div(fig_etapa2(d, L), 'g-etapa2', L)}
 <ul>
 <li><strong>La tasa es el canal dominante:</strong> +{cad['tasa']} pp (p = {cad['tasa_p']}). De eso, <strong>lo que paga el Estado aporta +{cad['mora_estado']} pp</strong>, la prima del banco +{cad['mora_prima']} pp y el IVA +{cad['mora_impuestos']} pp.</li>
@@ -568,7 +568,7 @@ def contenido(d: dict, lang: str) -> str:
 <li><strong>El poder de compra pesa más cuanto más realista es la medición de precios:</strong> +{cad['poder_compra']['publico']} pp con la oficial (p = {cad['poder_compra_p']['publico']}) y +{cad['poder_compra']['seleccionado']} pp con la canasta actualizada (p = {cad['poder_compra_p']['seleccionado']}).</li>
 <li>Ancla cambiaria: +{cad['ancla_cambiaria_rg']} pp, significativa sólo con la canasta actualizada (p = {cad['ancla_cambiaria_p']['seleccionado']}). Ciclo de crédito: +{cad['cosecha_dilucion_rg']} pp.</li>
 </ul>
-<p class="nota">La cantidad absorbida (stock de títulos y pases) no entra en la etapa 2 porque actúa a través del precio: en una ecuación única con la tasa adentro, su aporte directo no se distingue de cero. Los intervalos de las partes de la tasa se mueven con el coeficiente de la tasa y son amplios. Lo que paga el Estado también refleja las expectativas de inflación y el riesgo soberano, no sólo la decisión de esterilizar.</p>
+<details class="metodo"><summary>Cómo se calculó</summary><p>Ecuación de la variación mensual de la mora (logit) con la tasa real del CFT, el salario real, el tipo de cambio real y el crédito real, con rezagos elegidos por BIC. El aporte de cada canal es la mora simulada con los datos reales menos la simulada con ese canal en un valor neutral. El aporte de la tasa se reparte entre sus partes de la etapa 1, poniendo cada parte en su promedio previo. Ventana: del mínimo de {cad['ventana'][0]} ({cad['mora_ini']}%) a {cad['ventana'][1]} ({cad['mora_fin']}%). Las barras muestran el intervalo del 95%.</p><p>La cantidad absorbida (stock de títulos y pases) no entra en la etapa 2 porque actúa a través del precio: en una ecuación única con la tasa adentro, su aporte directo no se distingue de cero. Los intervalos de las partes de la tasa se mueven con el coeficiente de la tasa y son amplios. Lo que paga el Estado también refleja las expectativas de inflación y el riesgo soberano, no sólo la decisión de esterilizar.</p></details>
 </section>
 
 <section><h2>4. La baja reciente es, en buena parte, contable</h2>
@@ -578,14 +578,14 @@ def contenido(d: dict, lang: str) -> str:
 </section>
 
 <section><h2>5. Los próximos 12 meses</h2>
-<p>Proyección con el modelo satélite (muestra 2010+), que fuera de muestra le gana al paseo aleatorio y al AR(1): a 12 meses su error cuadrático medio es {pp(o12.loc['satelite', 'rmse'], 2)} pp, contra {pp(o12.loc['ar1', 'rmse'], 2)} del AR(1) y {pp(o12.loc['paseo_aleatorio', 'rmse'], 2)} del paseo aleatorio. Los supuestos salen de la historia de cada variable: en el base las tasas reales se mantienen y las variaciones interanuales vuelven a cero; en el adverso y el favorable se aplica el cambio a 12 meses del peor y del mejor 10% de los años desde 2010.</p>
+<p>La proyección usa un modelo que, probado contra datos que no había visto, pronostica mejor que las alternativas simples. En el escenario base las tasas reales se mantienen y el resto de las variables vuelve a la normalidad; el adverso y el favorable repiten lo que pasó en el peor y el mejor 10% de los años desde 2010. La banda muestra el 90% de las simulaciones.</p>
 {_div(fig_escenarios(d, L), 'g-esc', L)}
 {_tabla(['Medición', 'Muestra', 'Base', 'Adverso', 'Favorable', 'Ponderado NIIF 9', 'Prob. de superar el nivel actual (base)'],
         [[T[L]['med'][m], {'larga': '2010+', 'limpia': '2017+'}[sat[m]['muestra']],
           f"{pp(sat[m]['mora_fin']['base']['central'])}%", f"{pp(sat[m]['mora_fin']['adverso']['central'])}%",
           f"{pp(sat[m]['mora_fin']['favorable']['central'])}%", f"{pp(sat[m]['niif9']['mora_ponderada'])}%",
           f"{pp(100 * sat[m]['prob_mora_fin_supera_origen']['base'], 0)}%"] for m in MEDICIONES])}
-<p class="nota">Ponderado NIIF 9: {pp(100 * s_pub['niif9']['pesos']['base'], 0)}% base, {pp(100 * s_pub['niif9']['pesos']['adverso'], 0)}% adverso, {pp(100 * s_pub['niif9']['pesos']['favorable'], 0)}% favorable, promediando las simulaciones. Con la medición seleccionada, ninguna especificación de la muestra larga respeta los signos esperados (su inflación 2010-2016 vuelve muy negativas las tasas reales de esos años), así que se proyecta con la muestra 2017+, que fuera de muestra no le gana al AR(1). El modelo de canales sirve para explicar, no para proyectar: a 12 meses su error es {pp(oc12.loc['satelite', 'rmse'], 2)} pp, contra {pp(oc12.loc['ar1', 'rmse'], 2)} del AR(1).</p>
+<details class="metodo"><summary>Cómo se calculó</summary><p>Proyección con el modelo satélite (muestra 2010+), que fuera de muestra le gana al paseo aleatorio y al AR(1): a 12 meses su error cuadrático medio es {pp(o12.loc['satelite', 'rmse'], 2)} pp, contra {pp(o12.loc['ar1', 'rmse'], 2)} del AR(1) y {pp(o12.loc['paseo_aleatorio', 'rmse'], 2)} del paseo aleatorio. Los supuestos salen de la historia de cada variable: en el base las tasas reales se mantienen y las variaciones interanuales vuelven a cero; en el adverso y el favorable se aplica el cambio a 12 meses del peor y del mejor 10% de los años desde 2010.</p><p>Ponderado NIIF 9: {pp(100 * s_pub['niif9']['pesos']['base'], 0)}% base, {pp(100 * s_pub['niif9']['pesos']['adverso'], 0)}% adverso, {pp(100 * s_pub['niif9']['pesos']['favorable'], 0)}% favorable, promediando las simulaciones. Con la medición seleccionada, ninguna especificación de la muestra larga respeta los signos esperados (su inflación 2010-2016 vuelve muy negativas las tasas reales de esos años), así que se proyecta con la muestra 2017+, que fuera de muestra no le gana al AR(1). El modelo de canales sirve para explicar, no para proyectar: a 12 meses su error es {pp(oc12.loc['satelite', 'rmse'], 2)} pp, contra {pp(oc12.loc['ar1', 'rmse'], 2)} del AR(1).</p></details>
 </section>
 """
     else:
@@ -628,7 +628,7 @@ def contenido(d: dict, lang: str) -> str:
 </ul>
 
 <h3>Stage 2: what raised delinquency</h3>
-<p>Equation for the monthly change in the (logit) NPL ratio with the real CFT, the real wage, the real exchange rate and real credit, with BIC-selected lags. Each channel's contribution is simulated delinquency with actual data minus simulated delinquency with that channel held neutral. The rate's contribution is split among its stage-1 parts by setting each part to its prior average. Window: from the {cad['ventana'][0]} low ({cad['mora_ini']}%) to {cad['ventana'][1]} ({cad['mora_fin']}%). Bars show the 95% interval.</p>
+<p>To measure each factor's contribution, delinquency is simulated as if that factor had not moved: the gap with what actually happened is its contribution. The rate's contribution is split among the three stage-1 parts. Window: from the {cad['ventana'][0]} low ({cad['mora_ini']}%) to {cad['ventana'][1]} ({cad['mora_fin']}%). Bars show the 95% interval.</p>
 {_div(fig_etapa2(d, L), 'g-etapa2', L)}
 <ul>
 <li><strong>The rate is the dominant channel:</strong> +{cad['tasa']} pp (p = {cad['tasa_p']}). Of that, <strong>what the State pays contributes +{cad['mora_estado']} pp</strong>, the bank premium +{cad['mora_prima']} pp and VAT +{cad['mora_impuestos']} pp.</li>
@@ -636,7 +636,7 @@ def contenido(d: dict, lang: str) -> str:
 <li><strong>Purchasing power weighs more the more realistic the price measure:</strong> +{cad['poder_compra']['publico']} pp with the official index (p = {cad['poder_compra_p']['publico']}) and +{cad['poder_compra']['seleccionado']} pp with the updated basket (p = {cad['poder_compra_p']['seleccionado']}).</li>
 <li>FX anchor: +{cad['ancla_cambiaria_rg']} pp, significant only with the updated basket (p = {cad['ancla_cambiaria_p']['seleccionado']}). Credit cycle: +{cad['cosecha_dilucion_rg']} pp.</li>
 </ul>
-<p class="nota">The quantity absorbed (stock of securities and repos) is left out of stage 2 because it works through the price: in a single equation with the rate included, its direct contribution is indistinguishable from zero. Intervals for the rate's parts move with the rate coefficient and are wide. What the State pays also reflects inflation expectations and sovereign risk, not only the decision to sterilize.</p>
+<details class="metodo"><summary>How it was calculated</summary><p>Equation for the monthly change in the (logit) NPL ratio with the real CFT, the real wage, the real exchange rate and real credit, with BIC-selected lags. Each channel's contribution is simulated delinquency with actual data minus simulated delinquency with that channel held neutral. The rate's contribution is split among its stage-1 parts by setting each part to its prior average. Window: from the {cad['ventana'][0]} low ({cad['mora_ini']}%) to {cad['ventana'][1]} ({cad['mora_fin']}%). Bars show the 95% interval.</p><p>The quantity absorbed (stock of securities and repos) is left out of stage 2 because it works through the price: in a single equation with the rate included, its direct contribution is indistinguishable from zero. Intervals for the rate's parts move with the rate coefficient and are wide. What the State pays also reflects inflation expectations and sovereign risk, not only the decision to sterilize.</p></details>
 </section>
 
 <section><h2>4. The recent leveling-off is largely an accounting effect</h2>
@@ -646,14 +646,14 @@ def contenido(d: dict, lang: str) -> str:
 </section>
 
 <section><h2>5. The next 12 months</h2>
-<p>Projection with the satellite model (2010+ sample), which beats both a random walk and an AR(1) out of sample: at 12 months its root mean squared error is {pp(o12.loc['satelite', 'rmse'], 2)} pp, against {pp(o12.loc['ar1', 'rmse'], 2)} for the AR(1) and {pp(o12.loc['paseo_aleatorio', 'rmse'], 2)} for the random walk. Assumptions come from each variable's history: in the baseline, real rates stay put and year-on-year changes fade to zero; the adverse and favorable cases apply the 12-month change of the worst and best 10% of years since 2010.</p>
+<p>The projection uses a model that, tested against data it had not seen, forecasts better than simple alternatives. In the baseline, real rates stay put and the other variables return to normal; the adverse and favorable cases repeat what happened in the worst and best 10% of years since 2010. The band shows 90% of the simulations.</p>
 {_div(fig_escenarios(d, L), 'g-esc', L)}
 {_tabla(['Price measure', 'Sample', 'Baseline', 'Adverse', 'Favorable', 'IFRS 9 weighted', 'Prob. of exceeding current level (baseline)'],
         [[T[L]['med'][m], {'larga': '2010+', 'limpia': '2017+'}[sat[m]['muestra']],
           f"{pp(sat[m]['mora_fin']['base']['central'])}%", f"{pp(sat[m]['mora_fin']['adverso']['central'])}%",
           f"{pp(sat[m]['mora_fin']['favorable']['central'])}%", f"{pp(sat[m]['niif9']['mora_ponderada'])}%",
           f"{pp(100 * sat[m]['prob_mora_fin_supera_origen']['base'], 0)}%"] for m in MEDICIONES])}
-<p class="nota">IFRS 9 weighting: {pp(100 * s_pub['niif9']['pesos']['base'], 0)}% baseline, {pp(100 * s_pub['niif9']['pesos']['adverso'], 0)}% adverse, {pp(100 * s_pub['niif9']['pesos']['favorable'], 0)}% favorable, averaging the simulations. With the selected measure no long-sample specification has the expected signs (its 2010-2016 inflation makes real rates in those years deeply negative), so the projection uses the 2017+ sample, which does not beat the AR(1) out of sample. The channel model explains rather than forecasts: its 12-month error is {pp(oc12.loc['satelite', 'rmse'], 2)} pp against {pp(oc12.loc['ar1', 'rmse'], 2)} for the AR(1).</p>
+<details class="metodo"><summary>How it was calculated</summary><p>Projection with the satellite model (2010+ sample), which beats both a random walk and an AR(1) out of sample: at 12 months its root mean squared error is {pp(o12.loc['satelite', 'rmse'], 2)} pp, against {pp(o12.loc['ar1', 'rmse'], 2)} for the AR(1) and {pp(o12.loc['paseo_aleatorio', 'rmse'], 2)} for the random walk. Assumptions come from each variable's history: in the baseline, real rates stay put and year-on-year changes fade to zero; the adverse and favorable cases apply the 12-month change of the worst and best 10% of years since 2010.</p><p>IFRS 9 weighting: {pp(100 * s_pub['niif9']['pesos']['base'], 0)}% baseline, {pp(100 * s_pub['niif9']['pesos']['adverso'], 0)}% adverse, {pp(100 * s_pub['niif9']['pesos']['favorable'], 0)}% favorable, averaging the simulations. With the selected measure no long-sample specification has the expected signs (its 2010-2016 inflation makes real rates in those years deeply negative), so the projection uses the 2017+ sample, which does not beat the AR(1) out of sample. The channel model explains rather than forecasts: its 12-month error is {pp(oc12.loc['satelite', 'rmse'], 2)} pp against {pp(oc12.loc['ar1', 'rmse'], 2)} for the AR(1).</p></details>
 </section>
 """
     return hero, secciones
@@ -712,6 +712,10 @@ th{color:var(--text2);font-weight:600}
 .sintesis h2{margin:16px 0 4px}
 .sintesis ol{padding-left:20px;margin:8px 0}
 .sintesis li{margin:10px 0}
+details.metodo{border:1px solid var(--line);border-radius:8px;padding:0 14px;margin:14px 0;background:var(--surface)}
+details.metodo summary{cursor:pointer;color:var(--text2);font-size:.92rem;padding:10px 0}
+details.metodo[open] summary{border-bottom:1px solid var(--line);margin-bottom:4px}
+details.metodo p{color:var(--text2);font-size:.9rem}
 footer{color:var(--muted);font-size:.85rem;margin-top:48px;border-top:1px solid var(--line);padding-top:16px}
 """
 
