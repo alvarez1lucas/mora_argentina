@@ -83,3 +83,30 @@ Variante `costo_dividido` de `mora.canales`: la tasa real del CFT se reemplaza p
 - Salario real contra nov-23: −8,7% con la medición pública, −10,2% con la mix y −11,6% con la seleccionada.
 - **Castigos y el freno reciente de la mora:** en jun-26 y jul-26 el stock irregular de familias creció $59 y $22 mil millones reales, mientras se castigaban unos $238 y $189 mil millones atribuibles a familias (estimado: castigos totales × participación de las familias en el stock irregular). Sin castigos, el stock habría crecido unos $298 y $211 mil millones. El freno de la mora es, en buena parte, contable.
 - Empresas: la mora bajó de 2,7% a 0,7% (nov-24) con el boom de crédito y volvió a 3,8%. Embargos de ARCA y cheques rechazados: sin series públicas (contexto de prensa).
+
+## 6. Costo de oportunidad: cuánto rinde prestarle al Estado
+
+`python -m mora.rendimientos` (outputs en `outputs/rendimientos/`).
+
+No hay una serie pública de rendimientos de Lecap/Boncap. Se reemplaza por algo más directo: **lo que los bancos efectivamente ganaron** con títulos públicos y pases con el BCRA en pesos (cuentas de resultados del balance de cada entidad), dividido por el stock de esos activos. Es el costo de oportunidad de prestarle a una familia.
+
+Tratamiento contable: las cuentas de resultados vienen acumuladas en el año y, desde 2020, reexpresadas por inflación (NIC 29). El flujo de cada mes se obtiene llevando el acumulado del mes anterior a moneda del mes. Sin esa corrección dic-23 da rendimientos de miles por ciento; con ella, 213% (Leliq al 133% TNA) y ~35% en jul-25 (LEFI/Lecap ~2,7% mensual).
+
+| Promedio anual (TEA, %) | Estado (títulos + pases, 3 meses) | Préstamos personales nuevos | BADLAR | Prima de familias sobre el Estado |
+|---|---|---|---|---|
+| 2024 | 138,6 | 136,3 | 77,4 | −2,2 pp |
+| 2025 | 46,4 | 104,3 | 41,7 | +57,9 pp |
+| 2026 | 41,8 | 92,7 | 28,2 | +50,8 pp |
+
+**Lecturas:**
+- Desde nov-23, en el 85% de los meses **el Estado le pagó a los bancos más que la BADLAR**. En 2026 la diferencia es de 5 a 21 pp. La tasa de fondeo subestima el costo de oportunidad, y por eso la mediación con la BADLAR (sección 4) no encontraba el canal.
+- En la variante `costo_oportunidad` de la ponderación de canales, la tasa a familias se separa en *lo que rinde el Estado* y *la prima sobre el Estado*:
+
+| Componente (oct-24 → ago-26) | Pública | Mix | Seleccionada |
+|---|---|---|---|
+| Rendimiento real del Estado (t−6) | +5,6 pp (p = 0,023) | +5,3 pp (p = 0,021) | +5,0 pp (p = 0,021) |
+| Prima de familias sobre el Estado (t−3) | +5,2 (p = 0,18) | +5,3 (p = 0,15) | +5,2 (p = 0,13) |
+
+**Conclusión:** la esterilización sí aparece, pero no por la BADLAR, sino por el **piso que pone lo que paga el Estado**. Es significativa con las tres mediciones y explica cerca de la mitad de la suba de la mora en la ventana. La prima propia del riesgo de familias suma otro tanto, pero no es significativa.
+
+**Salvedades:** el rendimiento incluye ganancias de valuación de los bonos (ruidoso: se usa el promedio de 3 meses); son 77 observaciones; y el rendimiento del Estado y la prima están correlacionados entre sí, por lo que la división entre ambos es menos precisa que su suma.

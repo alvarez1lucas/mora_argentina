@@ -279,3 +279,20 @@ canales:
 ajuste:
   desde: "2023-11-01"     # ventana principal del análisis: desde el mes previo a la devaluación de dic-2023
   meses_castigos: 8
+
+escenarios:
+  modelos: [satelite, canales]   # satelite = principal (validado fuera de muestra); canales = referencia
+  horizonte_meses: 12
+  # Tasas reales: se quedan en el promedio de 3 meses en el base. El resto son variaciones interanuales.
+  variables_nivel: [tasa_real_cft, absorcion_d12]
+  meses_convergencia: 12        # base: las variaciones interanuales vuelven a cero en este plazo
+  cuantil_shock: 0.9            # adverso/favorable: percentil 90/10 de los cambios a 12 meses de cada variable
+  meses_rampa: 6                # el shock entra de forma gradual
+  simulaciones: 2000
+  semilla: 20261027
+  # Pesos de los escenarios para la pérdida esperada forward-looking (práctica habitual de NIIF 9)
+  pesos_niif9: {base: 0.6, adverso: 0.25, favorable: 0.15}
+
+sitio:
+  destino: site                  # GitHub Pages publica esta carpeta (workflow de Pages)
+  repo_url: "https://github.com/alvarez1lucas/mora-hogares-argentina"   # se confirma al crear el repo

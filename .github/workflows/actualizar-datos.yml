@@ -54,6 +54,9 @@ jobs:
       - name: Ventana del ajuste (nov-23 en adelante)
         run: python -m mora.ajuste
 
+      - name: Escenarios a 12 meses (Fase 6)
+        run: python -m mora.escenarios
+
       - name: Commit de datos nuevos
         run: |
           # El manifest cambia en cada corrida: sólo se commitea si cambió algún dato
