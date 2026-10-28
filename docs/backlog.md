@@ -19,9 +19,9 @@ Todo lo propuesto durante el proyecto, clasificado. Estados: **hecho**, **ahora*
 |---|---|---|
 | Expectativas de inflación (REM, BCRA) | hecho (chequeo) | `mora.expectativas`: refuerza la conclusión; destapó el error del traspaso en reales (docs/expectativas.md) |
 | Carga financiera de los hogares (cuotas / masa salarial) | hecho | `mora.carga`: agregada; no verifica el "~25% del salario" de los endeudados (docs/carga.md) |
-| Stock de deuda del Tesoro en pesos e intereses capitalizados | en su fase (5) | Secretaría de Finanzas, Boletín de deuda |
-| Licitaciones del Tesoro (rollover, tasas) y emisión dollar-linked | en su fase (5) | La prensa indica que el dollar-linked reemplazó a los futuros en 2026 |
-| Mercado de trabajo informal (EPH) | en su fase (5) | El salario registrado no capta a los deudores informales |
+| Stock de deuda del Tesoro en pesos e intereses capitalizados | hecho | `mora.deuda` con el boletín mensual de Finanzas (docs/deuda.md) |
+| Licitaciones del Tesoro (rollover, tasas) y emisión dollar-linked | hecho (rollover mensual agregado) | Desde los flujos del boletín; los resultados por licitación no tienen serie descargable |
+| Mercado de trabajo informal (EPH) | descartado | Agrega ruido: los informales casi no tienen acceso al crédito bancario |
 | Posición oficial del BCRA en futuros | fuera de alcance por ahora | No se encontró el archivo fuente; se usan puntos de control de prensa |
 | Cheques rechazados | fuera de alcance por ahora | No está en la API del BCRA |
 | Mora de PNFC/fintech | hecho | Cinco fechas de los informes semestrales del BCRA, con citas verificables (docs/no_bancario.md) |

@@ -101,6 +101,8 @@ def datos() -> dict:
         "carga_res": _json("carga/resumen_carga.json"),
         "puente": _json("puente_homecredit/resumen_puente.json"),
         "alertas": _json("alertas/resumen_alertas.json"),
+        "deuda": _csv("deuda/deuda_tesoro_pesos.csv", index_col=0, parse_dates=True),
+        "deuda_res": _json("deuda/resumen_deuda.json"),
         "alertas_serie": _csv("alertas/indice_alertas.csv", index_col=0, parse_dates=True),
         "alertas_corr": _csv("alertas/correlaciones_adelantadas.csv", index_col="indicador"),
         "familias": _csv("descriptivo/familias_por_linea.csv", parse_dates=["fecha"]),
@@ -178,6 +180,15 @@ def fig_carga(d: dict, lang: str) -> go.Figure:
          "en": f"Personal loan payments ({plazo}-month average term)"}[lang]
     fig = go.Figure([_linea(c.index, c[f"cuota_personales_pct_masa_{plazo}m"], n, "s2")])
     return _layout(fig, lang, {"es": "% de la masa salarial registrada", "en": "% of the registered wage bill"}[lang], alto=320)
+
+
+def fig_deuda(d: dict, lang: str) -> go.Figure:
+    t = d["deuda"].loc["2019-01-01":]
+    n = {"es": ("Deuda del Tesoro en pesos", "Exposición de los bancos al Estado (títulos + pases)"),
+         "en": ("Treasury peso debt", "Bank exposure to the State (securities + repos)")}[lang]
+    fig = go.Figure([_linea(t.index, t["deuda_moneda_local_pbi"], n[0], "s1"),
+                     _linea(t.index, t["bancos_exposicion_estado_pbi"], n[1], "s2")])
+    return _layout(fig, lang, {"es": "% del PBI", "en": "% of GDP"}[lang], alto=320)
 
 
 def fig_salario(d: dict, lang: str) -> go.Figure:
@@ -703,6 +714,8 @@ def contenido(d: dict, lang: str) -> str:
 
     cad = cadena_cifras(d, L)
     cr = d["carga_res"]
+    dr = d["deuda_res"]
+    da = dr["anual_desde_2024"]
     nbe = d["nb"]["exposicion"]
     nbc = d["nb"]["credito_integrado"]
     nb_ult, nb_ini = max(nbc), min(nbc)
@@ -749,6 +762,10 @@ def contenido(d: dict, lang: str) -> str:
 <details class="metodo"><summary>Cómo se calculó</summary><p>Cuota mensual = stock de préstamos personales × (TNA / 12 + 1 / plazo): intereses más una amortización lineal. El plazo promedio no es público: con 18 meses la carga actual sería {pp(cr['valores_ultimo']['cuota_personales_pct_masa_18m'])}% y con 36 meses, {pp(cr['valores_ultimo']['cuota_personales_pct_masa_36m'])}%. Masa salarial = remuneración promedio de los asalariados privados (SIPA, sin el medio aguinaldo de junio y diciembre y con el aguinaldo prorrateado) × trabajadores registrados. Las tarjetas no entran porque no se sabe qué parte del saldo se financia: su saldo equivale a {pp(cr['valores_ultimo']['tarjetas_meses_de_masa'])} meses de masa salarial.</p></details>
 <p><strong>Lo que rinde prestarle al Estado pone un piso a la tasa de las familias.</strong> Como no hay una serie pública de rendimientos de Lecap, se calcula lo que los bancos efectivamente ganaron con títulos públicos y pases en pesos (cuentas de resultados de cada entidad, reexpresadas por inflación). En 2025 el Estado les rindió en promedio {pp(pr['2025']['tea_estado_3m'])}% anual, por encima de la BADLAR ({pp(pr['2025']['tea_badlar'])}%). Y la tasa de préstamos personales nuevos se quedó en {pp(pr['2025']['tea_personales_nuevos'])}%: una prima de {pp(pr['2025']['prima_personales_sobre_estado_pp'])} pp sobre el Estado.</p>
 {_div(fig_tasas(d, L), 'g-tasas', L)}
+<p><strong>La esterilización pasó del BCRA al Tesoro.</strong> Las Leliq dieron paso a los pases del BCRA (dic-23), los pases a las LEFI del Tesoro (jul-24) y las LEFI a las LECAP (jul-25). La deuda del Tesoro en pesos pasó de {pp(dr['nov23']['deuda_moneda_local_pbi'])}% del PBI en nov-23 a {pp(dr['ultimo_valores']['deuda_moneda_local_pbi'])}% en {mes(dr['ultimo'], L)}, y de {pp(dr['nov23']['deuda_moneda_local_pct_total'], 0)}% a {pp(dr['ultimo_valores']['deuda_moneda_local_pct_total'], 0)}% de toda la deuda. Una parte grande de los intereses no se paga sino que se suma al capital: en 2025 los intereses capitalizados equivalieron a {pp(da['2025']['capitalizacion_pbi'])}% del PBI anual. Así el Estado sostiene tasas altas, que son el piso de la tasa a familias, sin pagar los intereses en efectivo mientras la deuda se renueva.</p>
+{_div(fig_deuda(d, L), 'g-deuda', L)}
+<p>En las licitaciones, el Tesoro renovó en 2024 más de lo que vencía (rollover mediano de {pp(da['2024']['rollover_pct'], 0)}%: absorbió pesos), en 2025 menos ({pp(da['2025']['rollover_pct'], 0)}%: los devolvió) y en 2026 alrededor de {pp(da['2026']['rollover_pct'], 0)}%. Cuando el rollover es alto, lo que paga el Estado tiende a bajar en los meses siguientes (correlación de {pp(dr['rollover_y_tasas'][1]['corr_tea_estado'], 2)} a 3 meses): refleja la demanda por los títulos, no un efecto causal.</p>
+<details class="metodo"><summary>Cómo se calculó</summary><p>Boletín mensual de la deuda bruta de la Administración Central (Secretaría de Finanzas, desde 2019, en dólares). Los stocks se pasan a pesos con el tipo de cambio mayorista de fin de mes. El rollover suma, en las hojas de flujos, los instrumentos de mercado en pesos que se licitan (LECAP, LEFI, BONCAP, BONCER, BONTE, TAMAR, duales, letras dollar-linked que se pagan en pesos) y deja afuera las letras entre organismos públicos y los adelantos del BCRA; incluye canjes, que inflan las dos puntas. La fuente informa capitalización de intereses nula entre 2021 y 2023.</p></details>
 </section>
 
 <section><h2>3. Cuánto pesó cada canal: la cadena en dos etapas</h2>
@@ -820,6 +837,10 @@ def contenido(d: dict, lang: str) -> str:
 <details class="metodo"><summary>How it was calculated</summary><p>Monthly payment = personal loan stock × (annual rate / 12 + 1 / term): interest plus straight-line amortization. The average term is not public: with 18 months the current burden would be {pp(cr['valores_ultimo']['cuota_personales_pct_masa_18m'])}% and with 36 months {pp(cr['valores_ultimo']['cuota_personales_pct_masa_36m'])}%. Wage bill = average private-sector wage (SIPA, removing the half-month bonus in June and December and spreading it over the year) × registered workers. Credit cards are left out because the financed share of balances is unknown: their balance equals {pp(cr['valores_ultimo']['tarjetas_meses_de_masa'])} months of the wage bill.</p></details>
 <p><strong>What lending to the State pays sets a floor for household rates.</strong> With no public series of Treasury bill (Lecap) yields, the measure is what banks actually earned on peso government securities and repos (income accounts of each bank, restated for inflation). In 2025 the State paid them {pp(pr['2025']['tea_estado_3m'])}% a year on average, above BADLAR ({pp(pr['2025']['tea_badlar'])}%). New personal loans stayed at {pp(pr['2025']['tea_personales_nuevos'])}%, a {pp(pr['2025']['prima_personales_sobre_estado_pp'])} pp premium over the State.</p>
 {_div(fig_tasas(d, L), 'g-tasas', L)}
+<p><strong>Sterilization moved from the central bank to the Treasury.</strong> Leliq gave way to central-bank repos (Dec-23), repos to Treasury LEFI bills (Jul-24) and LEFI to LECAP (Jul-25). Treasury peso debt went from {pp(dr['nov23']['deuda_moneda_local_pbi'])}% of GDP in Nov-23 to {pp(dr['ultimo_valores']['deuda_moneda_local_pbi'])}% in {mes(dr['ultimo'], L)}, and from {pp(dr['nov23']['deuda_moneda_local_pct_total'], 0)}% to {pp(dr['ultimo_valores']['deuda_moneda_local_pct_total'], 0)}% of all debt. A large part of the interest is not paid but added to principal: in 2025 capitalized interest equalled {pp(da['2025']['capitalizacion_pbi'])}% of annual GDP. That is how the State sustains high rates, the floor for household rates, without paying interest in cash while the debt is rolled over.</p>
+{_div(fig_deuda(d, L), 'g-deuda', L)}
+<p>In its auctions, the Treasury rolled over more than what matured in 2024 (median rollover {pp(da['2024']['rollover_pct'], 0)}%: it absorbed pesos), less in 2025 ({pp(da['2025']['rollover_pct'], 0)}%: it returned them) and about {pp(da['2026']['rollover_pct'], 0)}% in 2026. When rollover is high, what the State pays tends to fall in the following months ({pp(dr['rollover_y_tasas'][1]['corr_tea_estado'], 2)} correlation at 3 months): this reflects demand for the paper, not a causal effect.</p>
+<details class="metodo"><summary>How it was calculated</summary><p>Monthly gross debt bulletin of the Central Administration (Finance Secretariat, since 2019, in dollars). Stocks are converted to pesos at the end-of-month wholesale exchange rate. Rollover adds up, in the flow sheets, the auctioned peso market instruments (LECAP, LEFI, BONCAP, BONCER, BONTE, TAMAR, duals, dollar-linked bills payable in pesos) and leaves out intra-public-sector bills and central-bank advances; it includes swaps, which inflate both sides. The source reports zero capitalized interest in 2021-2023.</p></details>
 </section>
 
 <section><h2>3. How much each channel weighed: the two-stage chain</h2>

@@ -48,6 +48,9 @@ jobs:
       - name: Rendimientos implícitos (Estado vs familias)
         run: python -m mora.rendimientos
 
+      - name: Deuda del Tesoro en pesos (rollover y capitalización)
+        run: python -m mora.deuda
+
       - name: Ponderación de canales
         run: python -m mora.canales
 

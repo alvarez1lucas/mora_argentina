@@ -1,0 +1,65 @@
+{
+  "ultimo": "2026-06-01",
+  "ultimo_valores": {
+    "deuda_moneda_local_pbi": 32.91,
+    "deuda_cer_pbi": 18.49,
+    "deuda_no_cer_pbi": 14.42,
+    "deuda_moneda_local_pct_total": 47.73,
+    "bancos_exposicion_estado_pbi": 9.78,
+    "bancos_titulos_mn_pbi": 8.61
+  },
+  "nov23": {
+    "deuda_moneda_local_pbi": 29.52,
+    "deuda_cer_pbi": 17.27,
+    "deuda_no_cer_pbi": 12.25,
+    "deuda_moneda_local_pct_total": 37.54,
+    "bancos_exposicion_estado_pbi": 12.84,
+    "bancos_titulos_mn_pbi": 7.11
+  },
+  "ultimo_flujos": "2026-09-01",
+  "rollover_ultimos_6m": {
+    "2026-04-01": 101.1,
+    "2026-05-01": 99.0,
+    "2026-06-01": 94.6,
+    "2026-07-01": 107.4,
+    "2026-08-01": 87.0,
+    "2026-09-01": 93.7
+  },
+  "anual_desde_2024": {
+    "2024": {
+      "rollover_pct": 120.26,
+      "capitalizacion_pbi": 2.92,
+      "financiamiento_neto_pbi": 16.13
+    },
+    "2025": {
+      "rollover_pct": 84.15,
+      "capitalizacion_pbi": 10.74,
+      "financiamiento_neto_pbi": -5.86
+    },
+    "2026": {
+      "rollover_pct": 99.54,
+      "capitalizacion_pbi": 5.04,
+      "financiamiento_neto_pbi": 0.45
+    }
+  },
+  "rollover_y_tasas": [
+    {
+      "h": 1,
+      "n": 91,
+      "corr_tea_estado": -0.276,
+      "corr_tea_prestamos": -0.182
+    },
+    {
+      "h": 3,
+      "n": 91,
+      "corr_tea_estado": -0.294,
+      "corr_tea_prestamos": -0.142
+    },
+    {
+      "h": 6,
+      "n": 91,
+      "corr_tea_estado": -0.297,
+      "corr_tea_prestamos": -0.109
+    }
+  ]
+}
