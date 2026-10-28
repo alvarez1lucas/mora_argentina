@@ -316,3 +316,15 @@ complementos:
     repeticiones: 300
     bloque_meses: 12
     semilla: 20261028
+
+# Fase 9: capa de decisión para el otorgamiento (mora.decision)
+decision:
+  lineas: [personales, tarjetas_de_credito]
+  ttc_desde: "2017-01-01"         # promedio del ciclo (through-the-cycle) para calibrar modelos TTC
+  cortes_ttc: [0.05, 0.10, 0.15, 0.20]
+  # Supuestos sin dato público: sensibilidad. LGD de consumo sin garantía con recupero bajo en alta
+  # inflación; costo operativo = gastos de originación, cobranza y estructura en pp de tasa anual.
+  lgd: [0.6, 0.75, 0.9]
+  lgd_central: 0.75
+  costo_operativo_pp: [8, 12, 16]
+  costo_central_pp: 12

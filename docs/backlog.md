@@ -39,3 +39,4 @@ Todo lo propuesto durante el proyecto, clasificado. Estados: **hecho**, **ahora*
 | 6 Escenarios | hecho |
 | 7 Sitio web (Python + Plotly, selector de medición) | hecho; falta publicar |
 | 8 Informe y README | hecho; falta publicar |
+| 9 Capa de decisión (PD por escenario, tasa mínima de originación) | hecho (`mora.decision`, docs/fase9_decision.md); no está en el sitio ni en el README |
