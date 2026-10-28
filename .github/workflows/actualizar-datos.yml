@@ -63,6 +63,9 @@ jobs:
       - name: Escenarios a 12 meses (Fase 6)
         run: python -m mora.escenarios
 
+      - name: Seguimiento de pronósticos (retrospectiva y registro)
+        run: python -m mora.seguimiento
+
       - name: Capa de decisión (PD por escenario y tasa mínima de originación)
         run: python -m mora.decision
 

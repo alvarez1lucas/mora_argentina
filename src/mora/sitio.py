@@ -93,6 +93,9 @@ def datos() -> dict:
         "cortes": _csv("decision/cortes_aprobacion.csv"),
         "tasa_min": _csv("decision/tasa_minima_originacion.csv"),
         "pds": _csv("decision/pd_por_escenario.csv"),
+        "retro": _csv("seguimiento/retrospectiva.csv", parse_dates=["origen", "fecha"]),
+        "retro_m": _csv("seguimiento/metricas_retrospectiva.csv"),
+        "seg": _json("seguimiento/resumen_seguimiento.json"),
         "familias": _csv("descriptivo/familias_por_linea.csv", parse_dates=["fecha"]),
         "castigos_total": _csv("descriptivo/mora_ajustada_castigos.csv", parse_dates=["fecha"]).dropna(),
         "castigos": _csv("ajuste/castigos_recientes.csv", parse_dates=["fecha"]),
@@ -303,6 +306,71 @@ def fig_escenarios(d: dict, lang: str) -> go.Figure:
 
 # --------------------------------------------------------------------------- página
 
+def fig_seguimiento(d: dict, lang: str) -> go.Figure:
+    """Mora observada y las proyecciones base a 12 meses hechas en cada trimestre con los datos de ese momento."""
+    r = d["retro"]
+    f = d["familias"]
+    obs = f[(f["linea"] == "total") & (f["fecha"] >= r["origen"].min() - pd.DateOffset(months=6))]
+    n = {"es": ("Mora observada", "Proyección base hecha en ese momento"), "en": ("Actual delinquency", "Baseline projection made at the time")}[lang]
+    fig = go.Figure()
+    origenes = sorted(o for o in r["origen"].unique() if pd.Timestamp(o).month in (1, 4, 7, 10))
+    for i, o in enumerate(origenes):
+        p = r[r["origen"] == o]
+        x = [pd.Timestamp(o)] + list(p["fecha"])
+        y = [float(p["mora_origen"].iloc[0])] + list(p["central"])
+        fig.add_trace(go.Scatter(x=x, y=y, mode="lines", name=n[1], legendgroup="proy", showlegend=i == 0,
+                                 line=dict(color=SERIES["s2"][0], width=1.5), meta={"rol": "s2"}, opacity=0.75,
+                                 hovertemplate=("Proyección de " if lang == "es" else "Projection from ") + mes(o, lang) + ": %{y:.1f}%<extra></extra>"))
+    fig.add_trace(_linea(obs["fecha"], obs["ratio"], n[0], "s1"))
+    fig.data[-1].update(line=dict(width=2.5), legendrank=1)
+    _layout(fig, lang, {"es": "% de la cartera en situación irregular", "en": "% of portfolio non-performing"}[lang])
+    fig.update_layout(hovermode="closest")
+    return fig
+
+
+def seccion_seguimiento(d: dict, L: str) -> str:
+    """Sección 6: ¿acertó el modelo? Retrospectiva en tiempo pseudo-real."""
+    pp = lambda x, k=1: num(x, L, k)  # noqa: E731
+    m = d["retro_m"].set_index("h")
+    seg = d["seg"]
+    r = d["retro"]
+    # El primer origen cuya proyección a 12 meses quedó dentro de la banda, después de la racha de errores de 2024
+    r12 = r[(r["h"] == 12) & r["observada"].notna()].sort_values("origen")
+    fuera = r12[~r12["dentro_banda"]]
+    ultimo_fuera = fuera["origen"].max()
+    reacciona = r12[r12["origen"] > ultimo_fuera]["origen"].min() if (r12["origen"] > ultimo_fuera).any() else None
+    filas = [[f"{h} {'meses' if L == 'es' else 'months'}", f"{pp(m.loc[h, 'error_absoluto_medio'], 2)} pp",
+              f"{pp(m.loc[h, 'error_absoluto_medio_ingenuo'], 2)} pp", f"{('+' if m.loc[h, 'error_medio'] >= 0 else '')}{pp(m.loc[h, 'error_medio'], 2)} pp",
+              f"{pp(100 * m.loc[h, 'cobertura_banda_90'], 0)}%", str(int(m.loc[h, "n"]))] for h in m.index]
+    if L == "es":
+        return f"""
+<section><h2>6. ¿Acertó el modelo?</h2>
+<p>Para cada mes desde {mes(seg['origenes'][0], L)} se rehízo la proyección del escenario base usando sólo los datos que había hasta ese mes, y se la comparó con lo que pasó después. El gráfico muestra las proyecciones hechas al comienzo de cada trimestre.</p>
+{_div(fig_seguimiento(d, L), 'g-seguimiento', L)}
+{_tabla(['Horizonte', 'Error medio absoluto', 'Suponiendo que nada cambia', 'Sesgo', 'Dentro de la banda del 90%', 'Proyecciones'], filas)}
+<ul>
+<li><strong>Le gana con holgura a suponer que nada cambia</strong> en los tres horizontes: a 12 meses se equivoca en promedio {pp(m.loc[12, 'error_absoluto_medio'], 1)} puntos, contra {pp(m.loc[12, 'error_absoluto_medio_ingenuo'], 1)}.</li>
+<li><strong>Pero no vio venir el quiebre.</strong> Las proyecciones hechas durante 2024 esperaban que la mora siguiera cerca de 2-3%, y saltó a más de 10%. Una explicación posible: hasta 2024 casi no había episodios de tasa real alta con el crédito creciendo rápido, así que el modelo tenía poco de dónde aprender ese golpe. Recién desde {mes(reacciona, L) if reacciona is not None else '2025'} sus proyecciones a 12 meses vuelven a quedar dentro de la banda.</li>
+<li>Por eso, a 12 meses la banda del 90% contuvo el dato sólo el {pp(100 * m.loc[12, 'cobertura_banda_90'], 0)}% de las veces y el sesgo es de {pp(m.loc[12, 'error_medio'], 1)} puntos (subestima). <strong>Las bandas de la sección 5 hay que leerlas como un piso de la incertidumbre, no como el total.</strong></li>
+</ul>
+<details class="metodo"><summary>Cómo se calculó</summary><p>En cada origen se eligen de nuevo los rezagos (BIC con signos esperados), se reestima el modelo satélite con la muestra 2010+ y medición pública, y se proyecta el escenario base con los mismos supuestos que hoy (tasas reales en su nivel reciente, variaciones interanuales que vuelven a cero), armados con los datos de ese momento. Es más exigente que la validación fuera de muestra, que usa los regresores observados. Se usa la versión actual de los datos, no la publicada en cada mes. Desde {mes(seg['registro_origenes'][0], L)} cada actualización guarda además la proyección publicada, para ir armando el historial real.</p></details>
+</section>
+"""
+    return f"""
+<section><h2>6. Did the model get it right?</h2>
+<p>For each month since {mes(seg['origenes'][0], L)}, the baseline projection was redone using only the data available up to that month and compared with what happened afterwards. The chart shows the projections made at the start of each quarter.</p>
+{_div(fig_seguimiento(d, L), 'g-seguimiento', L)}
+{_tabla(['Horizon', 'Mean absolute error', 'Assuming nothing changes', 'Bias', 'Inside the 90% band', 'Projections'], filas)}
+<ul>
+<li><strong>It clearly beats assuming nothing changes</strong> at all three horizons: at 12 months its average miss is {pp(m.loc[12, 'error_absoluto_medio'], 1)} points, against {pp(m.loc[12, 'error_absoluto_medio_ingenuo'], 1)}.</li>
+<li><strong>But it did not see the break coming.</strong> Projections made during 2024 expected delinquency to stay around 2-3%, and it jumped above 10%. One possible explanation: until 2024 there were hardly any episodes of high real rates with fast credit growth, so the model had little to learn that hit from. Only from {mes(reacciona, L) if reacciona is not None else '2025'} do its 12-month projections fall back inside the band.</li>
+<li>As a result, at 12 months the 90% band contained the outcome only {pp(100 * m.loc[12, 'cobertura_banda_90'], 0)}% of the time, and the bias is {pp(m.loc[12, 'error_medio'], 1)} points (it underpredicts). <strong>The bands in section 5 should be read as a floor on uncertainty, not the whole of it.</strong></li>
+</ul>
+<details class="metodo"><summary>How it was calculated</summary><p>At each origin the lags are re-selected (BIC with expected signs), the satellite model is re-estimated on the 2010+ sample with the official price measure, and the baseline is projected with today's assumptions (real rates at their recent level, year-on-year changes fading to zero), built from the data available then. This is tougher than the out-of-sample validation, which uses observed regressors. It uses the current vintage of the data, not what was published each month. Since {mes(seg['registro_origenes'][0], L)} each update also stores the published projection, building the real track record.</p></details>
+</section>
+"""
+
+
 ESCENARIOS_DEC = ("favorable", "base", "niif9_ponderado", "adverso")
 NOMBRE_ESC = {"es": {"favorable": "Favorable", "base": "Base", "niif9_ponderado": "NIIF 9 ponderado", "adverso": "Adverso"},
               "en": {"favorable": "Favorable", "base": "Baseline", "niif9_ponderado": "IFRS 9 weighted", "adverso": "Adverse"}}
@@ -455,7 +523,7 @@ def seccion_decision(d: dict, L: str) -> str:
     sg = lambda x: ("+" if x >= 0 else "") + pp(x)  # noqa: E731
     if L == "es":
         return f"""
-<section><h2>6. Qué hacer con esto en un banco</h2>
+<section><h2>7. Qué hacer con esto en un banco</h2>
 <p>Las conclusiones se pueden convertir en dos decisiones concretas de política de crédito. No es un modelo de <em>scoring</em> (no hay datos por persona): es la capa macro que un banco aplica encima de su propio modelo para saber cuánto endurecer la aprobación y a qué tasa le conviene prestar.</p>
 <h3>Cuánto endurecer la aprobación</h3>
 <p>Se usa la mora proyectada de cada línea como probabilidad de que un cliente promedio no pague en los próximos 12 meses (PD):</p>
@@ -475,7 +543,7 @@ def seccion_decision(d: dict, L: str) -> str:
 </section>
 """
     return f"""
-<section><h2>6. What a bank can do with this</h2>
+<section><h2>7. What a bank can do with this</h2>
 <p>The conclusions translate into two concrete credit-policy decisions. This is not a scoring model (there is no borrower-level data): it is the macro layer a bank puts on top of its own model to decide how much to tighten approvals and at what rate lending pays off.</p>
 <h3>How much to tighten approvals</h3>
 <p>Each line's projected delinquency is used as the probability that an average borrower defaults within 12 months (PD):</p>
@@ -771,6 +839,7 @@ def pagina(d: dict, lang: str) -> str:
 <div class="tiles">{hero}</div>
 {conclusiones(d, lang)}
 {secciones}
+{seccion_seguimiento(d, lang)}
 {seccion_decision(d, lang)}
 <section><h2>{tit_lim}</h2><ul>{lim}</ul></section>
 <footer>{pie}</footer>

@@ -303,6 +303,13 @@ canales:
     tasa_real_estado: media_previa
     prima_sobre_estado: media_previa
 
+# Seguimiento de pronósticos (mora.seguimiento): retrospectiva en tiempo pseudo-real y registro
+seguimiento:
+  desde: "2023-01-01"
+  simulaciones: 300
+  semilla: 20261029
+  horizontes: [3, 6, 12]
+
 # Ponderación en dos etapas (mora.cadena): la esterilización explica la tasa (etapa 1) y la tasa,
 # junto con los demás canales, explica la mora (etapa 2). La absorción no entra en la etapa 2.
 cadena:

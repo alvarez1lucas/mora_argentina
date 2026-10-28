@@ -1,0 +1,37 @@
+{
+  "deflactor": "publico",
+  "origenes": [
+    "2023-01-01",
+    "2026-07-01"
+  ],
+  "n_origenes": 42,
+  "metricas": [
+    {
+      "h": 3,
+      "n": 40,
+      "error_medio": -0.103,
+      "error_absoluto_medio": 0.344,
+      "error_absoluto_medio_ingenuo": 0.852,
+      "cobertura_banda_90": 0.85
+    },
+    {
+      "h": 6,
+      "n": 37,
+      "error_medio": -0.296,
+      "error_absoluto_medio": 0.716,
+      "error_absoluto_medio_ingenuo": 1.696,
+      "cobertura_banda_90": 0.811
+    },
+    {
+      "h": 12,
+      "n": 31,
+      "error_medio": -1.548,
+      "error_absoluto_medio": 2.127,
+      "error_absoluto_medio_ingenuo": 3.187,
+      "cobertura_banda_90": 0.71
+    }
+  ],
+  "registro_origenes": [
+    "2026-08-01"
+  ]
+}
