@@ -89,6 +89,8 @@ def datos() -> dict:
         "cadena_res": _json("cadena/resumen_cadena.json"),
         "nb_exp": _csv("no_bancario/exposicion_estado_ampliada.csv", index_col=0, parse_dates=True),
         "nb": _json("no_bancario/resumen_no_bancario.json"),
+        "dec": _json("decision/resumen_decision.json"),
+        "cortes": _csv("decision/cortes_aprobacion.csv"),
         "familias": _csv("descriptivo/familias_por_linea.csv", parse_dates=["fecha"]),
         "castigos_total": _csv("descriptivo/mora_ajustada_castigos.csv", parse_dates=["fecha"]).dropna(),
         "castigos": _csv("ajuste/castigos_recientes.csv", parse_dates=["fecha"]),
@@ -356,6 +358,48 @@ def cadena_cifras(d: dict, L: str) -> dict:
     return out
 
 
+def conclusiones(d: dict, L: str) -> str:
+    """Bloque "En síntesis": cinco conclusiones en lenguaje llano, cada número desde outputs/."""
+    pp = lambda x, k=1: num(x, L, k)  # noqa: E731
+    desc, aj, esc = d["desc"], d["ajuste"], d["esc"]["satelite_publico"]
+    cad, cr = cadena_cifras(d, L), d["cadena_res"]["publico"]
+    nbc = d["nb"]["credito_integrado"]
+    nb_ult = max(nbc)
+    k = d["castigos"].iloc[-2:]
+    cast = k["castigos_familias_estimado_real"].sum() / 1000
+    sin = k["irregular_familias_sin_castigos_real"].sum() / 1000
+    tm = {r["escenario"]: r for r in d["dec"]["tasa_minima_publico_central"] if r["linea"] == "personales"}
+    margen = tm["base"]["colchon_pp"]
+    c = d["cortes"]
+    corte = float(c[(c["deflactor"] == "publico") & (c["linea"] == "personales") & (c["escenario"] == "base")
+                    & (c["corte_ttc_pct"].round(6) == 10)]["corte_equivalente_pct"].iloc[0])
+    suba = cr["mora_fin"] - cr["mora_inicio"]
+    e1 = d["cadena_e1"]
+    peso_estado = pp(float(e1[(e1["deflactor"] == "publico") & (e1["parte"] == "estado")]["peso_en_suba_tasa_pct"].iloc[0]), 0)
+    multiplo = desc["mora_familias"] / aj["mora_familias"]["inicio"]
+    if L == "es":
+        vs_estado = ("apenas empata con" if abs(margen) < 2 else "le gana a" if margen > 0 else "pierde contra")
+        items = [
+            f"<strong>La mora de las familias se multiplicó por {pp(multiplo)}:</strong> de {pp(aj['mora_familias']['inicio'])}% en {mes(aj['ventana'][0], L)} a {pp(desc['mora_familias'])}% en {mes(desc['ultimo_dato'], L)}, el máximo desde 2010. Contando fintech y billeteras, era {pp(nbc[nb_ult]['mora_integrada_pct'])}% en {mes(nb_ult, L)}.",
+            f"<strong>La causa principal es lo caro del crédito.</strong> La tasa real que pagan las familias explica {cad['tasa']} de los {pp(suba)} puntos que subió la mora desde el mínimo de {cad['ventana'][0]}. La caída del salario real y el atraso cambiario suman, pero bastante menos.",
+            f"<strong>La tasa está alta en buena parte porque el Estado compite por los pesos.</strong> Lo que el Estado les paga a los bancos explica cerca del {peso_estado}% de la suba de la tasa y se traslada completo. Con ese piso, a la tasa de mercado prestarle a una familia {vs_estado} prestarle al Estado (margen de {'+' if margen >= 0 else ''}{pp(margen)} puntos en el escenario base).",
+            f"<strong>El freno reciente de la mora es, en buena parte, contable.</strong> En {mes(k['fecha'].iloc[0], L)} y {mes(k['fecha'].iloc[1], L)} los bancos pasaron a pérdida unos {pp(cast, 0)} mil millones de pesos de deuda de familias; sin eso, la deuda impaga habría crecido {pp(sin, 0)} mil millones.",
+            f"<strong>Hacia adelante, la mora sigue subiendo si la tasa real no baja:</strong> {pp(esc['mora_fin']['base']['central'])}% en {mes(esc['fin'], L)} en el escenario base. Para un banco, eso implica aprobar mucho menos: quien hoy aprueba hasta un riesgo de 10% calibrado en un año normal debería aprobar sólo hasta {pp(corte)}%.",
+        ]
+        titulo = "En síntesis"
+    else:
+        vs_estado = ("barely breaks even with" if abs(margen) < 2 else "beats" if margen > 0 else "loses to")
+        items = [
+            f"<strong>Household delinquency multiplied by {pp(multiplo)}:</strong> from {pp(aj['mora_familias']['inicio'])}% in {mes(aj['ventana'][0], L)} to {pp(desc['mora_familias'])}% in {mes(desc['ultimo_dato'], L)}, the highest since 2010. Including fintechs and digital wallets, it was {pp(nbc[nb_ult]['mora_integrada_pct'])}% in {mes(nb_ult, L)}.",
+            f"<strong>The main cause is expensive credit.</strong> The real rate households pay explains {cad['tasa']} of the {pp(suba)} points delinquency rose since the {cad['ventana'][0]} low. Falling real wages and the strong peso add, but much less.",
+            f"<strong>Rates are high largely because the State competes for pesos.</strong> What the State pays banks explains about {peso_estado}% of the rise in the rate and passes through in full. With that floor, at the market rate lending to a household {vs_estado} lending to the State (margin of {'+' if margen >= 0 else ''}{pp(margen)} points in the baseline).",
+            f"<strong>The recent leveling-off is largely an accounting effect.</strong> In {mes(k['fecha'].iloc[0], L)} and {mes(k['fecha'].iloc[1], L)} banks wrote off about {pp(cast, 0)} billion pesos of household debt; without that, unpaid debt would have grown {pp(sin, 0)} billion.",
+            f"<strong>Going forward, delinquency keeps rising unless real rates fall:</strong> {pp(esc['mora_fin']['base']['central'])}% by {mes(esc['fin'], L)} in the baseline. For a bank, that means approving far less: a lender approving up to a 10% risk calibrated on a normal year should now approve only up to {pp(corte)}%.",
+        ]
+        titulo = "In short"
+    return f'<section class="sintesis"><h2>{titulo}</h2><ol>{"".join(f"<li>{x}</li>" for x in items)}</ol></section>'
+
+
 def contenido(d: dict, lang: str) -> str:
     """Secciones del sitio. Cada número sale de `d` (outputs/)."""
     L = lang
@@ -568,6 +612,10 @@ table{border-collapse:collapse;width:100%;font-size:.92rem;font-variant-numeric:
 th,td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--line)}
 th{color:var(--text2);font-weight:600}
 .nota{color:var(--text2);font-size:.9rem}
+.sintesis{background:var(--surface);border:1px solid var(--line);border-left:3px solid var(--accent);border-radius:8px;padding:4px 20px 8px;margin-top:28px}
+.sintesis h2{margin:16px 0 4px}
+.sintesis ol{padding-left:20px;margin:8px 0}
+.sintesis li{margin:10px 0}
 footer{color:var(--muted);font-size:.85rem;margin-top:48px;border-top:1px solid var(--line);padding-top:16px}
 """
 
@@ -621,6 +669,7 @@ def pagina(d: dict, lang: str) -> str:
 <header><h1>{t['titulo']}</h1><a class="idioma" href="{t['otro_idioma'][1]}">{t['otro_idioma'][0]}</a></header>
 <p class="sub">{t['subtitulo']}</p>
 <div class="tiles">{hero}</div>
+{conclusiones(d, lang)}
 {secciones}
 <section><h2>{tit_lim}</h2><ul>{lim}</ul></section>
 <footer>{pie}</footer>
