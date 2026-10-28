@@ -33,7 +33,7 @@ spec,bic,n,signos_ok,deflactor,variante
 "salario_real_ia(t-6), tasa_real_fondeo(t-6), spread_personales(t-12), absorcion_d12(t-12), tcr_ia(t-12), credito_real_ia(t-18) | AR(2)",-249.97880203269162,76,True,publico,costo_dividido
 "salario_real_ia(t-6), tasa_real_fondeo(t-6), spread_personales(t-12), absorcion_d12(t-12), tcr_ia(t-9), credito_real_ia(t-18) | AR(2)",-249.92845278214563,76,True,publico,costo_dividido
 "salario_real_ia(t-3), tasa_real_fondeo(t-6), spread_personales(t-12), absorcion_d12(t-12), tcr_ia(t-9), credito_real_ia(t-18) | AR(2)",-249.00048341590613,76,True,publico,costo_dividido
-"salario_real_ia(t-3), tasa_real_fondeo(t-6), spread_personales(t-12), absorcion_d12(t-12), tcr_ia(t-12), credito_real_ia(t-18) | AR(2)",-248.75760509196672,76,True,publico,costo_dividido
+"salario_real_ia(t-3), tasa_real_fondeo(t-6), spread_personales(t-12), absorcion_d12(t-12), tcr_ia(t-12), credito_real_ia(t-18) | AR(2)",-248.75760509196684,76,True,publico,costo_dividido
 "salario_real_ia(t-6), tasa_real_fondeo(t-6), spread_personales(t-9), absorcion_d12(t-12), tcr_ia(t-12), credito_real_ia(t-18) | AR(2)",-248.7116459605637,76,True,publico,costo_dividido
 "salario_real_ia(t-6), tasa_real_fondeo(t-6), spread_personales(t-9), absorcion_d12(t-12), tcr_ia(t-9), credito_real_ia(t-18) | AR(2)",-248.6383991179459,76,True,publico,costo_dividido
 "salario_real_ia(t-6), tasa_real_fondeo(t-6), spread_personales(t-9), absorcion_d12(t-12), tcr_ia(t-3), credito_real_ia(t-18) | AR(2)",-248.51330440502542,76,True,publico,costo_dividido
@@ -51,7 +51,7 @@ spec,bic,n,signos_ok,deflactor,variante
 "salario_real_ia(t-3), tasa_real_fondeo(t-6), spread_personales(t-12), absorcion_d12(t-12), tcr_ia(t-3), credito_real_ia(t-18) | AR(2)",-249.61967365589564,76,True,seleccionado,costo_dividido
 "salario_real_ia(t-6), tasa_real_fondeo(t-6), spread_personales(t-12), absorcion_d12(t-12), tcr_ia(t-3), credito_real_ia(t-18) | AR(2)",-251.35539625562805,76,True,mix,costo_dividido
 "salario_real_ia(t-6), tasa_real_fondeo(t-6), spread_personales(t-12), absorcion_d12(t-12), tcr_ia(t-12), credito_real_ia(t-18) | AR(2)",-250.8106578857248,76,True,mix,costo_dividido
-"salario_real_ia(t-6), tasa_real_fondeo(t-6), spread_personales(t-12), absorcion_d12(t-12), tcr_ia(t-9), credito_real_ia(t-18) | AR(2)",-250.68259153442065,76,True,mix,costo_dividido
+"salario_real_ia(t-6), tasa_real_fondeo(t-6), spread_personales(t-12), absorcion_d12(t-12), tcr_ia(t-9), credito_real_ia(t-18) | AR(2)",-250.68259153442077,76,True,mix,costo_dividido
 "salario_real_ia(t-6), tasa_real_fondeo(t-6), spread_personales(t-9), absorcion_d12(t-12), tcr_ia(t-12), credito_real_ia(t-18) | AR(2)",-249.55104881917256,76,True,mix,costo_dividido
 "salario_real_ia(t-6), tasa_real_fondeo(t-6), spread_personales(t-9), absorcion_d12(t-12), tcr_ia(t-9), credito_real_ia(t-18) | AR(2)",-249.4934323028202,76,True,mix,costo_dividido
 "salario_real_ia(t-3), tasa_real_fondeo(t-6), spread_personales(t-12), absorcion_d12(t-12), tcr_ia(t-3), credito_real_ia(t-18) | AR(2)",-249.38103222146398,76,True,mix,costo_dividido

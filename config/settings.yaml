@@ -46,6 +46,7 @@ bcra_api:
     tasa_tamar_privados:       {id: 44,  agg: mean}   # % TNA, desde oct-2024
     tasa_politica_monetaria:   {id: 160, agg: mean}   # % TNA, discontinuada jul-2025
     tipo_cambio_mayorista:     {id: 5,   agg: mean}   # ARS/USD
+    inflacion_esperada_rem:    {id: 29,  agg: last}   # % i.a., mediana del REM a 12 meses (IPC oficial)
     tasa_pases_terceros_1d:    {id: 150, agg: mean}   # % TNA, proxy de la caución
     tasa_pases_terceros_1d_max: {id: 150, agg: max}   # máximo mensual (picos de iliquidez)
     reservas_internacionales:  {id: 1,   agg: last}   # millones USD, brutas
@@ -195,7 +196,10 @@ descriptivo:
 
 satelite:
   ar_max: 2
-  ventana_expectativa_inflacion: 3   # meses; inflación reciente anualizada como expectativa (hasta tener el REM)
+  ventana_expectativa_inflacion: 3   # meses; inflación reciente anualizada como expectativa
+  # "previa": inflación de los últimos meses anualizada (principal); "rem": mediana del REM a 12 meses
+  # (sólo IPC oficial y desde que existe el relevamiento; se usa como chequeo en mora.expectativas)
+  expectativa_inflacion: previa
   meses_post_covid_excluidos: 6
   # +1: más mora; -1: menos mora; 0: sin restricción. Tasa real más alta, más mora; más ingreso o
   # actividad, menos mora. El crédito previo tiene dos efectos opuestos (dilución del denominador

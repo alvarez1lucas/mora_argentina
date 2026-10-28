@@ -29,7 +29,7 @@ import pandas as pd
 
 from mora.config import path, settings
 from mora.deflactores import DEFLACTORES
-from mora.features import precios
+from mora.features import inflacion_esperada, precios
 from mora.rendimientos import comparacion, sistema
 from mora.satelite import build_dataset, design, fit, inv_logit, residuos, select_spec, signs_ok
 
@@ -63,8 +63,7 @@ def channel_dataset(deflactor: str) -> pd.DataFrame:
     df["tcr_ia"] = 100 * np.log(tcr).diff(12)
     df["absorcion_d12"] = absorcion_sistema().reindex(df.index).diff(12)
     # Fondeo: BADLAR (plazo fijo mayorista) real con la misma expectativa de inflación que el CFT
-    w = settings()["satelite"]["ventana_expectativa_inflacion"]
-    infl_exp = ((ipc / ipc.shift(w)) ** (12 / w) - 1).reindex(df.index)
+    infl_exp = inflacion_esperada(deflactor, df.index)
     badlar_tea = ((1 + bcra["tasa_badlar_privados"] / 100 / 12) ** 12 - 1).reindex(df.index)
     df["tasa_real_fondeo"] = 100 * ((1 + badlar_tea) / (1 + infl_exp) - 1)
     df["spread_personales"] = (bcra["tasa_prestamos_personales"] - bcra["tasa_badlar_privados"]).reindex(df.index)

@@ -27,8 +27,7 @@ def test_traspaso_recupera_el_coeficiente():
     rng = np.random.default_rng(1)
     estado = pd.Series(np.cumsum(rng.normal(0, 3, len(IDX))), index=IDX)
     prima = 0.4 * estado + pd.Series(rng.normal(0, 0.5, len(IDX)), index=IDX)  # tasa = 1,4 × Estado
-    comp = pd.DataFrame({"estado": estado, "prima": prima})
     mora = pd.Series(rng.normal(5, 1, len(IDX)), index=IDX)
-    t = traspaso(comp, mora)
+    t = traspaso(estado + prima, estado, mora)
     assert t["beta_estado"] == pytest.approx(1.4, abs=0.05)
     assert t["p_mora_previa"] > 0.01

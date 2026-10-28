@@ -15,9 +15,12 @@ exacta (identidad contable, con la misma expectativa de inflación π):
                   + (CFT − TEA)/(1 + π)         cuña del IVA sobre los intereses
 r_Estado es el rendimiento implícito de títulos + pases en pesos del balance (mora.rendimientos). Se
 mide cuánto subió cada parte sobre su promedio previo en los meses que, con el rezago de la etapa 2,
-mueven la mora de la ventana. Además se estima el traspaso: Δ12 de la tasa real de los préstamos
-contra Δ12 de lo que paga el Estado, controlando por la mora previa (riesgo). Con traspaso 1 el
-reparto contable es exacto; con traspaso < 1, parte de lo que paga el Estado no llega a la tasa.
+mueven la mora de la ventana. Además se estima el traspaso: Δ12 de la TEA nominal de los préstamos
+contra Δ12 de lo que paga el Estado (también nominal), controlando por la mora previa (riesgo). Se
+mide en nominales a propósito: en reales las dos tasas comparten el término −π/(1+π) y, con una
+inflación esperada volátil, ese término común empuja el coeficiente hacia 1 por construcción. Con
+traspaso 1 el reparto contable es exacto; con traspaso < 1, parte de lo que paga el Estado no llega
+a la tasa y se reasigna a la prima (reparto "con traspaso").
 
 Etapa 2 (qué explica la mora). La ecuación de canales sin la absorción (salario real, tasa real del
 CFT, tipo de cambio real, crédito real). El aporte de la tasa se reparte entre sus partes con
@@ -34,10 +37,10 @@ import numpy as np
 import pandas as pd
 import statsmodels.api as sm
 
-from mora.canales import CANAL_DE, channel_dataset, historical_decomposition, simulate
+from mora.canales import channel_dataset, historical_decomposition, simulate
 from mora.config import path, settings
 from mora.deflactores import DEFLACTORES
-from mora.features import cft_aproximado, precios
+from mora.features import cft_aproximado, inflacion_esperada
 from mora.rendimientos import comparacion, sistema
 from mora.satelite import fit, residuos, select_spec, signs_ok
 from mora.satelite import logit as logit_pct
@@ -48,9 +51,7 @@ COMPONENTES = ("estado", "prima", "impuestos")
 def componentes_tasa(deflactor: str, idx: pd.DatetimeIndex, rend: pd.DataFrame) -> pd.DataFrame:
     """Tasa real del CFT y sus tres partes (pp de tasa real anual). Suman exactamente la tasa."""
     bcra = pd.read_csv(path("processed") / "bcra_mensual.csv", index_col=0, parse_dates=True)
-    ipc = precios(deflactor)["ipc"]
-    w = settings()["satelite"]["ventana_expectativa_inflacion"]
-    pi = ((ipc / ipc.shift(w)) ** (12 / w) - 1).reindex(idx)
+    pi = inflacion_esperada(deflactor, idx)
     return partes_tasa(bcra["tasa_prestamos_personales"].reindex(idx), rend["tea_estado_3m"].reindex(idx), pi)
 
 
@@ -68,12 +69,11 @@ def partes_tasa(tna: pd.Series, tea_estado: pd.Series, pi: pd.Series) -> pd.Data
     return out
 
 
-def traspaso(comp: pd.DataFrame, mora: pd.Series, rezago_mora: int = 3) -> dict:
-    """β de Δ12 (tasa real de los préstamos sin IVA) sobre Δ12 (lo que paga el Estado), con la mora previa."""
-    tasa_prestamo = comp["estado"] + comp["prima"]
+def traspaso(tea_prestamo: pd.Series, tea_estado: pd.Series, mora: pd.Series, rezago_mora: int = 3) -> dict:
+    """β de Δ12 de la TEA nominal de los préstamos sobre Δ12 de la TEA nominal del Estado, con la mora previa."""
     data = pd.DataFrame({
-        "y": tasa_prestamo.diff(12),
-        "estado": comp["estado"].diff(12),
+        "y": tea_prestamo.diff(12),
+        "estado": tea_estado.diff(12),
         "mora_previa": mora.diff(12).shift(rezago_mora),
     }).dropna()
     res = sm.OLS(data["y"], sm.add_constant(data[["estado", "mora_previa"]])).fit(cov_type="HAC", cov_kwds={"maxlags": 12})
@@ -146,13 +146,17 @@ def run(deflactor: str) -> dict:
         "promedio_ventana_pp": meses_tasa[list(COMPONENTES)].mean().values, "exceso_pp": exceso.values,
     })
     etapa1["peso_en_suba_tasa_pct"] = 100 * etapa1["exceso_pp"] / etapa1["exceso_pp"].sum()
-    tr = traspaso(comp, df["mora"])
+    rend = comparacion(sistema()).reindex(df.index)
+    tr = traspaso(rend["tea_personales_nuevos"], rend["tea_estado_3m"], df["mora"])
     # Reparto con el traspaso estimado: lo que no pasa del Estado a la tasa queda en la prima
     beta = min(max(tr["beta_estado"], 0.0), 1.0)
-    pesos_traspaso = {"estado": beta * exceso["estado"],
-                      "prima": exceso["prima"] + (1 - beta) * exceso["estado"],
-                      "impuestos": exceso["impuestos"]}
-    etapa1["exceso_con_traspaso_pp"] = etapa1["parte"].map(pesos_traspaso)
+
+    def con_traspaso(x: dict[str, float]) -> dict[str, float]:
+        return {"estado": beta * x["estado"], "prima": x["prima"] + (1 - beta) * x["estado"], "impuestos": x["impuestos"]}
+
+    etapa1["exceso_con_traspaso_pp"] = etapa1["parte"].map(con_traspaso(exceso.to_dict()))
+    etapa1["peso_con_traspaso_pct"] = 100 * etapa1["exceso_con_traspaso_pp"] / etapa1["exceso_con_traspaso_pp"].sum()
+    partes["aporte_pp_con_traspaso"] = partes["parte"].map(con_traspaso(partes.set_index("parte")["aporte_pp"].to_dict()))
 
     tags = {"deflactor": deflactor}
     meta = {

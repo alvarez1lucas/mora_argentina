@@ -129,22 +129,24 @@ lo que paga el Estado (real) + prima del banco sobre el Estado + IVA sobre los i
 | Prima del banco sobre el Estado | +15,1 | +15,0 | +14,9 | 41-43% |
 | IVA sobre los intereses | +6,4 | +6,3 | +6,2 | 18% |
 
-**Traspaso.** Δ12 de la tasa real de los préstamos (sin IVA) contra Δ12 de lo que paga el Estado, controlando por la Δ12 de la mora 3 meses antes, HAC(12), 2018-2026 (n = 100): β = 1,05-1,08 (error estándar ~0,11, p < 0,001). La mora previa no es significativa (p > 0,8). **El piso se traslada uno a uno**, y la prima no subió como reacción al riesgo pasado.
+**Traspaso.** Δ12 de la TEA nominal de los préstamos personales nuevos contra Δ12 de la TEA nominal de lo que paga el Estado, controlando por la Δ12 de la mora 3 meses antes, HAC(12), 2018-2026 (n = 100): **β = 0,75** (error estándar 0,07, p < 0,001; 0,76 desde 2020). La mora previa no es significativa (p = 0,73): la prima no subió como reacción al riesgo pasado. Contando ese traspaso, lo que paga el Estado explica ~30% de la suba de la tasa (lo que no pasa a la tasa se reasigna a la prima).
+
+*Corrección:* una primera versión medía el traspaso en tasas reales y daba β = 1,05-1,08 ("uno a uno"). Era un artefacto: en reales las dos tasas comparten el término −π/(1+π), y con la inflación esperada retrospectiva (que llegó a 749% anualizado en ene-24) ese término común domina y empuja el coeficiente a 1. En nominales no hay término compartido. Con la inflación esperada del REM (`mora.expectativas`) la cuenta contable da 30% para el Estado, en línea con el reparto con traspaso.
 
 **Etapa 2: qué subió la mora.** La ecuación de canales sin la absorción: salario real (t−6), tasa real del CFT (t−6), tipo de cambio real (t−9), crédito real (t−15), AR(2); signos correctos, R² ajustado 0,58-0,59, n = 77. El aporte de la tasa se reparte entre sus partes poniendo cada una en su promedio previo. El reparto se hace en el logit, donde la ecuación es lineal y las partes suman exacto, y se pasa a pp en la misma proporción. Ventana oct-24 (2,49%) → ago-26 (12,81%):
 
 | Canal | Pública | Mix | Seleccionada |
 |---|---|---|---|
 | **Tasa real del CFT** | **+8,3 pp (p = 0,026)** | **+8,3 (p = 0,014)** | **+8,3 (p = 0,007)** |
-| · lo que paga el Estado | +3,7 | +3,6 | +3,5 |
-| · prima del banco | +3,1 | +3,2 | +3,3 |
+| · lo que paga el Estado (contable / con traspaso) | +3,7 / +2,8 | +3,6 / +2,7 | +3,5 / +2,6 |
+| · prima del banco (contable / con traspaso) | +3,1 / +4,1 | +3,2 / +4,1 | +3,3 / +4,2 |
 | · IVA | +1,5 | +1,5 | +1,5 |
 | Ancla cambiaria | +1,4 (p = 0,24) | +1,9 (p = 0,11) | +2,4 (p = 0,04) |
 | Poder de compra | +0,7 (p = 0,15) | +1,4 (p = 0,05) | +2,1 (p = 0,009) |
 | Ciclo de crédito | +0,5 (p = 0,004) | +0,5 (p = 0,003) | +0,4 (p = 0,002) |
 
 **Lectura:**
-- La cadena se sostiene en los dos eslabones: lo que paga el Estado explica ~40% de la suba de la tasa y se traslada completo, y la tasa es el canal dominante de la mora. Por la vía de la tasa, la esterilización aporta ~3,5-3,7 pp de los 10,3 pp de suba de la mora.
+- La cadena se sostiene en los dos eslabones: lo que paga el Estado explica entre ~30% (con traspaso) y ~40% (contable) de la suba de la tasa, y la tasa es el canal dominante de la mora. Por la vía de la tasa, la esterilización aporta entre +2,6 y +3,7 pp de los 10,3 pp de suba de la mora.
 - Robustez: con un coeficiente propio para lo que paga el Estado (variante `costo_oportunidad`, sección 6) el aporte es +5,0-5,6 pp. El reparto proporcional es la cota conservadora: supone que un punto de tasa pesa lo mismo venga de donde venga.
 - La prima del banco pesa casi lo mismo que el piso del Estado. Con datos públicos no se puede separar en riesgo, costos y margen; que no responda a la mora previa sugiere que no es sólo riesgo.
 

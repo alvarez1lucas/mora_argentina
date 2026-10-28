@@ -54,6 +54,9 @@ jobs:
       - name: Cadena en dos etapas (esterilización → tasa → mora)
         run: python -m mora.cadena
 
+      - name: Chequeo con la inflación esperada del REM
+        run: python -m mora.expectativas
+
       - name: Ventana del ajuste (nov-23 en adelante)
         run: python -m mora.ajuste
 

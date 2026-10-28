@@ -11,7 +11,7 @@ from __future__ import annotations
 
 import pandas as pd
 
-from mora.config import path
+from mora.config import path, settings
 
 
 def load(name: str) -> pd.DataFrame:
@@ -76,6 +76,22 @@ def tasas_reales(tna: pd.Series, inflacion_mensual: pd.Series, h: int = 12) -> p
             "real_ex_post": 100 * ((1 + tea) / (1 + infl_siguiente) - 1),
         }
     )
+
+
+def inflacion_esperada(deflactor: str, idx: pd.DatetimeIndex) -> pd.Series:
+    """Inflación esperada a 12 meses (fracción) para pasar tasas a reales.
+
+    Con `satelite.expectativa_inflacion` = "previa": la inflación de los últimos w meses anualizada,
+    con la medición de precios `deflactor`. Con 12 meses la medida falla en las desinflaciones bruscas
+    (en 2024 daba tasas reales de -40% con tasas muy positivas). Con "rem": la mediana del REM
+    del BCRA, que es sobre el IPC oficial, cualquiera sea el deflactor.
+    """
+    cfg = settings()["satelite"]
+    if cfg.get("expectativa_inflacion", "previa") == "rem":
+        return (load("bcra_mensual")["inflacion_esperada_rem"] / 100).reindex(idx)
+    ipc = precios(deflactor)["ipc"]
+    w = cfg["ventana_expectativa_inflacion"]
+    return ((ipc / ipc.shift(w)) ** (12 / w) - 1).reindex(idx)
 
 
 def cft_aproximado(tna: pd.Series, iva: float = 0.21) -> pd.Series:

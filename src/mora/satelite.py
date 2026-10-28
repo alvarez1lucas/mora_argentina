@@ -35,7 +35,7 @@ from statsmodels.tools.sm_exceptions import InterpolationWarning
 from statsmodels.tsa.stattools import adfuller, kpss, zivot_andrews
 
 from mora.config import ROOT, path, settings
-from mora.features import cft_aproximado, load, precios
+from mora.features import cft_aproximado, inflacion_esperada, load, precios
 
 
 # --------------------------------------------------------------------------- datos
@@ -68,11 +68,7 @@ def build_dataset(linea: str = "total", deflactor: str = "publico") -> pd.DataFr
     idx = fam.index
     p = precios(deflactor)
     ipc = p["ipc"].reindex(idx)
-    # Expectativa de inflación: inflación de los últimos w meses anualizada. Con 12 meses la medida
-    # falla en las desinflaciones bruscas (en 2024 daba tasas reales de -40% con tasas muy positivas).
-    w = settings()["satelite"]["ventana_expectativa_inflacion"]
-    factor = (p["ipc"] / p["ipc"].shift(w))
-    infl_previa = (factor ** (12 / w)).reindex(idx) - 1
+    infl_previa = inflacion_esperada(deflactor, idx)  # ver mora.features.inflacion_esperada
     cft = cft_aproximado(bcra["tasa_prestamos_personales"]).reindex(idx) / 100
     credito_real = (bcra["prestamos_personales"] + bcra["prestamos_tarjetas"]).reindex(idx) / ipc
     salario_real = macro["salarios_registrados"].reindex(idx) / ipc
