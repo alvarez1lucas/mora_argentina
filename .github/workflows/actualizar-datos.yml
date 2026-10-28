@@ -63,6 +63,9 @@ jobs:
       - name: Carga financiera de las familias
         run: python -m mora.carga
 
+      - name: Alertas tempranas (método de señales)
+        run: python -m mora.alertas
+
       - name: Fuera de los bancos (FCI, billeteras y proveedores no financieros)
         run: python -m mora.no_bancario
 

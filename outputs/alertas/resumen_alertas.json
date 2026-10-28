@@ -1,0 +1,355 @@
+{
+  "episodio_pp": 1.0,
+  "horizonte_meses": 12,
+  "meses_con_episodio_adelante": 29,
+  "vigente": {
+    "fecha": "2026-09-01",
+    "indice": 0.26485599781228253,
+    "grado": "vigilancia",
+    "indicadores": [
+      {
+        "indicador": "sit2",
+        "descripcion": "Atrasos de 31 a 90 días (situación 2), % de la cartera de consumo y vivienda",
+        "valor": 3.7550577836256434,
+        "fecha": "2026-07-01",
+        "umbral": 2.610314926704028,
+        "direccion": "alto",
+        "peso": 10.0,
+        "senal": true
+      },
+      {
+        "indicador": "sit2_d3",
+        "descripcion": "Suba de la situación 2 en 3 meses (pp)",
+        "valor": -0.873582431854568,
+        "fecha": "2026-07-01",
+        "umbral": 0.5410190279445181,
+        "direccion": "alto",
+        "peso": 10.0,
+        "senal": false
+      },
+      {
+        "indicador": "mora_d3",
+        "descripcion": "Suba de la mora en 3 meses (pp)",
+        "valor": 0.020566823634846187,
+        "fecha": "2026-08-01",
+        "umbral": 0.36873182034339236,
+        "direccion": "alto",
+        "peso": 4.310344827586206,
+        "senal": false
+      },
+      {
+        "indicador": "tasa_real",
+        "descripcion": "Tasa real del CFT de préstamos personales (%)",
+        "valor": 71.837250144832,
+        "fecha": "2026-08-01",
+        "umbral": 61.68808868333825,
+        "direccion": "alto",
+        "peso": 10.0,
+        "senal": true
+      },
+      {
+        "indicador": "tasa_real_d12",
+        "descripcion": "Suba de la tasa real en 12 meses (pp)",
+        "valor": -20.330302218791218,
+        "fecha": "2026-08-01",
+        "umbral": 58.85844528784714,
+        "direccion": "alto",
+        "peso": 10.0,
+        "senal": false
+      },
+      {
+        "indicador": "credito_real_ia",
+        "descripcion": "Crecimiento real del crédito al consumo, interanual (%)",
+        "valor": -8.244132253019565,
+        "fecha": "2026-08-01",
+        "umbral": 50.561279627991276,
+        "direccion": "alto",
+        "peso": 10.0,
+        "senal": false
+      },
+      {
+        "indicador": "credito_real_ia_l12",
+        "descripcion": "Crecimiento real del crédito al consumo de hace 12 meses (efecto cosecha, %)",
+        "valor": 55.835944397702605,
+        "fecha": "2026-08-01",
+        "umbral": null,
+        "direccion": "alto",
+        "peso": 0.0,
+        "senal": null
+      },
+      {
+        "indicador": "tasa_real_l6",
+        "descripcion": "Tasa real del CFT de hace 6 meses (%)",
+        "valor": 59.91415847303738,
+        "fecha": "2026-08-01",
+        "umbral": 30.959084936196145,
+        "direccion": "alto",
+        "peso": 0.0,
+        "senal": null
+      },
+      {
+        "indicador": "carga",
+        "descripcion": "Cuota de préstamos personales sobre la masa salarial (%)",
+        "valor": 6.98776595121485,
+        "fecha": "2026-06-01",
+        "umbral": 7.6118905827488,
+        "direccion": "alto",
+        "peso": 6.091954022988506,
+        "senal": false
+      },
+      {
+        "indicador": "carga_d12",
+        "descripcion": "Suba de la carga de la cuota en 12 meses (pp)",
+        "valor": -0.42604225707065524,
+        "fecha": "2026-06-01",
+        "umbral": 1.3150391064281435,
+        "direccion": "alto",
+        "peso": 10.0,
+        "senal": false
+      },
+      {
+        "indicador": "salario_real_ia",
+        "descripcion": "Salario registrado real, interanual (%)",
+        "valor": -2.8215058549417416,
+        "fecha": "2026-07-01",
+        "umbral": -6.871753445693676,
+        "direccion": "bajo",
+        "peso": 1.931034482758621,
+        "senal": false
+      },
+      {
+        "indicador": "emae_ia",
+        "descripcion": "Actividad (EMAE), interanual (%)",
+        "valor": -1.2577898907737861,
+        "fecha": "2026-07-01",
+        "umbral": -1.2227982907724841,
+        "direccion": "bajo",
+        "peso": 1.231527093596059,
+        "senal": true
+      },
+      {
+        "indicador": "iva_real_ia",
+        "descripcion": "Recaudación real de IVA DGI, interanual (%)",
+        "valor": 1.6110874992219415,
+        "fecha": "2026-09-01",
+        "umbral": -2.13788078303974,
+        "direccion": "bajo",
+        "peso": 1.7633228840125394,
+        "senal": false
+      },
+      {
+        "indicador": "aportes_real_ia",
+        "descripcion": "Recaudación real de aportes personales, interanual (%)",
+        "valor": 0.7712691638930735,
+        "fecha": "2026-09-01",
+        "umbral": -7.013059444229912,
+        "direccion": "bajo",
+        "peso": 2.5354969574036508,
+        "senal": false
+      },
+      {
+        "indicador": "debitos_creditos_real_ia",
+        "descripcion": "Recaudación real del impuesto a los débitos y créditos, interanual (%)",
+        "valor": -0.29102181479894185,
+        "fecha": "2026-09-01",
+        "umbral": -3.9439342917569404,
+        "direccion": "bajo",
+        "peso": 2.2988505747126435,
+        "senal": false
+      }
+    ]
+  },
+  "frecuencia_por_grado_vigente": [
+    {
+      "grado": "sin_alerta",
+      "meses": 138,
+      "prob_episodio": 0.109
+    },
+    {
+      "grado": "vigilancia",
+      "meses": 8,
+      "prob_episodio": 0.75
+    },
+    {
+      "grado": "alerta",
+      "meses": 5,
+      "prob_episodio": 1.0
+    },
+    {
+      "grado": "alerta_grave",
+      "meses": 3,
+      "prob_episodio": 1.0
+    }
+  ],
+  "validacion": {
+    "umbrales_con_datos_hasta": "2023-12-01",
+    "episodios_etiquetados_hasta": "2022-12-01",
+    "indicadores_con_peso": [
+      "sit2",
+      "sit2_d3",
+      "mora_d3",
+      "carga",
+      "carga_d12",
+      "salario_real_ia",
+      "emae_ia",
+      "iva_real_ia",
+      "aportes_real_ia",
+      "debitos_creditos_real_ia"
+    ],
+    "primera_alerta_fuera_de_muestra": "2024-03-01",
+    "meses_evaluados": 20,
+    "meses_con_episodio": 17,
+    "aciertos_pct": 76.47058823529412,
+    "falsas_alarmas_pct": 100.0,
+    "periodo": [
+      "2024-01-01",
+      "2025-08-01"
+    ],
+    "trayectoria_2024_2025": [
+      {
+        "fecha": "2024-01-01",
+        "mora": 2.7,
+        "indice_validacion": 0.296,
+        "grado_validacion": "vigilancia"
+      },
+      {
+        "fecha": "2024-02-01",
+        "mora": 2.605,
+        "indice_validacion": 0.296,
+        "grado_validacion": "vigilancia"
+      },
+      {
+        "fecha": "2024-03-01",
+        "mora": 2.652,
+        "indice_validacion": 0.586,
+        "grado_validacion": "alerta"
+      },
+      {
+        "fecha": "2024-04-01",
+        "mora": 2.589,
+        "indice_validacion": 0.43,
+        "grado_validacion": "vigilancia"
+      },
+      {
+        "fecha": "2024-05-01",
+        "mora": 2.759,
+        "indice_validacion": 0.354,
+        "grado_validacion": "vigilancia"
+      },
+      {
+        "fecha": "2024-06-01",
+        "mora": 2.786,
+        "indice_validacion": 0.308,
+        "grado_validacion": "vigilancia"
+      },
+      {
+        "fecha": "2024-07-01",
+        "mora": 2.672,
+        "indice_validacion": 0.296,
+        "grado_validacion": "vigilancia"
+      },
+      {
+        "fecha": "2024-08-01",
+        "mora": 2.662,
+        "indice_validacion": 0.125,
+        "grado_validacion": "sin_alerta"
+      },
+      {
+        "fecha": "2024-09-01",
+        "mora": 2.635,
+        "indice_validacion": 0.069,
+        "grado_validacion": "sin_alerta"
+      },
+      {
+        "fecha": "2024-10-01",
+        "mora": 2.489,
+        "indice_validacion": 0.069,
+        "grado_validacion": "sin_alerta"
+      },
+      {
+        "fecha": "2024-11-01",
+        "mora": 2.525,
+        "indice_validacion": 0.069,
+        "grado_validacion": "sin_alerta"
+      },
+      {
+        "fecha": "2024-12-01",
+        "mora": 2.553,
+        "indice_validacion": 0.328,
+        "grado_validacion": "vigilancia"
+      },
+      {
+        "fecha": "2025-01-01",
+        "mora": 2.664,
+        "indice_validacion": 0.305,
+        "grado_validacion": "vigilancia"
+      },
+      {
+        "fecha": "2025-02-01",
+        "mora": 2.939,
+        "indice_validacion": 0.377,
+        "grado_validacion": "vigilancia"
+      },
+      {
+        "fecha": "2025-03-01",
+        "mora": 3.256,
+        "indice_validacion": 0.377,
+        "grado_validacion": "vigilancia"
+      },
+      {
+        "fecha": "2025-04-01",
+        "mora": 3.665,
+        "indice_validacion": 0.4,
+        "grado_validacion": "vigilancia"
+      },
+      {
+        "fecha": "2025-05-01",
+        "mora": 4.459,
+        "indice_validacion": 0.4,
+        "grado_validacion": "vigilancia"
+      },
+      {
+        "fecha": "2025-06-01",
+        "mora": 5.128,
+        "indice_validacion": 0.423,
+        "grado_validacion": "vigilancia"
+      },
+      {
+        "fecha": "2025-07-01",
+        "mora": 5.649,
+        "indice_validacion": 0.4,
+        "grado_validacion": "vigilancia"
+      },
+      {
+        "fecha": "2025-08-01",
+        "mora": 6.601,
+        "indice_validacion": 0.324,
+        "grado_validacion": "vigilancia"
+      },
+      {
+        "fecha": "2025-09-01",
+        "mora": 7.277,
+        "indice_validacion": 0.495,
+        "grado_validacion": "vigilancia"
+      },
+      {
+        "fecha": "2025-10-01",
+        "mora": 7.757,
+        "indice_validacion": 0.571,
+        "grado_validacion": "alerta"
+      },
+      {
+        "fecha": "2025-11-01",
+        "mora": 8.822,
+        "indice_validacion": 0.446,
+        "grado_validacion": "vigilancia"
+      },
+      {
+        "fecha": "2025-12-01",
+        "mora": 9.333,
+        "indice_validacion": 0.4,
+        "grado_validacion": "vigilancia"
+      }
+    ]
+  }
+}

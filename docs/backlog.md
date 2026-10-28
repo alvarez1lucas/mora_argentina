@@ -42,3 +42,4 @@ Todo lo propuesto durante el proyecto, clasificado. Estados: **hecho**, **ahora*
 | 9 Capa de decisión (PD por escenario, tasa mínima de originación) | hecho; en el sitio (sección 7), con el puente a homecredit-pd-validation |
 | 10 Seguimiento de pronósticos (retrospectiva y registro) | hecho (`mora.seguimiento`, docs/seguimiento.md) |
 | 11 Fuera de los bancos (FCI, billeteras, PNFC) | hecho (`mora.no_bancario`, docs/no_bancario.md) |
+| 12 Alertas tempranas (método de señales, con situación 2 y recaudación) | hecho (`mora.alertas`, docs/alertas.md) |

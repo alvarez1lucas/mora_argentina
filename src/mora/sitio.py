@@ -100,6 +100,9 @@ def datos() -> dict:
         "carga": _csv("carga/carga_financiera.csv", index_col=0, parse_dates=True),
         "carga_res": _json("carga/resumen_carga.json"),
         "puente": _json("puente_homecredit/resumen_puente.json"),
+        "alertas": _json("alertas/resumen_alertas.json"),
+        "alertas_serie": _csv("alertas/indice_alertas.csv", index_col=0, parse_dates=True),
+        "alertas_corr": _csv("alertas/correlaciones_adelantadas.csv", index_col="indicador"),
         "familias": _csv("descriptivo/familias_por_linea.csv", parse_dates=["fecha"]),
         "castigos_total": _csv("descriptivo/mora_ajustada_castigos.csv", parse_dates=["fecha"]).dropna(),
         "castigos": _csv("ajuste/castigos_recientes.csv", parse_dates=["fecha"]),
@@ -319,6 +322,100 @@ def fig_escenarios(d: dict, lang: str) -> go.Figure:
 
 # --------------------------------------------------------------------------- página
 
+NOMBRE_GRADO = {"es": {"sin_alerta": "Sin alerta", "vigilancia": "Vigilancia", "alerta": "Alerta", "alerta_grave": "Alerta grave"},
+                "en": {"sin_alerta": "No alert", "vigilancia": "Watch", "alerta": "Alert", "alerta_grave": "Severe alert"}}
+
+
+def fig_alertas(d: dict, lang: str) -> go.Figure:
+    """Índice de alertas (vigente y entrenado con datos hasta 2023) y los meses que tenían un episodio por delante."""
+    a = d["alertas_serie"].loc["2016-01-01":]
+    grados = settings()["alertas"]["grados"]
+    n = {"es": ("Índice vigente (aprendió de toda la historia)", "Índice entrenado sólo con datos hasta 2023"),
+         "en": ("Current index (learned from all history)", "Index trained only on data up to 2023")}[lang]
+    fig = go.Figure([_linea(a.index, a["indice_vigente"], n[0], "s1"), _linea(a.index, a["indice_validacion"], n[1], "s2")])
+    fig.data[1].update(line=dict(dash="dot", width=2))
+    for tr in fig.data:
+        tr.update(hovertemplate="%{y:.2f}")
+    # meses con un episodio por delante (la mora subió 1 punto o más en los 12 meses siguientes)
+    ep = a["episodio_adelante"].fillna(0).astype(bool)
+    bloques, inicio = [], None
+    for t, v in ep.items():
+        if v and inicio is None:
+            inicio = t
+        if not v and inicio is not None:
+            bloques.append((inicio, t)); inicio = None
+    if inicio is not None:
+        bloques.append((inicio, ep.index[-1]))
+    for x0, x1 in bloques:
+        fig.add_vrect(x0=x0, x1=x1, fillcolor=TINTA["claro"]["eje"], opacity=0.25, line_width=0, layer="below")
+    for nombre, tope in list(grados.items())[:-1]:
+        fig.add_hline(y=tope, line=dict(color=TINTA["claro"]["eje"], width=1, dash="dash"))
+    etiquetas = list(grados)
+    limites = [0] + list(grados.values())[:-1]
+    for nombre, y0 in zip(etiquetas, limites):
+        fig.add_annotation(x=1, xref="paper", xanchor="right", y=y0 + 0.02, yanchor="bottom", showarrow=False,
+                           text=NOMBRE_GRADO[lang][nombre], font=dict(size=11, color=TINTA["claro"]["secundario"]))
+    _layout(fig, lang, {"es": "Índice de alertas (0 a 1)", "en": "Alert index (0 to 1)"}[lang])
+    fig.update_yaxes(range=[0, 1.02])
+    return fig
+
+
+def seccion_alertas(d: dict, L: str) -> str:
+    """Sección 6: alertas tempranas."""
+    pp = lambda x, k=1: num(x, L, k)  # noqa: E731
+    al = d["alertas"]
+    vig, val = al["vigente"], al["validacion"]
+    corr = d["alertas_corr"]
+    nombre_g = NOMBRE_GRADO[L]
+    fecha_dato = lambda f: mes(f, L) if f else "—"  # noqa: E731
+    con_peso = [x for x in vig["indicadores"] if x["peso"] > 0]
+    sin_peso = [x for x in vig["indicadores"] if x["peso"] <= 0]
+    peso_max = max(x["peso"] for x in con_peso)
+    importancia = lambda w: ({"es": "alta", "en": "high"} if w >= 0.66 * peso_max else {"es": "media", "en": "medium"} if w >= 0.33 * peso_max else {"es": "baja", "en": "low"})[L]  # noqa: E731
+    si_no = {"es": {True: "<strong>Sí</strong>", False: "No", None: "sin dato"}, "en": {True: "<strong>Yes</strong>", False: "No", None: "no data"}}[L]
+    filas = [[x["descripcion"] if L == "es" else x["indicador"].replace("_", " "), fecha_dato(x["fecha"]),
+              "—" if x["valor"] is None else pp(x["valor"]), ("≥ " if x["direccion"] == "alto" else "≤ ") + pp(x["umbral"]),
+              importancia(x["peso"]), si_no[x["senal"]]] for x in sorted(con_peso, key=lambda x: -x["peso"])]
+    tray = {r["fecha"][:7]: r for r in val["trayectoria_2024_2025"]}
+    c = lambda i, h=6: pp(corr.loc[i, f"corr_h{h}"], 2)  # noqa: E731
+    encendidas = [x for x in con_peso if x["senal"]]
+    lista = ", ".join(x["descripcion"].split(" (")[0].split(",")[0].lower() for x in encendidas) if L == "es" else \
+        ", ".join(x["indicador"].replace("_", " ") for x in encendidas)
+    if L == "es":
+        return f"""
+<section><h2>6. Alertas tempranas</h2>
+<p>El modelo de escenarios aprende relaciones promedio y por eso no vio venir el quiebre de 2025 (sección 7). Esto es otra herramienta: mira si están volviendo a aparecer las señales que en el pasado precedieron a una suba de la mora de al menos {pp(al['episodio_pp'], 0)} punto en 12 meses. Cada indicador "se enciende" cuando cruza un umbral aprendido de la historia, pesa más cuantas menos falsas alarmas dio, y el promedio da un índice de 0 a 1 con cuatro grados.</p>
+<div class="tiles">{_tile(nombre_g[vig['grado']], f"Grado de alerta, {mes(vig['fecha'], L)}", f"Índice: {pp(vig['indice'], 2)}")}{_tile(f"{len(encendidas)} de {len(con_peso)}", "Indicadores encendidos", lista.capitalize() if lista else "")}</div>
+{_div(fig_alertas(d, L), 'g-alertas', L)}
+<p class="nota">Zonas grises: meses en los que, como se supo después, la mora iba a subir {pp(al['episodio_pp'], 0)} punto o más en los 12 meses siguientes.</p>
+{_tabla(['Indicador', 'Último dato', 'Valor', 'Umbral de alerta', 'Peso', '¿Encendido?'], filas)}
+<ul>
+<li><strong>Los mejores anticipos son los atrasos tempranos y la carga de la cuota.</strong> La situación 2 (atrasos de 31 a 90 días, que todavía no cuentan como mora) tiene una correlación de {c('sit2')} con la suba de la mora de los 6 meses siguientes, y el aumento de la carga de la cuota en 12 meses, de {c('carga_d12')}.</li>
+<li><strong>¿Habría avisado?</strong> Entrenado sólo con lo que se sabía a fines de 2023, el índice estuvo en vigilancia o más en el {pp(val['aciertos_pct'], 0)}% de los meses que tenían una suba por delante ({mes(val['periodo'][0], L)} a {mes(val['periodo'][1], L)}). Se encendió a comienzos de 2024 por la caída del salario y la actividad, se apagó entre ago-24 y nov-24 (justo antes de la suba) y volvió a vigilancia en dic-24, con la mora todavía en {pp(tray['2024-12']['mora'])}%. Nunca llegó a "alerta grave": la única suba previa que tenía para aprender, la de 2018-19, fue de otro tipo.</li>
+<li><strong>La versión vigente ya aprendió de 2024-25:</strong> si ese patrón (atrasos tempranos en alza, tasa real alta, carga de la cuota subiendo) vuelve a aparecer, por ejemplo en 2027, el índice lo va a marcar con más fuerza.</li>
+<li><strong>La recaudación</strong> (IVA, débitos y créditos bancarios, aportes) llega antes que otros datos de actividad, pero casi no anticipa la mora: su correlación con la suba de los 6 meses siguientes va de {c('iva_real_ia')} (IVA) a {c('aportes_real_ia')} (aportes). Entra al índice con peso bajo. Dato llamativo: salario y actividad en alza anticipan <em>más</em> mora (correlación de {c('salario_real_ia', 12)} a 12 meses), porque los buenos momentos traen boom de crédito y la mora llega después.</li>
+</ul>
+<details class="metodo"><summary>Cómo se calculó</summary><p>Método de señales de Kaminsky y Reinhart (1999). Episodio: la mora de familias sube al menos {pp(al['episodio_pp'], 0)} punto en los 12 meses siguientes. Para cada indicador, con la dirección que marca la teoría, se elige el percentil que minimiza el cociente entre falsas alarmas y aciertos, exigiendo que capte al menos el 25% de los meses previos a episodios; si ese cociente no baja de 1 (no le gana al azar), el indicador pesa 0. El peso es la inversa del cociente, con un piso para que un historial sin falsas alarmas (más suerte que señal, con tan pocos episodios) no tenga peso infinito. Se excluye la ventana del alivio COVID. Pesan 0 hoy: {", ".join(x["descripcion"].split(" (")[0].lower() for x in sin_peso)}. Limitación central: en 2011-2026 hay sólo dos episodios (2018-19 y 2024-25), así que los umbrales son frágiles y las frecuencias por grado son muy inciertas.</p></details>
+</section>
+"""
+    return f"""
+<section><h2>6. Early warning</h2>
+<p>The scenario model learns average relationships, which is why it missed the 2025 break (section 7). This is a different tool: it checks whether the signals that preceded past rises of at least {pp(al['episodio_pp'], 0)} point in delinquency within 12 months are showing up again. Each indicator "lights up" when it crosses a threshold learned from history, weighs more the fewer false alarms it gave, and the average gives a 0-1 index with four levels.</p>
+<div class="tiles">{_tile(nombre_g[vig['grado']], f"Alert level, {mes(vig['fecha'], L)}", f"Index: {pp(vig['indice'], 2)}")}{_tile(f"{len(encendidas)} of {len(con_peso)}", "Indicators lit", lista)}</div>
+{_div(fig_alertas(d, L), 'g-alertas', L)}
+<p class="nota">Grey areas: months in which, as it turned out, delinquency was about to rise {pp(al['episodio_pp'], 0)} point or more over the following 12 months.</p>
+{_tabla(['Indicator', 'Latest data', 'Value', 'Alert threshold', 'Weight', 'Lit?'], filas)}
+<ul>
+<li><strong>The best leading signals are early arrears and the payment burden.</strong> Situation 2 (31-90 days past due, not yet counted as non-performing) has a {c('sit2')} correlation with the rise in delinquency over the next 6 months, and the 12-month rise in the payment burden {c('carga_d12')}.</li>
+<li><strong>Would it have warned?</strong> Trained only on what was known at end-2023, the index was at watch level or higher in {pp(val['aciertos_pct'], 0)}% of the months that had a rise ahead ({mes(val['periodo'][0], L)} to {mes(val['periodo'][1], L)}). It lit up in early 2024 on falling wages and activity, switched off from Aug-24 to Nov-24 (right before the rise) and returned to watch in Dec-24, with delinquency still at {pp(tray['2024-12']['mora'])}%. It never reached "severe": the only earlier rise it could learn from, 2018-19, was of a different kind.</li>
+<li><strong>The current version has learned from 2024-25:</strong> if that pattern (rising early arrears, high real rates, a growing payment burden) reappears, for example in 2027, the index will flag it more strongly.</li>
+<li><strong>Tax revenue</strong> (VAT, bank debits and credits, payroll contributions) arrives earlier than other activity data, but barely anticipates delinquency: its correlation with the next 6 months' rise ranges from {c('iva_real_ia')} (VAT) to {c('aportes_real_ia')} (payroll contributions). It enters the index with low weight. A striking finding: rising wages and activity anticipate <em>more</em> delinquency ({c('salario_real_ia', 12)} correlation at 12 months), because good times bring a credit boom and delinquency comes later.</li>
+</ul>
+<details class="metodo"><summary>How it was calculated</summary><p>Kaminsky-Reinhart (1999) signals approach. Episode: household delinquency rises at least {pp(al['episodio_pp'], 0)} point over the next 12 months. For each indicator, in the direction set by theory, the percentile minimizing the ratio of false alarms to hits is chosen, requiring it to capture at least 25% of pre-episode months; if the ratio does not fall below 1 (no better than chance) the indicator gets zero weight. The weight is the inverse of the ratio, with a floor so that a record with no false alarms (more luck than signal, with so few episodes) does not get infinite weight. The COVID relief window is excluded. Zero weight today: {", ".join(x["indicador"].replace("_", " ") for x in sin_peso)}. Central limitation: 2011-2026 has only two episodes (2018-19 and 2024-25), so thresholds are fragile and the frequencies by level are very uncertain.</p></details>
+</section>
+"""
+
+
 def fig_seguimiento(d: dict, lang: str) -> go.Figure:
     """Mora observada y las proyecciones base a 12 meses hechas en cada trimestre con los datos de ese momento."""
     r = d["retro"]
@@ -357,7 +454,7 @@ def seccion_seguimiento(d: dict, L: str) -> str:
               f"{pp(100 * m.loc[h, 'cobertura_banda_90'], 0)}%", str(int(m.loc[h, "n"]))] for h in m.index]
     if L == "es":
         return f"""
-<section><h2>6. ¿Acertó el modelo?</h2>
+<section><h2>7. ¿Acertó el modelo?</h2>
 <p>Para cada mes desde {mes(seg['origenes'][0], L)} se rehízo la proyección del escenario base usando sólo los datos que había hasta ese mes, y se la comparó con lo que pasó después. El gráfico muestra las proyecciones hechas al comienzo de cada trimestre.</p>
 {_div(fig_seguimiento(d, L), 'g-seguimiento', L)}
 {_tabla(['Horizonte', 'Error medio absoluto', 'Suponiendo que nada cambia', 'Sesgo', 'Dentro de la banda del 90%', 'Proyecciones'], filas)}
@@ -370,7 +467,7 @@ def seccion_seguimiento(d: dict, L: str) -> str:
 </section>
 """
     return f"""
-<section><h2>6. Did the model get it right?</h2>
+<section><h2>7. Did the model get it right?</h2>
 <p>For each month since {mes(seg['origenes'][0], L)}, the baseline projection was redone using only the data available up to that month and compared with what happened afterwards. The chart shows the projections made at the start of each quarter.</p>
 {_div(fig_seguimiento(d, L), 'g-seguimiento', L)}
 {_tabla(['Horizon', 'Mean absolute error', 'Assuming nothing changes', 'Bias', 'Inside the 90% band', 'Projections'], filas)}
@@ -500,7 +597,7 @@ def conclusiones(d: dict, L: str) -> str:
             f"<strong>La causa principal es lo caro del crédito.</strong> La tasa real que pagan las familias explica {cad['tasa']} de los {pp(suba)} puntos que subió la mora desde el mínimo de {cad['ventana'][0]}. La caída del salario real y el atraso cambiario suman, pero bastante menos.",
             f"<strong>La tasa está alta en buena parte porque el Estado compite por los pesos.</strong> Lo que el Estado les paga a los bancos explica entre el {peso_estado_tr}% y el {peso_estado}% de la suba de la tasa: cada punto que sube, la tasa a familias sube unos {cad['beta']} puntos. Con ese piso, a la tasa de mercado prestarle a una familia {vs_estado} prestarle al Estado (margen de {'+' if margen >= 0 else ''}{pp(margen)} puntos en el escenario base).",
             f"<strong>El freno reciente de la mora es, en buena parte, contable.</strong> En {mes(k['fecha'].iloc[0], L)} y {mes(k['fecha'].iloc[1], L)} los bancos pasaron a pérdida unos {pp(cast, 0)} mil millones de pesos de deuda de familias; sin eso, la deuda impaga habría crecido {pp(sin, 0)} mil millones.",
-            f"<strong>Hacia adelante, la mora sigue subiendo si la tasa real no baja:</strong> {pp(esc['mora_fin']['base']['central'])}% en {mes(esc['fin'], L)} en el escenario base. Para un banco, eso implica aprobar mucho menos: quien hoy aprueba hasta un riesgo de 10% calibrado en un año normal debería aprobar sólo hasta {pp(corte)}%.",
+            f"<strong>Hacia adelante, la mora sigue subiendo si la tasa real no baja:</strong> {pp(esc['mora_fin']['base']['central'])}% en {mes(esc['fin'], L)} en el escenario base. Para un banco, eso implica aprobar mucho menos: quien hoy aprueba hasta un riesgo de 10% calibrado en un año normal debería aprobar sólo hasta {pp(corte)}%. El sistema de alertas tempranas marca hoy <em>{NOMBRE_GRADO[L][d['alertas']['vigente']['grado']].lower()}</em>.",
         ]
         titulo = "En síntesis"
     else:
@@ -510,7 +607,7 @@ def conclusiones(d: dict, L: str) -> str:
             f"<strong>The main cause is expensive credit.</strong> The real rate households pay explains {cad['tasa']} of the {pp(suba)} points delinquency rose since the {cad['ventana'][0]} low. Falling real wages and the strong peso add, but much less.",
             f"<strong>Rates are high largely because the State competes for pesos.</strong> What the State pays banks explains {peso_estado_tr}% to {peso_estado}% of the rise in the rate: each point it rises lifts the household rate by about {cad['beta']} points. With that floor, at the market rate lending to a household {vs_estado} lending to the State (margin of {'+' if margen >= 0 else ''}{pp(margen)} points in the baseline).",
             f"<strong>The recent leveling-off is largely an accounting effect.</strong> In {mes(k['fecha'].iloc[0], L)} and {mes(k['fecha'].iloc[1], L)} banks wrote off about {pp(cast, 0)} billion pesos of household debt; without that, unpaid debt would have grown {pp(sin, 0)} billion.",
-            f"<strong>Going forward, delinquency keeps rising unless real rates fall:</strong> {pp(esc['mora_fin']['base']['central'])}% by {mes(esc['fin'], L)} in the baseline. For a bank, that means approving far less: a lender approving up to a 10% risk calibrated on a normal year should now approve only up to {pp(corte)}%.",
+            f"<strong>Going forward, delinquency keeps rising unless real rates fall:</strong> {pp(esc['mora_fin']['base']['central'])}% by {mes(esc['fin'], L)} in the baseline. For a bank, that means approving far less: a lender approving up to a 10% risk calibrated on a normal year should now approve only up to {pp(corte)}%. The early-warning system currently reads <em>{NOMBRE_GRADO[L][d['alertas']['vigente']['grado']].lower()}</em>.",
         ]
         titulo = "In short"
     return f'<section class="sintesis"><h2>{titulo}</h2><ol>{"".join(f"<li>{x}</li>" for x in items)}</ol></section>'
@@ -549,7 +646,7 @@ def seccion_decision(d: dict, L: str) -> str:
     url_hc = "https://github.com/alvarez1lucas/homecredit-pd-validation"
     if L == "es":
         return f"""
-<section><h2>7. Qué hacer con esto en un banco</h2>
+<section><h2>8. Qué hacer con esto en un banco</h2>
 <p>Las conclusiones se pueden convertir en dos decisiones concretas de política de crédito. No es un modelo de <em>scoring</em> (no hay datos por persona): es la capa macro que un banco aplica encima de su propio modelo para saber cuánto endurecer la aprobación y a qué tasa le conviene prestar.</p>
 <h3>Cuánto endurecer la aprobación</h3>
 <p>Se usa la mora proyectada de cada línea como probabilidad de que un cliente promedio no pague en los próximos 12 meses (PD):</p>
@@ -573,7 +670,7 @@ def seccion_decision(d: dict, L: str) -> str:
 </section>
 """
     return f"""
-<section><h2>7. What a bank can do with this</h2>
+<section><h2>8. What a bank can do with this</h2>
 <p>The conclusions translate into two concrete credit-policy decisions. This is not a scoring model (there is no borrower-level data): it is the macro layer a bank puts on top of its own model to decide how much to tighten approvals and at what rate lending pays off.</p>
 <h3>How much to tighten approvals</h3>
 <p>Each line's projected delinquency is used as the probability that an average borrower defaults within 12 months (PD):</p>
@@ -880,6 +977,7 @@ def pagina(d: dict, lang: str) -> str:
 <div class="tiles">{hero}</div>
 {conclusiones(d, lang)}
 {secciones}
+{seccion_alertas(d, lang)}
 {seccion_seguimiento(d, lang)}
 {seccion_decision(d, lang)}
 <section><h2>{tit_lim}</h2><ul>{lim}</ul></section>
