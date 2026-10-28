@@ -13,4 +13,5 @@ shap==0.50.0
 linearmodels==7.1
 econml==0.17.0
 DoubleML==0.11.4
+plotly==5.24.1
 pytest==9.0.3

@@ -19,3 +19,6 @@ __pycache__/
 /.vscode/
 .DS_Store
 Thumbs.db
+
+# Sitio generado (se construye y publica en GitHub Actions)
+/site/
