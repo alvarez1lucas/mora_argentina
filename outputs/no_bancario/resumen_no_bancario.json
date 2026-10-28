@@ -1,0 +1,76 @@
+{
+  "exposicion": {
+    "ultimo": "2026-06-01",
+    "bancos_pbi": 9.78,
+    "fci_deuda_nacional_pbi": 1.96,
+    "fci_titulos_publicos_pbi": 2.17,
+    "total_pbi": 11.73,
+    "fci_money_market_titulos_pct": 1.38,
+    "fci_money_market_plazo_pct": 70.42,
+    "credito_privado_bancos_pbi": 11.58,
+    "maximo_fci_deuda_nacional_pbi": 2.77,
+    "fecha_maximo_fci": "2023-12-01"
+  },
+  "credito_integrado": {
+    "2023-12-01": {
+      "credito_bancos": 9.96,
+      "mora_bancos_pct": 2.78,
+      "credito_pnfc": 2.1,
+      "mora_pnfc_pct": 10.6,
+      "pbi_anual": 193.95,
+      "participacion_pnfc_pct": 17.41,
+      "mora_integrada_pct": 4.15,
+      "diferencia_pp": 1.36,
+      "credito_bancos_pbi": 5.14,
+      "credito_pnfc_pbi": 1.08
+    },
+    "2024-08-01": {
+      "credito_bancos": 23.14,
+      "mora_bancos_pct": 2.66,
+      "credito_pnfc": 4.9,
+      "mora_pnfc_pct": 7.6,
+      "pbi_anual": 478.47,
+      "participacion_pnfc_pct": 17.47,
+      "mora_integrada_pct": 3.53,
+      "diferencia_pp": 0.86,
+      "credito_bancos_pbi": 4.84,
+      "credito_pnfc_pbi": 1.02
+    },
+    "2025-01-01": {
+      "credito_bancos": 36.99,
+      "mora_bancos_pct": 2.66,
+      "credito_pnfc": 8.0,
+      "mora_pnfc_pct": 8.6,
+      "pbi_anual": 658.84,
+      "participacion_pnfc_pct": 17.78,
+      "mora_integrada_pct": 3.72,
+      "diferencia_pp": 1.06,
+      "credito_bancos_pbi": 5.61,
+      "credito_pnfc_pbi": 1.21
+    },
+    "2025-07-01": {
+      "credito_bancos": 52.14,
+      "mora_bancos_pct": 5.65,
+      "credito_pnfc": 11.0,
+      "mora_pnfc_pct": 16.2,
+      "pbi_anual": 790.41,
+      "participacion_pnfc_pct": 17.42,
+      "mora_integrada_pct": 7.49,
+      "diferencia_pp": 1.84,
+      "credito_bancos_pbi": 6.6,
+      "credito_pnfc_pbi": 1.39
+    },
+    "2026-02-01": {
+      "credito_bancos": 63.96,
+      "mora_bancos_pct": 11.22,
+      "credito_pnfc": 13.9,
+      "mora_pnfc_pct": 26.9,
+      "pbi_anual": 922.74,
+      "participacion_pnfc_pct": 17.85,
+      "mora_integrada_pct": 14.02,
+      "diferencia_pp": 2.8,
+      "credito_bancos_pbi": 6.93,
+      "credito_pnfc_pbi": 1.51
+    }
+  }
+}

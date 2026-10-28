@@ -87,6 +87,8 @@ def datos() -> dict:
         "cadena_e2": _csv("cadena/etapa2_mora.csv"),
         "cadena_partes": _csv("cadena/etapa2_partes_de_la_tasa.csv"),
         "cadena_res": _json("cadena/resumen_cadena.json"),
+        "nb_exp": _csv("no_bancario/exposicion_estado_ampliada.csv", index_col=0, parse_dates=True),
+        "nb": _json("no_bancario/resumen_no_bancario.json"),
         "familias": _csv("descriptivo/familias_por_linea.csv", parse_dates=["fecha"]),
         "castigos_total": _csv("descriptivo/mora_ajustada_castigos.csv", parse_dates=["fecha"]).dropna(),
         "castigos": _csv("ajuste/castigos_recientes.csv", parse_dates=["fecha"]),
@@ -119,7 +121,8 @@ def _layout(fig: go.Figure, lang: str, y_titulo: str, alto: int = 380) -> go.Fig
 
 
 def _linea(x, y, nombre: str, rol: str, **kw) -> go.Scatter:
-    return go.Scatter(x=x, y=y, name=nombre, mode="lines", line=dict(color=SERIES[rol][0], width=2),
+    kw.setdefault("mode", "lines")
+    return go.Scatter(x=x, y=y, name=nombre, line=dict(color=SERIES[rol][0], width=2),
                       meta={"rol": rol}, hovertemplate="%{y:.1f}", **kw)
 
 
@@ -249,10 +252,15 @@ def fig_castigos(d: dict, lang: str) -> go.Figure:
 
 def fig_profundidad(d: dict, lang: str) -> go.Figure:
     p = d["profundidad"].loc["2016-01-01":]
-    n = {"es": ("Crédito al sector privado en pesos", "Exposición de los bancos al Estado (títulos + pases)"),
-         "en": ("Peso credit to the private sector", "Bank exposure to the State (securities + repos)")}[lang]
+    e = d["nb_exp"]["total_pbi"].loc["2023-01-01":]  # con huecos: meses en que CAFCI publicó la cartera como imagen
+    n = {"es": ("Crédito al sector privado en pesos", "Exposición de los bancos al Estado (títulos + pases)",
+                "Bancos + fondos comunes (deuda nacional)"),
+         "en": ("Peso credit to the private sector", "Bank exposure to the State (securities + repos)",
+                "Banks + mutual funds (national debt)")}[lang]
     fig = go.Figure([_linea(p.index, p["credito_privado_mn_pbi"], n[0], "s1"),
-                     _linea(p.index, p["exposicion_estado_mn_pbi"], n[1], "s2")])
+                     _linea(p.index, p["exposicion_estado_mn_pbi"], n[1], "s2"),
+                     _linea(e.index, e, n[2], "s2", mode="lines+markers")])
+    fig.data[2].update(line=dict(dash="dot", width=2), marker=dict(size=8, color=SERIES["s2"][0]))
     return _layout(fig, lang, {"es": "% del PBI", "en": "% of GDP"}[lang])
 
 
@@ -355,6 +363,9 @@ def contenido(d: dict, lang: str) -> str:
     pp = lambda x, k=1: num(x, L, k)  # noqa: E731
 
     cad = cadena_cifras(d, L)
+    nbe = d["nb"]["exposicion"]
+    nbc = d["nb"]["credito_integrado"]
+    nb_ult, nb_ini = max(nbc), min(nbc)
     sat = {m: esc[f"satelite_{m}"] for m in MEDICIONES}
     s_pub = sat["publico"]
     base_pub = s_pub["mora_fin"]["base"]
@@ -384,11 +395,13 @@ def contenido(d: dict, lang: str) -> str:
 <p>La mora de las familias (cartera en situación 3, 4 y 5 sobre el total, Informe sobre Bancos del BCRA) pasó de {pp(aj['mora_familias']['inicio'])}% en {mes(aj['ventana'][0], L)} a {pp(desc['mora_familias'])}% en {mes(desc['ultimo_dato'], L)}. En préstamos personales es {pp(desc['mora_por_linea']['personales'])}% y en tarjetas {pp(desc['mora_por_linea']['tarjetas_de_credito'])}%.</p>
 {_div(fig_mora(d, L), 'g-mora', L)}
 <p><strong>No es un efecto de que se achicó la cartera.</strong> De la suba de los últimos 12 meses, +{pp(desc['efecto_numerador_12m'])} pp se explican porque creció la deuda impaga en términos reales y {pp(desc['efecto_denominador_12m'], 2)} pp por el cambio del stock de préstamos.</p>
+<p><strong>Con fintech y billeteras, la mora es más alta.</strong> Los proveedores no financieros de crédito (fintech, billeteras, emisoras de tarjetas no bancarias, mutuales) son {pp(nbc[nb_ult]['participacion_pnfc_pct'], 0)}% del crédito a las familias y su cartera irregular llegó a {pp(nbc[nb_ult]['mora_pnfc_pct'])}% en {mes(nb_ult, L)} (informes semestrales del BCRA). Sumando los dos sectores, la mora de las familias era {pp(nbc[nb_ult]['mora_integrada_pct'])}% y no {pp(nbc[nb_ult]['mora_bancos_pct'])}%: {pp(nbc[nb_ult]['diferencia_pp'])} pp más. En {mes(nb_ini, L)} la diferencia era {pp(nbc[nb_ini]['diferencia_pp'])} pp. El resto del análisis usa la mora bancaria, que es la única serie mensual.</p>
 </section>
 
 <section><h2>2. La cadena: de la política monetaria a la cuota</h2>
 <p>Para bajar la inflación, el programa ancló el dólar y absorbió pesos con tasas altas. Los bancos encontraron más rentable prestarle al Estado que a las familias: en {mes(feb24.name, L)} su exposición al Estado era {pp(feb24['exposicion_estado_mn_pbi'])}% del PBI, contra {pp(feb24['credito_privado_mn_pbi'])}% de crédito al sector privado.</p>
 {_div(fig_profundidad(d, L), 'g-prof', L)}
+<p><strong>Fuera de los bancos también se le presta al Estado.</strong> Los fondos comunes de inversión tenían deuda nacional por {pp(nbe['fci_deuda_nacional_pbi'])}% del PBI en {mes(nbe['ultimo'], L)} (máximo: {pp(nbe['maximo_fci_deuda_nacional_pbi'])}% en {mes(nbe['fecha_maximo_fci'], L)}; datos de la CAFCI). Sumados a los bancos, la exposición al Estado llega a {pp(nbe['total_pbi'])}% del PBI, contra {pp(nbe['credito_privado_bancos_pbi'])}% de crédito bancario al sector privado. Los fondos money market, donde las billeteras virtuales colocan el saldo de sus usuarios, tienen sólo {pp(nbe['fci_money_market_titulos_pct'])}% en títulos públicos y {pp(nbe['fci_money_market_plazo_pct'], 0)}% en plazos fijos y cauciones: esa plata vuelve a los bancos, y lo que los bancos compran con ella ya está en su exposición. Por eso no se suma, para no contarla dos veces. No hay datos públicos de la tenencia directa por medio de brokers ni de la cartera propia de las fintech.</p>
 <p>Cuando el crédito se reactivó, las familias tomaron deuda a tasas altas justo cuando el salario real no se recuperaba. El salario registrado real está {pp(100 - sal['salario_real_publico'])}% abajo de nov-23 con la medición oficial, {pp(100 - sal['salario_real_mix'])}% con la mix y {pp(100 - sal['salario_real_seleccionado'])}% con la canasta actualizada (ponderadores ENGHo 2017/18).</p>
 {_div(fig_salario(d, L), 'g-salario', L)}
 <p><strong>Lo que rinde prestarle al Estado pone un piso a la tasa de las familias.</strong> Como no hay una serie pública de rendimientos de Lecap, se calcula lo que los bancos efectivamente ganaron con títulos públicos y pases en pesos (cuentas de resultados de cada entidad, reexpresadas por inflación). En 2025 el Estado les rindió en promedio {pp(pr['2025']['tea_estado_3m'])}% anual, por encima de la BADLAR ({pp(pr['2025']['tea_badlar'])}%). Y la tasa de préstamos personales nuevos se quedó en {pp(pr['2025']['tea_personales_nuevos'])}%: una prima de {pp(pr['2025']['prima_personales_sobre_estado_pp'])} pp sobre el Estado.</p>
@@ -450,11 +463,13 @@ def contenido(d: dict, lang: str) -> str:
 <p>The household non-performing loan ratio (situations 3, 4 and 5 over total, BCRA banking report) rose from {pp(aj['mora_familias']['inicio'])}% in {mes(aj['ventana'][0], L)} to {pp(desc['mora_familias'])}% in {mes(desc['ultimo_dato'], L)}. It is {pp(desc['mora_por_linea']['personales'])}% for personal loans and {pp(desc['mora_por_linea']['tarjetas_de_credito'])}% for credit cards.</p>
 {_div(fig_mora(d, L), 'g-mora', L)}
 <p><strong>It is not a shrinking-portfolio effect.</strong> Of the 12-month rise, +{pp(desc['efecto_numerador_12m'])} pp comes from real growth in unpaid debt and {pp(desc['efecto_denominador_12m'], 2)} pp from the change in the loan stock.</p>
+<p><strong>Including fintechs and digital wallets, delinquency is higher.</strong> Non-bank credit providers (fintechs, wallets, non-bank card issuers, mutual associations) account for {pp(nbc[nb_ult]['participacion_pnfc_pct'], 0)}% of household credit, and their non-performing ratio reached {pp(nbc[nb_ult]['mora_pnfc_pct'])}% in {mes(nb_ult, L)} (BCRA semiannual reports). Combining both sectors, household delinquency was {pp(nbc[nb_ult]['mora_integrada_pct'])}% rather than {pp(nbc[nb_ult]['mora_bancos_pct'])}%: {pp(nbc[nb_ult]['diferencia_pp'])} pp higher. In {mes(nb_ini, L)} the gap was {pp(nbc[nb_ini]['diferencia_pp'])} pp. The rest of the analysis uses bank delinquency, the only monthly series.</p>
 </section>
 
 <section><h2>2. The chain: from monetary policy to the monthly payment</h2>
 <p>To bring inflation down, the program anchored the exchange rate and absorbed pesos with high rates. Banks found it more profitable to lend to the State than to households: in {mes(feb24.name, L)} their exposure to the State was {pp(feb24['exposicion_estado_mn_pbi'])}% of GDP, against {pp(feb24['credito_privado_mn_pbi'])}% for private credit.</p>
 {_div(fig_profundidad(d, L), 'g-prof', L)}
+<p><strong>Lending to the State also happens outside banks.</strong> Mutual funds held national government debt worth {pp(nbe['fci_deuda_nacional_pbi'])}% of GDP in {mes(nbe['ultimo'], L)} (peak: {pp(nbe['maximo_fci_deuda_nacional_pbi'])}% in {mes(nbe['fecha_maximo_fci'], L)}; CAFCI data). Added to banks, exposure to the State reaches {pp(nbe['total_pbi'])}% of GDP, against {pp(nbe['credito_privado_bancos_pbi'])}% for bank credit to the private sector. Money market funds, where digital wallets park their users' balances, hold only {pp(nbe['fci_money_market_titulos_pct'])}% in government securities and {pp(nbe['fci_money_market_plazo_pct'], 0)}% in time deposits and repos: that money goes back to banks, and what banks buy with it is already in their exposure, so it is not added again. There is no public data on direct holdings through brokers or on fintechs' own portfolios.</p>
 <p>When credit came back, households borrowed at high rates just as real wages failed to recover. The real registered wage is {pp(100 - sal['salario_real_publico'])}% below Nov-23 with the official measure, {pp(100 - sal['salario_real_mix'])}% with the mix and {pp(100 - sal['salario_real_seleccionado'])}% with the updated basket (ENGHo 2017/18 weights).</p>
 {_div(fig_salario(d, L), 'g-salario', L)}
 <p><strong>What lending to the State pays sets a floor for household rates.</strong> With no public series of Treasury bill (Lecap) yields, the measure is what banks actually earned on peso government securities and repos (income accounts of each bank, restated for inflation). In 2025 the State paid them {pp(pr['2025']['tea_estado_3m'])}% a year on average, above BADLAR ({pp(pr['2025']['tea_badlar'])}%). New personal loans stayed at {pp(pr['2025']['tea_personales_nuevos'])}%, a {pp(pr['2025']['prima_personales_sobre_estado_pp'])} pp premium over the State.</p>

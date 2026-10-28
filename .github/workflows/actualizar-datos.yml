@@ -57,6 +57,9 @@ jobs:
       - name: Ventana del ajuste (nov-23 en adelante)
         run: python -m mora.ajuste
 
+      - name: Fuera de los bancos (FCI, billeteras y proveedores no financieros)
+        run: python -m mora.no_bancario
+
       - name: Escenarios a 12 meses (Fase 6)
         run: python -m mora.escenarios
 
