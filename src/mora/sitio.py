@@ -91,6 +91,8 @@ def datos() -> dict:
         "nb": _json("no_bancario/resumen_no_bancario.json"),
         "dec": _json("decision/resumen_decision.json"),
         "cortes": _csv("decision/cortes_aprobacion.csv"),
+        "tasa_min": _csv("decision/tasa_minima_originacion.csv"),
+        "pds": _csv("decision/pd_por_escenario.csv"),
         "familias": _csv("descriptivo/familias_por_linea.csv", parse_dates=["fecha"]),
         "castigos_total": _csv("descriptivo/mora_ajustada_castigos.csv", parse_dates=["fecha"]).dropna(),
         "castigos": _csv("ajuste/castigos_recientes.csv", parse_dates=["fecha"]),
@@ -301,6 +303,35 @@ def fig_escenarios(d: dict, lang: str) -> go.Figure:
 
 # --------------------------------------------------------------------------- página
 
+ESCENARIOS_DEC = ("favorable", "base", "niif9_ponderado", "adverso")
+NOMBRE_ESC = {"es": {"favorable": "Favorable", "base": "Base", "niif9_ponderado": "NIIF 9 ponderado", "adverso": "Adverso"},
+              "en": {"favorable": "Favorable", "base": "Baseline", "niif9_ponderado": "IFRS 9 weighted", "adverso": "Adverse"}}
+
+
+def fig_tasa_minima(d: dict, lang: str) -> go.Figure:
+    """Tasa mínima de originación de préstamos personales por escenario contra la tasa de mercado."""
+    dec = d["dec"]
+    t = d["tasa_min"]
+    t = t[(t["deflactor"] == "publico") & (t["linea"] == "personales") & (t["lgd"] == dec["lgd_central"])
+          & (t["costo_operativo_pp"] == dec["costo_central_pp"])].set_index("escenario").loc[list(ESCENARIOS_DEC)]
+    etq = [NOMBRE_ESC[lang][e] for e in ESCENARIOS_DEC]
+    hov = ("%{y}: tasa mínima %{x:.1f}% anual<br>PD a 12 meses: %{customdata[0]:.1f}%<br>Margen contra el mercado: %{customdata[1]:+.1f} puntos<extra></extra>"
+           if lang == "es" else
+           "%{y}: minimum rate %{x:.1f}% a year<br>12-month PD: %{customdata[0]:.1f}%<br>Margin vs market: %{customdata[1]:+.1f} points<extra></extra>")
+    fig = go.Figure(go.Bar(x=t["tea_minima_pct"], y=etq, orientation="h", name="", meta={"rol": "s1"},
+                           marker=dict(color=SERIES["s1"][0], line=dict(width=0)),
+                           customdata=list(zip(t["pd_12m_pct"], t["colchon_pp"])), hovertemplate=hov))
+    mercado = float(dec["tea_personales_mercado_pct"])
+    fig.add_vline(x=mercado, line=dict(color=SERIES["s2"][0], width=2, dash="dash"))
+    fig.add_annotation(x=mercado, y=1.02, yref="paper", showarrow=False, xanchor="right", yanchor="bottom",  # a la izquierda: no se corta en celular
+                       text={"es": f"Tasa de mercado: {num(mercado, lang)}% ", "en": f"Market rate: {num(mercado, lang)}% "}[lang],
+                       font=dict(color=TINTA["claro"]["secundario"], size=12))
+    _barras_h(fig, lang, {"es": "Tasa efectiva anual mínima (%)", "en": "Minimum effective annual rate (%)"}[lang], 300)
+    fig.update_layout(showlegend=False, margin=dict(t=40, b=60))
+    fig.update_xaxes(range=[0, max(float(t["tea_minima_pct"].max()), mercado) * 1.08])
+    return fig
+
+
 def _div(fig: go.Figure, id_: str, lang: str) -> str:
     return pio.to_html(fig, include_plotlyjs=False, full_html=False, div_id=id_,
                        config={"displayModeBar": False, "responsive": True, "locale": lang})
@@ -398,6 +429,71 @@ def conclusiones(d: dict, L: str) -> str:
         ]
         titulo = "In short"
     return f'<section class="sintesis"><h2>{titulo}</h2><ol>{"".join(f"<li>{x}</li>" for x in items)}</ol></section>'
+
+
+def seccion_decision(d: dict, L: str) -> str:
+    """Sección 6: la capa de decisión (Fase 9) para el otorgamiento."""
+    pp = lambda x, k=1: num(x, L, k)  # noqa: E731
+    dec = d["dec"]
+    pds = d["pds"][d["pds"]["deflactor"] == "publico"].set_index(["linea", "escenario"])
+    c = d["cortes"][d["cortes"]["deflactor"] == "publico"]
+    t = d["tasa_min"]
+    tp = t[(t["deflactor"] == "publico") & (t["linea"] == "personales")]
+    base_grid = tp[tp["escenario"] == "base"]
+    central = tp[(tp["lgd"] == dec["lgd_central"]) & (tp["costo_operativo_pp"] == dec["costo_central_pp"])].set_index("escenario")
+    lineas = {"es": {"personales": "Préstamos personales", "tarjetas_de_credito": "Tarjetas"},
+              "en": {"personales": "Personal loans", "tarjetas_de_credito": "Credit cards"}}[L]
+
+    def corte(linea, esc, ttc):
+        return pp(float(c[(c["linea"] == linea) & (c["escenario"] == esc) & (c["corte_ttc_pct"].round(6) == ttc)]["corte_equivalente_pct"].iloc[0]))
+
+    filas_pd = [[lineas[ln], f"{pp(pds.loc[(ln, 'base'), 'pd_ttc_pct'])}%", f"{pp(pds.loc[(ln, 'base'), 'pd_hoy_pct'])}%",
+                 f"{pp(pds.loc[(ln, 'base'), 'pd_12m_pct'])}%", f"{pp(pds.loc[(ln, 'adverso'), 'pd_12m_pct'])}%"] for ln in lineas]
+    filas_corte = [[f"{pp(ttc, 0)}%", corte("personales", "base", ttc) + "%", corte("personales", "adverso", ttc) + "%",
+                    corte("tarjetas_de_credito", "base", ttc) + "%"] for ttc in (10, 20)]
+    m_base = central.loc["base", "colchon_pp"]
+    sg = lambda x: ("+" if x >= 0 else "") + pp(x)  # noqa: E731
+    if L == "es":
+        return f"""
+<section><h2>6. Qué hacer con esto en un banco</h2>
+<p>Las conclusiones se pueden convertir en dos decisiones concretas de política de crédito. No es un modelo de <em>scoring</em> (no hay datos por persona): es la capa macro que un banco aplica encima de su propio modelo para saber cuánto endurecer la aprobación y a qué tasa le conviene prestar.</p>
+<h3>Cuánto endurecer la aprobación</h3>
+<p>Se usa la mora proyectada de cada línea como probabilidad de que un cliente promedio no pague en los próximos 12 meses (PD):</p>
+{_tabla(['Línea', 'Año normal (promedio 2017-26)', 'Hoy', f"Base, {mes(pds.loc[('personales', 'base'), 'fecha'], L)}", 'Adverso'], filas_pd)}
+<p>Un modelo de <em>scoring</em> calibrado en un año normal subestima hoy el riesgo de cada cliente unas {pp(pds.loc[('personales', 'base'), 'multiplicador_vs_ttc'], 0)} veces. Para correr el mismo riesgo, el punto de corte se tiene que correr así:</p>
+{_tabla(['Corte del modelo (año normal)', 'Personales: base', 'Personales: adverso', 'Tarjetas: base'], filas_corte)}
+<p><strong>Eso es racionamiento de crédito:</strong> sólo pasan los clientes que en un año normal serían de muy bajo riesgo. Explica por qué el crédito real a las familias no crece aunque los bancos tengan fondeo.</p>
+<h3>A qué tasa conviene prestar</h3>
+<p>La tasa mínima es la que hace que prestarle a una familia rinda lo mismo que prestarle al Estado ({pp(dec['tea_estado_pct'])}% anual en {mes(dec['fecha_tea_estado'], L)}) más los costos, contando que una parte no paga y que de lo impago se recupera un {pp(100 * (1 - dec['lgd_central']), 0)}%.</p>
+{_div(fig_tasa_minima(d, L), 'g-tasamin', L)}
+<ul>
+<li><strong>A la tasa de mercado ({pp(dec['tea_personales_mercado_pct'])}% anual), prestarle a una familia {'apenas empata con' if abs(m_base) < 2 else 'le gana a' if m_base > 0 else 'pierde contra'} prestarle al Estado en el escenario base</strong> (margen de {sg(m_base)} puntos) y pierde en el adverso ({sg(central.loc['adverso', 'colchon_pp'])} puntos). El negocio empata con una PD de {pp(central.loc['base', 'pd_equilibrio_pct'])}%.</li>
+<li>Por eso los bancos racionan y segmentan: prestan sobre todo a clientes que cobran el sueldo en el banco, que tienen menos riesgo que el promedio.</li>
+<li>Supuestos: recupero del {pp(100 * (1 - dec['lgd_central']), 0)}% y costo operativo de {pp(dec['costo_central_pp'], 0)} puntos, que no salen de datos públicos. Con otros valores razonables el margen del escenario base va de {sg(base_grid['colchon_pp'].min())} a {sg(base_grid['colchon_pp'].max())} puntos: la conclusión "estamos en el límite" se sostiene, el signo exacto no.</li>
+</ul>
+<p class="nota">La PD es la mora de la cartera (incluye deuda impaga todavía no castigada), así que probablemente sobreestima el riesgo y la tasa mínima. El cálculo es a un año, sin capital regulatorio ni el valor de la relación con el cliente. Detalle en <code>docs/fase9_decision.md</code>.</p>
+</section>
+"""
+    return f"""
+<section><h2>6. What a bank can do with this</h2>
+<p>The conclusions translate into two concrete credit-policy decisions. This is not a scoring model (there is no borrower-level data): it is the macro layer a bank puts on top of its own model to decide how much to tighten approvals and at what rate lending pays off.</p>
+<h3>How much to tighten approvals</h3>
+<p>Each line's projected delinquency is used as the probability that an average borrower defaults within 12 months (PD):</p>
+{_tabla(['Line', 'Normal year (2017-26 average)', 'Today', f"Baseline, {mes(pds.loc[('personales', 'base'), 'fecha'], L)}", 'Adverse'], filas_pd)}
+<p>A scoring model calibrated on a normal year now understates each borrower's risk about {pp(pds.loc[('personales', 'base'), 'multiplicador_vs_ttc'], 0)} times. To take the same risk, the cutoff has to move like this:</p>
+{_tabla(['Model cutoff (normal year)', 'Personal: baseline', 'Personal: adverse', 'Cards: baseline'], filas_corte)}
+<p><strong>That is credit rationing:</strong> only borrowers who would be very low risk in a normal year get through. It explains why real household credit is not growing even though banks have funding.</p>
+<h3>At what rate lending pays off</h3>
+<p>The minimum rate makes lending to a household earn the same as lending to the State ({pp(dec['tea_estado_pct'])}% a year in {mes(dec['fecha_tea_estado'], L)}) plus costs, allowing for some borrowers not paying and {pp(100 * (1 - dec['lgd_central']), 0)}% being recovered from defaults.</p>
+{_div(fig_tasa_minima(d, L), 'g-tasamin', L)}
+<ul>
+<li><strong>At the market rate ({pp(dec['tea_personales_mercado_pct'])}% a year), lending to a household {'barely breaks even with' if abs(m_base) < 2 else 'beats' if m_base > 0 else 'loses to'} lending to the State in the baseline</strong> (margin of {sg(m_base)} points) and loses in the adverse case ({sg(central.loc['adverso', 'colchon_pp'])} points). Break-even PD is {pp(central.loc['base', 'pd_equilibrio_pct'])}%.</li>
+<li>That is why banks ration and segment: they lend mostly to borrowers who receive their salary at the bank, who are less risky than average.</li>
+<li>Assumptions: {pp(100 * (1 - dec['lgd_central']), 0)}% recovery and a {pp(dec['costo_central_pp'], 0)}-point operating cost, which are not public data. With other reasonable values the baseline margin ranges from {sg(base_grid['colchon_pp'].min())} to {sg(base_grid['colchon_pp'].max())} points: "we are at the break-even line" holds, the exact sign does not.</li>
+</ul>
+<p class="nota">The PD is the portfolio delinquency ratio (it includes unpaid debt not yet written off), so it probably overstates risk and the minimum rate. The calculation is one-year, without regulatory capital or the value of the customer relationship. Details in <code>docs/fase9_decision.md</code>.</p>
+</section>
+"""
 
 
 def contenido(d: dict, lang: str) -> str:
@@ -671,6 +767,7 @@ def pagina(d: dict, lang: str) -> str:
 <div class="tiles">{hero}</div>
 {conclusiones(d, lang)}
 {secciones}
+{seccion_decision(d, lang)}
 <section><h2>{tit_lim}</h2><ul>{lim}</ul></section>
 <footer>{pie}</footer>
 </main>

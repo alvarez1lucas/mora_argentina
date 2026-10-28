@@ -27,7 +27,7 @@ Con la medición seleccionada la PD base es más baja (personales 18,3%, tarjeta
 | Corte TTC | Personales: base | Personales: adverso | Tarjetas: base | Tarjetas: adverso |
 |---|---|---|---|---|
 | 10% | 2,4% | 1,9% | 2,1% | 1,6% |
-| 20% | 5,3% | 4,1% | 4,7% | 3,4% |
+| 20% | 5,2% | 4,1% | 4,6% | 3,4% |
 
 **Lectura:** un modelo que en un año normal aprobaba al 10% más riesgoso hoy sólo debería aprobar a quien en un año normal habría tenido 2,4% de PD. Eso es **racionamiento de crédito**, y explica por qué el crédito real al consumo cae aunque los bancos tengan fondeo: el riesgo efectivo de cada perfil se multiplicó por ~4.
 
