@@ -1,6 +1,17 @@
 # Mora de los hogares en Argentina
 
+[![Tests](https://github.com/alvarez1lucas/mora_argentina/actions/workflows/tests.yml/badge.svg)](https://github.com/alvarez1lucas/mora_argentina/actions/workflows/tests.yml) [![Actualizar datos](https://github.com/alvarez1lucas/mora_argentina/actions/workflows/actualizar-datos.yml/badge.svg)](https://github.com/alvarez1lucas/mora_argentina/actions/workflows/actualizar-datos.yml) [![Sitio](https://github.com/alvarez1lucas/mora_argentina/actions/workflows/publicar-sitio.yml/badge.svg)](https://github.com/alvarez1lucas/mora_argentina/actions/workflows/publicar-sitio.yml) ![Python 3.11](https://img.shields.io/badge/python-3.11-blue)
+
 **[Sitio](https://alvarez1lucas.github.io/mora_argentina/)** · **[Informe de 2 páginas (PDF)](https://alvarez1lucas.github.io/mora_argentina/informe.pdf)** · [English version](README.md)
+
+[![Sitio: síntesis y primer gráfico](docs/img/sitio_es.png)](https://alvarez1lucas.github.io/mora_argentina/)
+
+## En 30 segundos
+
+- **Pregunta.** Por qué la mora de las familias en Argentina se multiplicó por 4,7 desde nov-23 y hacia dónde va.
+- **Respuesta.** Lo caro del crédito. La tasa real explica +8,3 pp de la suba de 2,5% a 12,8%, y entre el 30–31% y el 39–41% de la suba de la tasa viene de lo que el Estado les paga a los bancos. Escenario base a ago-27: 15,9%.
+- **Qué muestra.** Un pipeline de punta a punta sólo con datos públicos, econometría de series de tiempo validada fuera de muestra, ML causal en un panel de 66 bancos, un índice de alertas tempranas y una capa de decisión para quien presta (cortes de aprobación, tasa mínima). Los datos se actualizan todas las semanas; el sitio, el informe y este README se regeneran desde `outputs/` con GitHub Actions, y los tests corren en CI.
+- **Stack.** Python (pandas, statsmodels, scikit-learn, LightGBM, EconML, SHAP), Plotly, pytest, GitHub Actions, GitHub Pages.
 
 ¿Qué explica la suba de la mora de las familias en Argentina entre 2024 y 2026, y qué puede pasar en los próximos 12 meses? El proyecto responde sólo con datos públicos (BCRA, INDEC, IPCBA, A3 Mercados), econometría de series de tiempo y de panel, ML causal y validación fuera de muestra. Todos los números de este archivo los genera `python -m mora.informe` desde `outputs/`; el pipeline se actualiza todas las semanas con GitHub Actions.
 
@@ -24,6 +35,13 @@
 | Seleccionada (canasta actualizada) | 2017+ | 13,9% | 7,4–20,5% | 16,2% | 12,2% | 14,2% |
 
 El modelo satélite le gana al AR(1) y al paseo aleatorio fuera de muestra (RMSE a 12 meses: 2,25 pp contra 2,92 y 3,12). Pesos NIIF 9: 60% base, 25% adverso, 15% favorable. **En el base la mora sigue subiendo**, porque la tasa real queda cerca de máximos históricos; sólo baja si baja la tasa real.
+
+## Qué haría un banco con esto
+
+- **Endurecer la aprobación, y cuánto.** Un modelo de scoring calibrado en un año normal subestima hoy el riesgo de los préstamos personales unas 4 veces. Para correr el mismo riesgo, quien aprueba hasta una probabilidad de default (PD) de 10% debería aprobar sólo hasta 2,4%.
+- **Fijar la tasa contra el Estado, no contra la tasa de plazo fijo.** A la tasa de mercado, prestarle a una familia en lugar de al Estado (38,0% anual) deja un margen de +0,9 puntos en el escenario base y -8,6 en el adverso; el negocio empata con una PD de 21,3%.
+- **Aplicado a un modelo de scoring real.** Sobre las predicciones de un [modelo de PD validado](https://github.com/alvarez1lucas/homecredit-pd-validation), contando el costo de oportunidad de no prestarle al Estado, la aprobación pasa de 93% en un año normal a 52% en el escenario base.
+- **Previsionar y monitorear.** La mora ponderada NIIF 9 a ago-27 es 16,5% (hoy 12,8%); el índice de alertas tempranas marca **vigilancia** y se recalcula todas las semanas.
 
 ## Enfoque
 

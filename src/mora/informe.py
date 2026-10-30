@@ -45,7 +45,22 @@ def cifras(d: dict, L: str) -> dict:
     al = d["alertas"]
     nbe, nbc = d["nb"]["exposicion"], d["nb"]["credito_integrado"]
     nb_ult = max(nbc)
+    dec = d["dec"]
+    tm = d["tasa_min"]
+    tm = tm[(tm["deflactor"] == "publico") & (tm["linea"] == "personales") & (tm["lgd"] == dec["lgd_central"])
+            & (tm["costo_operativo_pp"] == dec["costo_central_pp"])].set_index("escenario")
+    cc = d["cortes"]
+    corte10 = float(cc[(cc["deflactor"] == "publico") & (cc["linea"] == "personales") & (cc["escenario"] == "base")
+                       & (cc["corte_ttc_pct"].round(6) == 10)]["corte_equivalente_pct"].iloc[0])
+    pds = d["pds"][d["pds"]["deflactor"] == "publico"].set_index(["linea", "escenario"])
+    pt = {(r["escenario"], r["regla"]): r for r in d["puente"]["tabla"]}
+    sg = lambda x: ("+" if x >= 0 else "") + pp(x)  # noqa: E731
     return {
+        "dec_corte": pp(corte10), "dec_mult": pp(pds.loc[("personales", "base"), "multiplicador_vs_ttc"], 0),
+        "dec_margen": sg(tm.loc["base", "colchon_pp"]), "dec_margen_adv": sg(tm.loc["adverso", "colchon_pp"]),
+        "dec_pd_eq": pp(tm.loc["base", "pd_equilibrio_pct"]), "dec_tea_estado": pp(dec["tea_estado_pct"]),
+        "pu_ttc": pp(pt[("ttc", "con_costo_de_oportunidad")]["aprobacion_pct"], 0),
+        "pu_base": pp(pt[("base", "con_costo_de_oportunidad")]["aprobacion_pct"], 0),
         "nb_fci": pp(nbe["fci_deuda_nacional_pbi"]), "nb_fci_max": pp(nbe["maximo_fci_deuda_nacional_pbi"]),
         "nb_fci_fecha": mes(nbe["ultimo"], L), "nb_fci_fecha_max": mes(nbe["fecha_maximo_fci"], L),
         "nb_total": pp(nbe["total_pbi"]), "nb_bancos": pp(nbe["bancos_pbi"]), "nb_mm": pp(nbe["fci_money_market_titulos_pct"]),
@@ -101,14 +116,30 @@ def readme(d: dict, L: str) -> str:
     cfg = settings()["sitio"]
     url, repo = cfg["url"], cfg["repo_url"]
     med = T[L]["med"]
-    lim = "\n".join(f"- {x}" for x in LIMITACIONES[L])
+    wf = f"{repo}/actions/workflows"
+    badges = (f"[![Tests]({wf}/tests.yml/badge.svg)]({wf}/tests.yml) "
+              f"[![{'Data refresh' if L == 'en' else 'Actualizar datos'}]({wf}/actualizar-datos.yml/badge.svg)]({wf}/actualizar-datos.yml) "
+              f"[![{'Site' if L == 'en' else 'Sitio'}]({wf}/publicar-sitio.yml/badge.svg)]({wf}/publicar-sitio.yml) "
+              "![Python 3.11](https://img.shields.io/badge/python-3.11-blue)")
+    lim ="\n".join(f"- {x}" for x in LIMITACIONES[L])
     filas_esc = "\n".join(
         f"| {med[m]} | {'2010+' if c['esc'][m]['muestra'] == 'larga' else '2017+'} | {c['esc'][m]['base']}% | {c['esc'][m]['p05']}–{c['esc'][m]['p95']}% | "
         f"{c['esc'][m]['adverso']}% | {c['esc'][m]['favorable']}% | {c['esc'][m]['niif9']}% |" for m in MEDICIONES)
     if L == "en":
         return f"""# Household loan delinquency in Argentina
 
+{badges}
+
 **[Live site]({url})** · **[2-page report (PDF)]({url}informe-en.pdf)** · [Versión en español](README_ES.md)
+
+[![Site: summary and first chart](docs/img/sitio_en.png)]({url}en/)
+
+## At a glance
+
+- **Question.** Why household delinquency in Argentina multiplied by {c['multiplo']} since {c['fecha_ini']}, and where it goes next.
+- **Answer.** Expensive credit. The real loan rate explains +{c['costo']} pp of the rise from {c['v_mora_ini']}% to {c['v_mora_fin']}%, and {c['peso_estado_tr']}–{c['peso_estado']}% of the rate's rise comes from what the State pays banks. Baseline for {c['esc_fin']}: {c['esc']['publico']['base']}%.
+- **What it shows.** An end-to-end pipeline on public data only, time-series econometrics validated out of sample, causal ML on a {c['n_ent']}-bank panel, an early-warning index and a decision layer for lenders (approval cutoffs, minimum rate). Data refresh weekly; the site, the report and this README are regenerated from `outputs/` by GitHub Actions, with the test suite running in CI.
+- **Stack.** Python (pandas, statsmodels, scikit-learn, LightGBM, EconML, SHAP), Plotly, pytest, GitHub Actions, GitHub Pages.
 
 What explains the 2024-2026 surge in household non-performing loans in Argentina, and what may happen over the next 12 months? This project answers with public data only (BCRA, INDEC, Buenos Aires City statistics, A3 Mercados), time-series and panel econometrics, causal ML, and out-of-sample validation. Every number below is generated from `outputs/` by `python -m mora.informe`; the pipeline refreshes weekly via GitHub Actions.
 
@@ -130,6 +161,13 @@ What explains the 2024-2026 surge in household non-performing loans in Argentina
 {filas_esc}
 
 The satellite model beats the AR(1) and the random walk out of sample (12-month RMSE {c['rmse_sat']} pp vs {c['rmse_ar']} and {c['rmse_rw']}). IFRS 9 weights: {c['pesos']['base']}% baseline, {c['pesos']['adverso']}% adverse, {c['pesos']['favorable']}% favorable. **In the baseline, delinquency keeps rising** because the real loan rate stays near historical highs; it only falls if real rates fall.
+
+## What a lender would do with this
+
+- **Tighten approval, and by how much.** A scoring model calibrated on a normal year underestimates today's personal-loan risk about {c['dec_mult']} times. To run the same risk, a lender approving up to a 10% probability of default (PD) should approve only up to {c['dec_corte']}%.
+- **Price against the State, not against the deposit rate.** At the market rate, lending to a household instead of to the State ({c['dec_tea_estado']}% a year) leaves a margin of {c['dec_margen']} points in the baseline and {c['dec_margen_adv']} in the adverse scenario; the business breaks even at a {c['dec_pd_eq']}% PD.
+- **Applied to a real scoring model.** On the predictions of a [validated PD model](https://github.com/alvarez1lucas/homecredit-pd-validation), counting the opportunity cost of not lending to the State, approval goes from {c['pu_ttc']}% in a normal year to {c['pu_base']}% in the baseline.
+- **Provision and monitor.** IFRS 9-weighted delinquency for {c['esc_fin']} is {c['esc']['publico']['niif9']}% (today {c['mora']}%); the early-warning index reads **{c['al_grado']}** and is recomputed every week.
 
 ## Approach
 
@@ -181,7 +219,18 @@ Author: Lucas Alvarez · [GitHub](https://github.com/alvarez1lucas)
 """
     return f"""# Mora de los hogares en Argentina
 
+{badges}
+
 **[Sitio]({url})** · **[Informe de 2 páginas (PDF)]({url}informe.pdf)** · [English version](README.md)
+
+[![Sitio: síntesis y primer gráfico](docs/img/sitio_es.png)]({url})
+
+## En 30 segundos
+
+- **Pregunta.** Por qué la mora de las familias en Argentina se multiplicó por {c['multiplo']} desde {c['fecha_ini']} y hacia dónde va.
+- **Respuesta.** Lo caro del crédito. La tasa real explica +{c['costo']} pp de la suba de {c['v_mora_ini']}% a {c['v_mora_fin']}%, y entre el {c['peso_estado_tr']}% y el {c['peso_estado']}% de la suba de la tasa viene de lo que el Estado les paga a los bancos. Escenario base a {c['esc_fin']}: {c['esc']['publico']['base']}%.
+- **Qué muestra.** Un pipeline de punta a punta sólo con datos públicos, econometría de series de tiempo validada fuera de muestra, ML causal en un panel de {c['n_ent']} bancos, un índice de alertas tempranas y una capa de decisión para quien presta (cortes de aprobación, tasa mínima). Los datos se actualizan todas las semanas; el sitio, el informe y este README se regeneran desde `outputs/` con GitHub Actions, y los tests corren en CI.
+- **Stack.** Python (pandas, statsmodels, scikit-learn, LightGBM, EconML, SHAP), Plotly, pytest, GitHub Actions, GitHub Pages.
 
 ¿Qué explica la suba de la mora de las familias en Argentina entre 2024 y 2026, y qué puede pasar en los próximos 12 meses? El proyecto responde sólo con datos públicos (BCRA, INDEC, IPCBA, A3 Mercados), econometría de series de tiempo y de panel, ML causal y validación fuera de muestra. Todos los números de este archivo los genera `python -m mora.informe` desde `outputs/`; el pipeline se actualiza todas las semanas con GitHub Actions.
 
@@ -203,6 +252,13 @@ Author: Lucas Alvarez · [GitHub](https://github.com/alvarez1lucas)
 {filas_esc}
 
 El modelo satélite le gana al AR(1) y al paseo aleatorio fuera de muestra (RMSE a 12 meses: {c['rmse_sat']} pp contra {c['rmse_ar']} y {c['rmse_rw']}). Pesos NIIF 9: {c['pesos']['base']}% base, {c['pesos']['adverso']}% adverso, {c['pesos']['favorable']}% favorable. **En el base la mora sigue subiendo**, porque la tasa real queda cerca de máximos históricos; sólo baja si baja la tasa real.
+
+## Qué haría un banco con esto
+
+- **Endurecer la aprobación, y cuánto.** Un modelo de scoring calibrado en un año normal subestima hoy el riesgo de los préstamos personales unas {c['dec_mult']} veces. Para correr el mismo riesgo, quien aprueba hasta una probabilidad de default (PD) de 10% debería aprobar sólo hasta {c['dec_corte']}%.
+- **Fijar la tasa contra el Estado, no contra la tasa de plazo fijo.** A la tasa de mercado, prestarle a una familia en lugar de al Estado ({c['dec_tea_estado']}% anual) deja un margen de {c['dec_margen']} puntos en el escenario base y {c['dec_margen_adv']} en el adverso; el negocio empata con una PD de {c['dec_pd_eq']}%.
+- **Aplicado a un modelo de scoring real.** Sobre las predicciones de un [modelo de PD validado](https://github.com/alvarez1lucas/homecredit-pd-validation), contando el costo de oportunidad de no prestarle al Estado, la aprobación pasa de {c['pu_ttc']}% en un año normal a {c['pu_base']}% en el escenario base.
+- **Previsionar y monitorear.** La mora ponderada NIIF 9 a {c['esc_fin']} es {c['esc']['publico']['niif9']}% (hoy {c['mora']}%); el índice de alertas tempranas marca **{c['al_grado']}** y se recalcula todas las semanas.
 
 ## Enfoque
 

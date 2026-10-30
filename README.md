@@ -1,6 +1,17 @@
 # Household loan delinquency in Argentina
 
+[![Tests](https://github.com/alvarez1lucas/mora_argentina/actions/workflows/tests.yml/badge.svg)](https://github.com/alvarez1lucas/mora_argentina/actions/workflows/tests.yml) [![Data refresh](https://github.com/alvarez1lucas/mora_argentina/actions/workflows/actualizar-datos.yml/badge.svg)](https://github.com/alvarez1lucas/mora_argentina/actions/workflows/actualizar-datos.yml) [![Site](https://github.com/alvarez1lucas/mora_argentina/actions/workflows/publicar-sitio.yml/badge.svg)](https://github.com/alvarez1lucas/mora_argentina/actions/workflows/publicar-sitio.yml) ![Python 3.11](https://img.shields.io/badge/python-3.11-blue)
+
 **[Live site](https://alvarez1lucas.github.io/mora_argentina/)** · **[2-page report (PDF)](https://alvarez1lucas.github.io/mora_argentina/informe-en.pdf)** · [Versión en español](README_ES.md)
+
+[![Site: summary and first chart](docs/img/sitio_en.png)](https://alvarez1lucas.github.io/mora_argentina/en/)
+
+## At a glance
+
+- **Question.** Why household delinquency in Argentina multiplied by 4.7 since Nov-23, and where it goes next.
+- **Answer.** Expensive credit. The real loan rate explains +8.3 pp of the rise from 2.5% to 12.8%, and 30–31–39–41% of the rate's rise comes from what the State pays banks. Baseline for Aug-27: 15.9%.
+- **What it shows.** An end-to-end pipeline on public data only, time-series econometrics validated out of sample, causal ML on a 66-bank panel, an early-warning index and a decision layer for lenders (approval cutoffs, minimum rate). Data refresh weekly; the site, the report and this README are regenerated from `outputs/` by GitHub Actions, with the test suite running in CI.
+- **Stack.** Python (pandas, statsmodels, scikit-learn, LightGBM, EconML, SHAP), Plotly, pytest, GitHub Actions, GitHub Pages.
 
 What explains the 2024-2026 surge in household non-performing loans in Argentina, and what may happen over the next 12 months? This project answers with public data only (BCRA, INDEC, Buenos Aires City statistics, A3 Mercados), time-series and panel econometrics, causal ML, and out-of-sample validation. Every number below is generated from `outputs/` by `python -m mora.informe`; the pipeline refreshes weekly via GitHub Actions.
 
@@ -24,6 +35,13 @@ What explains the 2024-2026 surge in household non-performing loans in Argentina
 | Selected (updated basket) | 2017+ | 13.9% | 7.4–20.5% | 16.2% | 12.2% | 14.2% |
 
 The satellite model beats the AR(1) and the random walk out of sample (12-month RMSE 2.25 pp vs 2.92 and 3.12). IFRS 9 weights: 60% baseline, 25% adverse, 15% favorable. **In the baseline, delinquency keeps rising** because the real loan rate stays near historical highs; it only falls if real rates fall.
+
+## What a lender would do with this
+
+- **Tighten approval, and by how much.** A scoring model calibrated on a normal year underestimates today's personal-loan risk about 4 times. To run the same risk, a lender approving up to a 10% probability of default (PD) should approve only up to 2.4%.
+- **Price against the State, not against the deposit rate.** At the market rate, lending to a household instead of to the State (38.0% a year) leaves a margin of +0.9 points in the baseline and -8.6 in the adverse scenario; the business breaks even at a 21.3% PD.
+- **Applied to a real scoring model.** On the predictions of a [validated PD model](https://github.com/alvarez1lucas/homecredit-pd-validation), counting the opportunity cost of not lending to the State, approval goes from 93% in a normal year to 52% in the baseline.
+- **Provision and monitor.** IFRS 9-weighted delinquency for Aug-27 is 16.5% (today 12.8%); the early-warning index reads **watch** and is recomputed every week.
 
 ## Approach
 
