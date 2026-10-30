@@ -1,0 +1,30 @@
+name: Tests
+
+# Corre la suite de pytest (sin los tests que bajan datos reales) en cada push y pull request.
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  pytest:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+
+      - name: Instalar dependencias
+        run: |
+          pip install -r requirements.txt
+          pip install -e .
+
+      - name: Tests
+        run: pytest -q
