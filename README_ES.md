@@ -95,4 +95,4 @@ La configuración está en `config/` (`settings.yaml`, regímenes, eventos monet
 
 BCRA (anexo del Informe sobre Bancos, Información de Entidades Financieras, API de estadísticas v4, régimen de transparencia), INDEC (IPC por división, salarios, empleo, EMAE, PBI), IPCBA (GCBA), datos.gob.ar, A3 Mercados (dólar futuro). La Central de Deudores no se usa, por privacidad.
 
-Autor: Lucas Alvarez · [GitHub](https://github.com/alvarez1lucas)
+Autor: Lucas Alvarez · [GitHub](https://github.com/alvarez1lucas) · Relacionado: [Umbrales de crédito](https://github.com/alvarez1lucas/umbrales-credito), [Modelos de riesgo de crédito](https://github.com/alvarez1lucas/modelos-credito) ([app interactiva](https://alvarez1lucas.github.io/modelos-credito/app/))

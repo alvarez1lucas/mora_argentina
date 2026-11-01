@@ -215,7 +215,7 @@ Configuration lives in `config/` (`settings.yaml`, regimes, monetary events). Me
 
 BCRA (banking report annex, financial institutions monthly files, statistics API v4, transparency regime), INDEC (CPI by division, wages, employment, EMAE, GDP), Buenos Aires City statistics (IPCBA), datos.gob.ar, A3 Mercados (dollar futures). The credit bureau (Central de Deudores) is deliberately not used, for privacy.
 
-Author: Lucas Alvarez · [GitHub](https://github.com/alvarez1lucas)
+Author: Lucas Alvarez · [GitHub](https://github.com/alvarez1lucas) · Related: [Credit thresholds](https://github.com/alvarez1lucas/umbrales-credito), [Credit risk models](https://github.com/alvarez1lucas/modelos-credito) ([interactive app](https://alvarez1lucas.github.io/modelos-credito/app/))
 """
     return f"""# Mora de los hogares en Argentina
 
@@ -306,7 +306,7 @@ La configuración está en `config/` (`settings.yaml`, regímenes, eventos monet
 
 BCRA (anexo del Informe sobre Bancos, Información de Entidades Financieras, API de estadísticas v4, régimen de transparencia), INDEC (IPC por división, salarios, empleo, EMAE, PBI), IPCBA (GCBA), datos.gob.ar, A3 Mercados (dólar futuro). La Central de Deudores no se usa, por privacidad.
 
-Autor: Lucas Alvarez · [GitHub](https://github.com/alvarez1lucas)
+Autor: Lucas Alvarez · [GitHub](https://github.com/alvarez1lucas) · Relacionado: [Umbrales de crédito](https://github.com/alvarez1lucas/umbrales-credito), [Modelos de riesgo de crédito](https://github.com/alvarez1lucas/modelos-credito) ([app interactiva](https://alvarez1lucas.github.io/modelos-credito/app/))
 """
 
 
