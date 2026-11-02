@@ -2,11 +2,11 @@ indicador,descripcion,direccion,umbral,nsr,cobertura,prob_episodio_si_senal,n,pe
 sit2,"Atrasos de 31 a 90 días (situación 2), % de la cartera de consumo y vivienda",alto,2.610314926704028,0.07733333333333334,0.3103448275862069,0.75,154,10.0
 sit2_d3,Suba de la situación 2 en 3 meses (pp),alto,0.5410190279445181,0.07923497267759562,0.3103448275862069,0.75,151,10.0
 mora_d3,Suba de la mora en 3 meses (pp),alto,0.36873182034339236,0.232,0.27586206896551724,0.5,154,4.310344827586206
-tasa_real,Tasa real del CFT de préstamos personales (%),alto,61.68808868333825,0.0,0.27586206896551724,1.0,154,10.0
+tasa_real,Tasa real del CFT de préstamos personales (%),alto,61.688088683338265,0.0,0.27586206896551724,1.0,154,10.0
 tasa_real_d12,Suba de la tasa real en 12 meses (pp),alto,58.85844528784714,0.0,0.27586206896551724,1.0,148,10.0
 credito_real_ia,"Crecimiento real del crédito al consumo, interanual (%)",alto,50.561279627991276,0.0,0.27586206896551724,1.0,154,10.0
 credito_real_ia_l12,"Crecimiento real del crédito al consumo de hace 12 meses (efecto cosecha, %)",alto,,inf,0.0,,142,0.0
-tasa_real_l6,Tasa real del CFT de hace 6 meses (%),alto,30.959084936196145,1.5544,0.3448275862068966,0.12987012987012986,154,0.0
+tasa_real_l6,Tasa real del CFT de hace 6 meses (%),alto,30.959084936196135,1.5544,0.3448275862068966,0.12987012987012986,154,0.0
 carga,Cuota de préstamos personales sobre la masa salarial (%),alto,7.6118905827488,0.1641509433962264,0.3448275862068966,0.7692307692307693,82,6.091954022988506
 carga_d12,Suba de la carga de la cuota en 12 meses (pp),alto,1.3150391064281435,0.0,0.6785714285714286,1.0,70,10.0
 salario_real_ia,"Salario registrado real, interanual (%)",bajo,-6.871753445693676,0.5178571428571428,0.41379310344827586,0.5,85,1.931034482758621

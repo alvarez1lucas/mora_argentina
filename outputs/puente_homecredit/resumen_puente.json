@@ -1,11 +1,11 @@
 {
-  "tea_mercado_pct": 83.77659775730028,
-  "tea_estado_pct": 38.00794823069623,
+  "tea_mercado_pct": 84.03335094119528,
+  "tea_estado_pct": 38.00794823069621,
   "lgd": 0.75,
   "costo_operativo_pp": 12.0,
   "cortes_pd_pct": {
-    "solo_perdida_esperada": 52.76,
-    "con_costo_de_oportunidad": 21.27
+    "solo_perdida_esperada": 52.84,
+    "con_costo_de_oportunidad": 21.4
   },
   "delta_logit": {
     "ttc": 0.0,
@@ -20,7 +20,7 @@
     {
       "escenario": "ttc",
       "regla": "solo_perdida_esperada",
-      "corte_pd_pct": 52.76,
+      "corte_pd_pct": 52.84,
       "pd_media_cartera_pct": 7.94,
       "aprobacion_pct": 100.0,
       "pd_media_aprobados_pct": 7.94
@@ -28,7 +28,7 @@
     {
       "escenario": "ttc",
       "regla": "con_costo_de_oportunidad",
-      "corte_pd_pct": 21.27,
+      "corte_pd_pct": 21.4,
       "pd_media_cartera_pct": 7.94,
       "aprobacion_pct": 93.4,
       "pd_media_aprobados_pct": 6.43
@@ -36,23 +36,23 @@
     {
       "escenario": "hoy",
       "regla": "solo_perdida_esperada",
-      "corte_pd_pct": 52.76,
+      "corte_pd_pct": 52.84,
       "pd_media_cartera_pct": 20.96,
-      "aprobacion_pct": 95.2,
-      "pd_media_aprobados_pct": 18.91
+      "aprobacion_pct": 95.4,
+      "pd_media_aprobados_pct": 18.98
     },
     {
       "escenario": "hoy",
       "regla": "con_costo_de_oportunidad",
-      "corte_pd_pct": 21.27,
+      "corte_pd_pct": 21.4,
       "pd_media_cartera_pct": 20.96,
-      "aprobacion_pct": 61.6,
-      "pd_media_aprobados_pct": 11.28
+      "aprobacion_pct": 61.8,
+      "pd_media_aprobados_pct": 11.31
     },
     {
       "escenario": "base",
       "regla": "solo_perdida_esperada",
-      "corte_pd_pct": 52.76,
+      "corte_pd_pct": 52.84,
       "pd_media_cartera_pct": 24.7,
       "aprobacion_pct": 92.2,
       "pd_media_aprobados_pct": 21.48
@@ -60,15 +60,15 @@
     {
       "escenario": "base",
       "regla": "con_costo_de_oportunidad",
-      "corte_pd_pct": 21.27,
+      "corte_pd_pct": 21.4,
       "pd_media_cartera_pct": 24.7,
-      "aprobacion_pct": 52.0,
-      "pd_media_aprobados_pct": 12.16
+      "aprobacion_pct": 52.2,
+      "pd_media_aprobados_pct": 12.2
     },
     {
       "escenario": "adverso",
       "regla": "solo_perdida_esperada",
-      "corte_pd_pct": 52.76,
+      "corte_pd_pct": 52.84,
       "pd_media_cartera_pct": 28.9,
       "aprobacion_pct": 88.0,
       "pd_media_aprobados_pct": 24.12
@@ -76,10 +76,10 @@
     {
       "escenario": "adverso",
       "regla": "con_costo_de_oportunidad",
-      "corte_pd_pct": 21.27,
+      "corte_pd_pct": 21.4,
       "pd_media_cartera_pct": 28.9,
-      "aprobacion_pct": 41.8,
-      "pd_media_aprobados_pct": 12.99
+      "aprobacion_pct": 42.0,
+      "pd_media_aprobados_pct": 13.03
     }
   ]
 }

@@ -21,11 +21,11 @@ spec,bic,n,signos_ok,corrida
 "tasa_real_cft(t-6), empleo_ia(t-9), emae_ia(t-9), credito_real_ia(t-18) | AR(2)",-253.90554714342977,76,True,base_limpia_mix
 "tasa_real_cft(t-6), salario_real_ia(t-9), emae_ia(t-3), credito_real_ia(t-15) | AR(2)",-257.2780817974905,76,True,completa_limpia_mix
 "tasa_real_cft(t-6), salario_real_ia(t-9), emae_ia(t-6), credito_real_ia(t-15) | AR(2)",-257.2365141731875,76,True,completa_limpia_mix
-"tasa_real_cft(t-6), salario_real_ia(t-9), emae_ia(t-9), credito_real_ia(t-15) | AR(2)",-257.2327326752405,76,True,completa_limpia_mix
+"tasa_real_cft(t-6), salario_real_ia(t-9), emae_ia(t-9), credito_real_ia(t-15) | AR(2)",-257.2327326752404,76,True,completa_limpia_mix
 "tasa_real_cft(t-6), salario_real_ia(t-6), emae_ia(t-9), credito_real_ia(t-18) | AR(2)",-254.74849407726822,76,True,completa_limpia_mix
 "tasa_real_cft(t-6), salario_real_ia(t-9), emae_ia(t-9), credito_real_ia(t-18) | AR(2)",-254.6817286590964,76,True,completa_limpia_mix
 "tasa_real_cft(t-6), salario_real_ia(t-9), emae_ia(t-3), credito_real_ia(t-18) | AR(2)",-254.65681438178046,76,True,completa_limpia_mix
 "tasa_real_cft(t-3), salario_real_ia(t-6), emae_ia(t-9), credito_real_ia(t-15) | AR(2)",-253.58720042995992,76,True,completa_limpia_mix
 "tasa_real_cft(t-6), salario_real_ia(t-3), emae_ia(t-6), credito_real_ia(t-18) | AR(2)",-253.23819861423647,76,True,completa_limpia_mix
 "tasa_real_cft(t-6), salario_real_ia(t-6), emae_ia(t-3), credito_real_ia(t-15) | AR(1)",-252.8416144837818,76,True,completa_limpia_mix
-"tasa_real_cft(t-6), salario_real_ia(t-6), emae_ia(t-9), credito_real_ia(t-18) | AR(1)",-251.8295242676202,76,True,completa_limpia_mix
+"tasa_real_cft(t-6), salario_real_ia(t-6), emae_ia(t-9), credito_real_ia(t-18) | AR(1)",-251.82952426762031,76,True,completa_limpia_mix

@@ -5,7 +5,7 @@
     "especificacion": "salario_real_ia(t-6), tasa_real_cft(t-6), absorcion_d12(t-12), tcr_ia(t-9), credito_real_ia(t-18) | AR(2)",
     "signos_ok": true,
     "n": 77,
-    "r2_ajustado": 0.5674203573370751,
+    "r2_ajustado": 0.5674203573370749,
     "ventana": [
       "2024-10-01",
       "2026-08-01"
@@ -13,7 +13,7 @@
     "mora_inicio": 2.489310113996647,
     "mora_fin": 12.814578878881402,
     "cambio_observado_pp": 10.325268764884756,
-    "suma_aportes_canales_pp": 10.877294393507636,
+    "suma_aportes_canales_pp": 10.877294393508071,
     "mora_simulada_fin": 12.8145788788814,
     "referencias": {
       "salario_real_ia": 0.0,
@@ -37,11 +37,11 @@
     "mora_inicio": 2.489310113996647,
     "mora_fin": 12.814578878881402,
     "cambio_observado_pp": 10.325268764884756,
-    "suma_aportes_canales_pp": 13.695293893913098,
+    "suma_aportes_canales_pp": 13.695293893913421,
     "mora_simulada_fin": 12.8145788788814,
     "referencias": {
       "salario_real_ia": 0.0,
-      "tasa_real_cft": 25.687496706722243,
+      "tasa_real_cft": 25.68749670672225,
       "absorcion_d12": 0.0,
       "tcr_ia": 0.0,
       "credito_real_ia": 0.0
@@ -61,7 +61,7 @@
     "mora_inicio": 2.489310113996647,
     "mora_fin": 12.814578878881402,
     "cambio_observado_pp": 10.325268764884756,
-    "suma_aportes_canales_pp": 12.343142672275047,
+    "suma_aportes_canales_pp": 12.343142672275508,
     "mora_simulada_fin": 12.8145788788814,
     "referencias": {
       "salario_real_ia": 0.0,
@@ -85,7 +85,7 @@
     "mora_inicio": 2.489310113996647,
     "mora_fin": 12.814578878881402,
     "cambio_observado_pp": 10.325268764884756,
-    "suma_aportes_canales_pp": 9.369342156854586,
+    "suma_aportes_canales_pp": 9.369342156854449,
     "mora_simulada_fin": 12.8145788788814,
     "referencias": {
       "salario_real_ia": 0.0,
@@ -110,7 +110,7 @@
     "mora_inicio": 2.489310113996647,
     "mora_fin": 12.814578878881402,
     "cambio_observado_pp": 10.325268764884756,
-    "suma_aportes_canales_pp": 13.612511497174548,
+    "suma_aportes_canales_pp": 13.612511497174646,
     "mora_simulada_fin": 12.8145788788814,
     "referencias": {
       "salario_real_ia": 0.0,
@@ -127,7 +127,7 @@
     "especificacion": "salario_real_ia(t-6), tasa_real_fondeo(t-6), spread_personales(t-12), absorcion_d12(t-12), tcr_ia(t-3), credito_real_ia(t-18) | AR(2)",
     "signos_ok": true,
     "n": 77,
-    "r2_ajustado": 0.585692871737803,
+    "r2_ajustado": 0.5856928717378027,
     "ventana": [
       "2024-10-01",
       "2026-08-01"
@@ -135,14 +135,14 @@
     "mora_inicio": 2.489310113996647,
     "mora_fin": 12.814578878881402,
     "cambio_observado_pp": 10.325268764884756,
-    "suma_aportes_canales_pp": 10.010220280694671,
+    "suma_aportes_canales_pp": 10.010220280695256,
     "mora_simulada_fin": 12.8145788788814,
     "referencias": {
       "salario_real_ia": 0.0,
       "absorcion_d12": 0.0,
       "tcr_ia": 0.0,
       "credito_real_ia": 0.0,
-      "tasa_real_fondeo": -6.816909941486328,
+      "tasa_real_fondeo": -6.816909941486329,
       "spread_personales": 18.241445231098144
     }
   },
@@ -160,15 +160,15 @@
     "mora_inicio": 2.489310113996647,
     "mora_fin": 12.814578878881402,
     "cambio_observado_pp": 10.325268764884756,
-    "suma_aportes_canales_pp": 15.259659330835754,
+    "suma_aportes_canales_pp": 15.259659330834339,
     "mora_simulada_fin": 12.8145788788814,
     "referencias": {
       "salario_real_ia": 0.0,
       "absorcion_d12": 0.0,
       "tcr_ia": 0.0,
       "credito_real_ia": 0.0,
-      "tasa_real_estado": -3.306450696440385,
-      "prima_sobre_estado": 22.027248473588195
+      "tasa_real_estado": -3.3064506964403897,
+      "prima_sobre_estado": 22.027248473588205
     }
   },
   "costo_oportunidad_seleccionado": {
@@ -177,7 +177,7 @@
     "especificacion": "salario_real_ia(t-6), tasa_real_estado(t-6), prima_sobre_estado(t-3), absorcion_d12(t-12), tcr_ia(t-9), credito_real_ia(t-18) | AR(2)",
     "signos_ok": true,
     "n": 77,
-    "r2_ajustado": 0.5916475993470163,
+    "r2_ajustado": 0.591647599347016,
     "ventana": [
       "2024-10-01",
       "2026-08-01"
@@ -185,15 +185,15 @@
     "mora_inicio": 2.489310113996647,
     "mora_fin": 12.814578878881402,
     "cambio_observado_pp": 10.325268764884756,
-    "suma_aportes_canales_pp": 17.488556477713814,
+    "suma_aportes_canales_pp": 17.488556477714635,
     "mora_simulada_fin": 12.8145788788814,
     "referencias": {
       "salario_real_ia": 0.0,
       "absorcion_d12": 0.0,
       "tcr_ia": 0.0,
       "credito_real_ia": 0.0,
-      "tasa_real_estado": -3.1836715118897225,
-      "prima_sobre_estado": 22.027248473588195
+      "tasa_real_estado": -3.1836715118897283,
+      "prima_sobre_estado": 22.027248473588205
     }
   },
   "costo_oportunidad_mix": {
@@ -210,15 +210,15 @@
     "mora_inicio": 2.489310113996647,
     "mora_fin": 12.814578878881402,
     "cambio_observado_pp": 10.325268764884756,
-    "suma_aportes_canales_pp": 16.533817938769566,
+    "suma_aportes_canales_pp": 16.533817938769722,
     "mora_simulada_fin": 12.8145788788814,
     "referencias": {
       "salario_real_ia": 0.0,
       "absorcion_d12": 0.0,
       "tcr_ia": 0.0,
       "credito_real_ia": 0.0,
-      "tasa_real_estado": -3.2477937031137123,
-      "prima_sobre_estado": 22.027248473588195
+      "tasa_real_estado": -3.247793703113719,
+      "prima_sobre_estado": 22.027248473588205
     }
   }
 }

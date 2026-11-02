@@ -1,13 +1,13 @@
 spec,bic,n,signos_ok,corrida
-"tasa_real_cft(t-6), empleo_ia(t-3), emae_ia(t-3), credito_real_ia(t-15) | AR(2)",-525.3732090523844,140,True,base_larga_publico
+"tasa_real_cft(t-6), empleo_ia(t-3), emae_ia(t-3), credito_real_ia(t-15) | AR(2)",-525.3732090523845,140,True,base_larga_publico
 "tasa_real_cft(t-6), empleo_ia(t-3), emae_ia(t-3), credito_real_ia(t-15) | AR(1)",-519.2517354369148,140,True,base_larga_publico
 "tasa_real_cft(t-6), empleo_ia(t-3), emae_ia(t-3), credito_real_ia(t-18) | AR(1)",-518.4889414891677,140,True,base_larga_publico
-"tasa_real_cft(t-6), empleo_ia(t-3), emae_ia(t-9), credito_real_ia(t-12) | AR(2)",-528.3934081544013,140,False,base_larga_publico
+"tasa_real_cft(t-6), empleo_ia(t-3), emae_ia(t-9), credito_real_ia(t-12) | AR(2)",-528.3934081544012,140,False,base_larga_publico
 "tasa_real_cft(t-6), empleo_ia(t-3), emae_ia(t-9), credito_real_ia(t-15) | AR(2)",-528.2174839202395,140,False,base_larga_publico
 "tasa_real_cft(t-6), empleo_ia(t-3), emae_ia(t-6), credito_real_ia(t-15) | AR(2)",-527.0003682066787,140,False,base_larga_publico
 "tasa_real_cft(t-12), empleo_ia(t-3), emae_ia(t-6), credito_real_ia(t-15) | AR(2)",-526.6787231136856,140,False,base_larga_publico
 "tasa_real_cft(t-12), empleo_ia(t-3), emae_ia(t-6), credito_real_ia(t-18) | AR(2)",-526.3721236359534,140,False,base_larga_publico
-"tasa_real_cft(t-12), empleo_ia(t-3), emae_ia(t-6), credito_real_ia(t-12) | AR(2)",-526.2554260038178,140,False,base_larga_publico
+"tasa_real_cft(t-12), empleo_ia(t-3), emae_ia(t-6), credito_real_ia(t-12) | AR(2)",-526.2554260038179,140,False,base_larga_publico
 "tasa_real_cft(t-6), empleo_ia(t-3), emae_ia(t-6), credito_real_ia(t-12) | AR(2)",-526.2456082772104,140,False,base_larga_publico
 "tasa_real_cft(t-6), empleo_ia(t-6), emae_ia(t-3), credito_real_ia(t-15) | AR(2)",-258.4955632511749,76,True,base_limpia_publico
 "tasa_real_cft(t-6), empleo_ia(t-9), emae_ia(t-3), credito_real_ia(t-15) | AR(2)",-258.25440432018866,76,True,base_limpia_publico

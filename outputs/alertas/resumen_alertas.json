@@ -42,7 +42,7 @@
         "descripcion": "Tasa real del CFT de préstamos personales (%)",
         "valor": 71.837250144832,
         "fecha": "2026-08-01",
-        "umbral": 61.68808868333825,
+        "umbral": 61.688088683338265,
         "direccion": "alto",
         "peso": 10.0,
         "senal": true
@@ -82,7 +82,7 @@
         "descripcion": "Tasa real del CFT de hace 6 meses (%)",
         "valor": 59.91415847303738,
         "fecha": "2026-08-01",
-        "umbral": 30.959084936196145,
+        "umbral": 30.959084936196135,
         "direccion": "alto",
         "peso": 0.0,
         "senal": null

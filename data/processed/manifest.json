@@ -1,10 +1,10 @@
 {
-  "corrida_utc": "2026-10-27T16:55:43+00:00",
+  "corrida_utc": "2026-11-02T21:27:45+00:00",
   "archivos": {
     "a3_dolar_futuro.csv": {
-      "filas": 19252,
+      "filas": 19308,
       "desde": "2020-01-02",
-      "hasta": "2026-10-26"
+      "hasta": "2026-10-30"
     },
     "anexo_balance_por_grupo.csv": {
       "filas": 38775,
@@ -22,8 +22,18 @@
       "hasta": "2026-08-01"
     },
     "bcra_mensual.csv": {
-      "filas": 1004,
+      "filas": 1005,
       "desde": "1943-02-01",
+      "hasta": "2026-10-01"
+    },
+    "cafci_carteras.csv": {
+      "filas": 35,
+      "desde": "2023-01-01",
+      "hasta": "2026-09-01"
+    },
+    "deuda_tesoro.csv": {
+      "filas": 93,
+      "desde": "2019-01-01",
       "hasta": "2026-09-01"
     },
     "entidades_balance.csv": {
@@ -52,8 +62,8 @@
       "hasta": "2024-04-18"
     },
     "macro_mensual.csv": {
-      "filas": 273,
-      "desde": "2004-01-01",
+      "filas": 381,
+      "desde": "1995-01-01",
       "hasta": "2026-09-01"
     },
     "macro_trimestral.csv": {
@@ -61,10 +71,15 @@
       "desde": "2003-01-01",
       "hasta": "2026-04-01"
     },
+    "pnfc_informes.csv": {
+      "filas": 5,
+      "desde": "2023-12-01",
+      "hasta": "2026-02-01"
+    },
     "transparencia_entidades.csv": {
-      "filas": 237,
+      "filas": 472,
       "desde": "2026-10-27",
-      "hasta": "2026-10-27"
+      "hasta": "2026-11-02"
     }
   }
 }

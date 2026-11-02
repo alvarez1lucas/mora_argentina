@@ -1,8 +1,8 @@
 {
   "deflactor": "seleccionado",
   "zivot_andrews_logit_mora": {
-    "estadistico": -4.78962378238394,
-    "pvalor": 0.11034280942728043,
+    "estadistico": -4.789623782381953,
+    "pvalor": 0.11034280942783498,
     "fecha_quiebre": "2023-12-01"
   },
   "corridas": {
@@ -10,7 +10,7 @@
       "especificacion": "tasa_real_cft(t-12), empleo_ia(t-3), emae_ia(t-6), credito_real_ia(t-15) | AR(2)",
       "signos_ok": false,
       "n": 140,
-      "r2_ajustado": 0.5402266429880164,
+      "r2_ajustado": 0.5402266429880165,
       "desde": "2013-04-01",
       "hasta": "2026-08-01"
     },

@@ -3,7 +3,7 @@ spec,bic,n,signos_ok,corrida
 "tasa_real_cft(t-12), empleo_ia(t-3), emae_ia(t-6), credito_real_ia(t-18) | AR(2)",-527.6752507240207,140,False,base_larga_seleccionado
 "tasa_real_cft(t-12), empleo_ia(t-3), emae_ia(t-6), credito_real_ia(t-12) | AR(2)",-527.5641610063146,140,False,base_larga_seleccionado
 "tasa_real_cft(t-12), empleo_ia(t-3), emae_ia(t-9), credito_real_ia(t-15) | AR(2)",-527.1587090537499,140,False,base_larga_seleccionado
-"tasa_real_cft(t-6), empleo_ia(t-3), emae_ia(t-9), credito_real_ia(t-12) | AR(2)",-526.7696871937461,140,False,base_larga_seleccionado
+"tasa_real_cft(t-6), empleo_ia(t-3), emae_ia(t-9), credito_real_ia(t-12) | AR(2)",-526.7696871937463,140,False,base_larga_seleccionado
 "tasa_real_cft(t-12), empleo_ia(t-3), emae_ia(t-9), credito_real_ia(t-12) | AR(2)",-526.6415961832912,140,False,base_larga_seleccionado
 "tasa_real_cft(t-12), empleo_ia(t-3), emae_ia(t-9), credito_real_ia(t-18) | AR(2)",-526.4581254447882,140,False,base_larga_seleccionado
 "tasa_real_cft(t-6), empleo_ia(t-3), emae_ia(t-9), credito_real_ia(t-15) | AR(2)",-525.9119108840962,140,False,base_larga_seleccionado
