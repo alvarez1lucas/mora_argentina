@@ -2,9 +2,9 @@
 
 [![Tests](https://github.com/alvarez1lucas/mora_argentina/actions/workflows/tests.yml/badge.svg)](https://github.com/alvarez1lucas/mora_argentina/actions/workflows/tests.yml) [![Actualizar datos](https://github.com/alvarez1lucas/mora_argentina/actions/workflows/actualizar-datos.yml/badge.svg)](https://github.com/alvarez1lucas/mora_argentina/actions/workflows/actualizar-datos.yml) [![Sitio](https://github.com/alvarez1lucas/mora_argentina/actions/workflows/publicar-sitio.yml/badge.svg)](https://github.com/alvarez1lucas/mora_argentina/actions/workflows/publicar-sitio.yml) ![Python 3.11](https://img.shields.io/badge/python-3.11-blue)
 
-**[Sitio](https://alvarez1lucas.github.io/mora_argentina/)** · **[Informe de 2 páginas (PDF)](https://alvarez1lucas.github.io/mora_argentina/informe.pdf)** · [English version](README.md)
+**[Sitio](https://alvarez1lucas.github.io/mora_argentina/es/)** · **[Informe de 2 páginas (PDF)](https://alvarez1lucas.github.io/mora_argentina/informe.pdf)** · [English version](README.md)
 
-[![Sitio: síntesis y primer gráfico](docs/img/sitio_es.png)](https://alvarez1lucas.github.io/mora_argentina/)
+[![Sitio: síntesis y primer gráfico](docs/img/sitio_es.png)](https://alvarez1lucas.github.io/mora_argentina/es/)
 
 ## En 30 segundos
 

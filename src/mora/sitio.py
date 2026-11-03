@@ -1,6 +1,6 @@
 """Fase 7: sitio estático bilingüe (GitHub Pages) generado desde outputs/.
 
-`python -m mora.sitio` escribe site/index.html (español) y site/en/index.html (inglés).
+`python -m mora.sitio` escribe site/index.html (inglés) y site/es/index.html (español); site/en/ redirige a la raíz.
 
 Todos los números y gráficos salen de outputs/: no hay cifras escritas a mano. Los gráficos son
 Plotly (una sola escala por gráfico; las mediciones de precios se eligen con un menú dentro del
@@ -37,7 +37,7 @@ T = {
     "es": {
         "lang": "es", "titulo": "Mora de los hogares en Argentina",
         "subtitulo": "Qué explica la suba de la mora de las familias 2024-2026 y qué puede pasar en los próximos 12 meses, con datos públicos y modelos validados fuera de muestra.",
-        "otro_idioma": ("English", "en/index.html"),
+        "otro_idioma": ("English", "../index.html"),
         "med": {"publico": "Pública (INDEC)", "mix": "Mix", "seleccionado": "Seleccionada (canasta actualizada)"},
         "dec": ",", "mil": ".",
         "meses": ["ene", "feb", "mar", "abr", "may", "jun", "jul", "ago", "sep", "oct", "nov", "dic"],
@@ -45,7 +45,7 @@ T = {
     "en": {
         "lang": "en", "titulo": "Household loan delinquency in Argentina",
         "subtitulo": "What explains the 2024-2026 rise in household non-performing loans and what may happen over the next 12 months, using public data and out-of-sample validated models.",
-        "otro_idioma": ("Español", "../index.html"),
+        "otro_idioma": ("Español", "es/index.html"),
         "med": {"publico": "Official (INDEC)", "mix": "Mix", "seleccionado": "Selected (updated basket)"},
         "dec": ".", "mil": ",",
         "meses": ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
@@ -1010,13 +1010,21 @@ def pagina(d: dict, lang: str) -> str:
 """
 
 
+def redireccion(destino: str) -> str:
+    """Página mínima que lleva de una dirección vieja a la nueva."""
+    return (f'<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="refresh" content="0; url={destino}">'
+            f'<link rel="canonical" href="{destino}"><title>Moved</title></head><body><a href="{destino}">{destino}</a></body></html>')
+
+
 def main() -> None:
     d = datos()
     destino = ROOT / settings()["sitio"]["destino"]
-    for lang, rel in (("es", "index.html"), ("en", "en/index.html")):
+    for lang, rel in (("en", "index.html"), ("es", "es/index.html")):
         f = destino / rel
         f.parent.mkdir(parents=True, exist_ok=True)
         f.write_text(pagina(d, lang), encoding="utf-8")
+    (destino / "en").mkdir(exist_ok=True)
+    (destino / "en" / "index.html").write_text(redireccion("../"), encoding="utf-8")
     print(f"sitio: {destino}")
 
 

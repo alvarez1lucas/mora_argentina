@@ -45,7 +45,7 @@ jobs:
 
       - name: Informe en PDF (Chrome headless)
         run: |
-          for par in "informe.html:informe.pdf" "en/report.html:informe-en.pdf"; do
+          for par in "es/informe.html:informe.pdf" "report.html:informe-en.pdf"; do
             google-chrome --headless=new --no-sandbox --disable-gpu --no-pdf-header-footer               --virtual-time-budget=15000 --print-to-pdf="site/${par#*:}" "file://$PWD/site/${par%%:*}"
           done
           ls -la site/*.pdf

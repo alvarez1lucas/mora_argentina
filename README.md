@@ -4,7 +4,7 @@
 
 **[Live site](https://alvarez1lucas.github.io/mora_argentina/)** · **[2-page report (PDF)](https://alvarez1lucas.github.io/mora_argentina/informe-en.pdf)** · [Versión en español](README_ES.md)
 
-[![Site: summary and first chart](docs/img/sitio_en.png)](https://alvarez1lucas.github.io/mora_argentina/en/)
+[![Site: summary and first chart](docs/img/sitio_en.png)](https://alvarez1lucas.github.io/mora_argentina/)
 
 ## At a glance
 
