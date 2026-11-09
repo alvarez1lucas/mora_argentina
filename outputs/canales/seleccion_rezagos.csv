@@ -1,11 +1,11 @@
 spec,bic,n,signos_ok,deflactor,variante
-"salario_real_ia(t-6), tasa_real_cft(t-6), absorcion_d12(t-12), tcr_ia(t-9), credito_real_ia(t-18) | AR(2)",-251.34582125225586,76,True,publico,base
+"salario_real_ia(t-6), tasa_real_cft(t-6), absorcion_d12(t-12), tcr_ia(t-9), credito_real_ia(t-18) | AR(2)",-251.34582125225597,76,True,publico,base
 "salario_real_ia(t-6), tasa_real_cft(t-6), absorcion_d12(t-12), tcr_ia(t-6), credito_real_ia(t-18) | AR(2)",-251.3036496457945,76,True,publico,base
 "salario_real_ia(t-6), tasa_real_cft(t-6), absorcion_d12(t-12), tcr_ia(t-12), credito_real_ia(t-18) | AR(2)",-250.76435308184762,76,True,publico,base
 "salario_real_ia(t-6), tasa_real_cft(t-6), absorcion_d12(t-12), tcr_ia(t-3), credito_real_ia(t-18) | AR(2)",-250.68582303573316,76,True,publico,base
 "salario_real_ia(t-9), tasa_real_cft(t-6), absorcion_d12(t-12), tcr_ia(t-3), credito_real_ia(t-18) | AR(2)",-250.56806831015194,76,True,publico,base
-"salario_real_ia(t-9), tasa_real_cft(t-6), absorcion_d12(t-12), tcr_ia(t-12), credito_real_ia(t-18) | AR(2)",-250.2418242674812,76,True,publico,base
-"salario_real_ia(t-9), tasa_real_cft(t-6), absorcion_d12(t-12), tcr_ia(t-6), credito_real_ia(t-18) | AR(2)",-250.2133838881981,76,True,publico,base
+"salario_real_ia(t-9), tasa_real_cft(t-6), absorcion_d12(t-12), tcr_ia(t-12), credito_real_ia(t-18) | AR(2)",-250.24182426748132,76,True,publico,base
+"salario_real_ia(t-9), tasa_real_cft(t-6), absorcion_d12(t-12), tcr_ia(t-6), credito_real_ia(t-18) | AR(2)",-250.21338388819822,76,True,publico,base
 "salario_real_ia(t-3), tasa_real_cft(t-6), absorcion_d12(t-12), tcr_ia(t-3), credito_real_ia(t-18) | AR(2)",-249.27569338686976,76,True,publico,base
 "salario_real_ia(t-3), tasa_real_cft(t-6), absorcion_d12(t-12), tcr_ia(t-12), credito_real_ia(t-18) | AR(2)",-249.2381330353569,76,True,publico,base
 "salario_real_ia(t-3), tasa_real_cft(t-6), absorcion_d12(t-12), tcr_ia(t-9), credito_real_ia(t-18) | AR(2)",-249.09036631724643,76,True,publico,base
@@ -71,12 +71,12 @@ spec,bic,n,signos_ok,deflactor,variante
 "salario_real_ia(t-6), tasa_real_estado(t-9), prima_sobre_estado(t-3), absorcion_d12(t-12), tcr_ia(t-12), credito_real_ia(t-18) | AR(2)",-247.91454791805833,76,True,publico,costo_oportunidad
 "salario_real_ia(t-6), tasa_real_estado(t-6), prima_sobre_estado(t-3), absorcion_d12(t-12), tcr_ia(t-9), credito_real_ia(t-18) | AR(2)",-252.45448937796547,76,True,seleccionado,costo_oportunidad
 "salario_real_ia(t-6), tasa_real_estado(t-6), prima_sobre_estado(t-6), absorcion_d12(t-12), tcr_ia(t-9), credito_real_ia(t-18) | AR(2)",-251.32363809751936,76,True,seleccionado,costo_oportunidad
-"salario_real_ia(t-6), tasa_real_estado(t-6), prima_sobre_estado(t-3), absorcion_d12(t-12), tcr_ia(t-12), credito_real_ia(t-12) | AR(2)",-250.80155089185857,76,True,seleccionado,costo_oportunidad
-"salario_real_ia(t-6), tasa_real_estado(t-9), prima_sobre_estado(t-3), absorcion_d12(t-12), tcr_ia(t-6), credito_real_ia(t-18) | AR(2)",-250.68624647887836,76,True,seleccionado,costo_oportunidad
+"salario_real_ia(t-6), tasa_real_estado(t-6), prima_sobre_estado(t-3), absorcion_d12(t-12), tcr_ia(t-12), credito_real_ia(t-12) | AR(2)",-250.80155089185845,76,True,seleccionado,costo_oportunidad
+"salario_real_ia(t-6), tasa_real_estado(t-9), prima_sobre_estado(t-3), absorcion_d12(t-12), tcr_ia(t-6), credito_real_ia(t-18) | AR(2)",-250.68624647887847,76,True,seleccionado,costo_oportunidad
 "salario_real_ia(t-6), tasa_real_estado(t-12), prima_sobre_estado(t-3), absorcion_d12(t-12), tcr_ia(t-6), credito_real_ia(t-18) | AR(2)",-250.46946493627476,76,True,seleccionado,costo_oportunidad
 "salario_real_ia(t-6), tasa_real_estado(t-9), prima_sobre_estado(t-3), absorcion_d12(t-12), tcr_ia(t-9), credito_real_ia(t-18) | AR(2)",-250.451088110502,76,True,seleccionado,costo_oportunidad
 "salario_real_ia(t-6), tasa_real_estado(t-6), prima_sobre_estado(t-3), absorcion_d12(t-12), tcr_ia(t-6), credito_real_ia(t-18) | AR(2)",-250.32583384063284,76,True,seleccionado,costo_oportunidad
-"salario_real_ia(t-6), tasa_real_estado(t-12), prima_sobre_estado(t-3), absorcion_d12(t-12), tcr_ia(t-9), credito_real_ia(t-18) | AR(2)",-250.30723608496302,76,True,seleccionado,costo_oportunidad
+"salario_real_ia(t-6), tasa_real_estado(t-12), prima_sobre_estado(t-3), absorcion_d12(t-12), tcr_ia(t-9), credito_real_ia(t-18) | AR(2)",-250.30723608496314,76,True,seleccionado,costo_oportunidad
 "salario_real_ia(t-6), tasa_real_estado(t-6), prima_sobre_estado(t-3), absorcion_d12(t-12), tcr_ia(t-12), credito_real_ia(t-18) | AR(2)",-250.03193203389364,76,True,seleccionado,costo_oportunidad
 "salario_real_ia(t-6), tasa_real_estado(t-9), prima_sobre_estado(t-3), absorcion_d12(t-12), tcr_ia(t-12), credito_real_ia(t-18) | AR(2)",-249.67533351569713,76,True,seleccionado,costo_oportunidad
 "salario_real_ia(t-6), tasa_real_estado(t-6), prima_sobre_estado(t-3), absorcion_d12(t-12), tcr_ia(t-9), credito_real_ia(t-18) | AR(2)",-251.18387194235547,76,True,mix,costo_oportunidad
@@ -84,7 +84,7 @@ spec,bic,n,signos_ok,deflactor,variante
 "salario_real_ia(t-6), tasa_real_estado(t-9), prima_sobre_estado(t-3), absorcion_d12(t-12), tcr_ia(t-6), credito_real_ia(t-18) | AR(2)",-249.57843266644826,76,True,mix,costo_oportunidad
 "salario_real_ia(t-6), tasa_real_estado(t-6), prima_sobre_estado(t-3), absorcion_d12(t-12), tcr_ia(t-6), credito_real_ia(t-18) | AR(2)",-249.4753733481608,76,True,mix,costo_oportunidad
 "salario_real_ia(t-6), tasa_real_estado(t-12), prima_sobre_estado(t-3), absorcion_d12(t-12), tcr_ia(t-6), credito_real_ia(t-18) | AR(2)",-249.3679443244159,76,True,mix,costo_oportunidad
-"salario_real_ia(t-6), tasa_real_estado(t-9), prima_sobre_estado(t-3), absorcion_d12(t-12), tcr_ia(t-9), credito_real_ia(t-18) | AR(2)",-249.29090295555815,76,True,mix,costo_oportunidad
+"salario_real_ia(t-6), tasa_real_estado(t-9), prima_sobre_estado(t-3), absorcion_d12(t-12), tcr_ia(t-9), credito_real_ia(t-18) | AR(2)",-249.29090295555804,76,True,mix,costo_oportunidad
 "salario_real_ia(t-6), tasa_real_estado(t-6), prima_sobre_estado(t-3), absorcion_d12(t-12), tcr_ia(t-12), credito_real_ia(t-18) | AR(2)",-249.23655098179572,76,True,mix,costo_oportunidad
 "salario_real_ia(t-6), tasa_real_estado(t-12), prima_sobre_estado(t-3), absorcion_d12(t-12), tcr_ia(t-9), credito_real_ia(t-18) | AR(2)",-249.0764677075941,76,True,mix,costo_oportunidad
 "salario_real_ia(t-6), tasa_real_estado(t-6), prima_sobre_estado(t-3), absorcion_d12(t-12), tcr_ia(t-3), credito_real_ia(t-18) | AR(2)",-248.8016102425108,76,True,mix,costo_oportunidad

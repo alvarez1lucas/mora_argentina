@@ -46,20 +46,20 @@
     {
       "h": 1,
       "n": 91,
-      "corr_tea_estado": -0.276,
+      "corr_tea_estado": -0.274,
       "corr_tea_prestamos": -0.182
     },
     {
       "h": 3,
       "n": 91,
-      "corr_tea_estado": -0.294,
-      "corr_tea_prestamos": -0.142
+      "corr_tea_estado": -0.292,
+      "corr_tea_prestamos": -0.141
     },
     {
       "h": 6,
       "n": 91,
-      "corr_tea_estado": -0.297,
-      "corr_tea_prestamos": -0.109
+      "corr_tea_estado": -0.296,
+      "corr_tea_prestamos": -0.108
     }
   ]
 }

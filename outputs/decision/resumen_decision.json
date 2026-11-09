@@ -1,9 +1,9 @@
 {
-  "tea_estado_pct": 38.00794823069621,
-  "fecha_tea_estado": "2026-07-01",
-  "tna_personales_mercado_pct": 62.57142857142857,
+  "tea_estado_pct": 34.290258928320405,
+  "fecha_tea_estado": "2026-08-01",
+  "tna_personales_mercado_pct": 62.56714285714286,
   "fecha_tna": "2026-10-01",
-  "tea_personales_mercado_pct": 84.03335094119528,
+  "tea_personales_mercado_pct": 84.02585481430383,
   "lgd_central": 0.75,
   "costo_central_pp": 12,
   "pd_publico": [
@@ -102,54 +102,54 @@
     {
       "linea": "personales",
       "escenario": "base",
-      "pd_12m_pct": 20.84,
-      "tea_minima_pct": 82.91,
-      "cft_minimo_pct": 106.85,
-      "colchon_pp": 1.12,
-      "pd_equilibrio_pct": 21.4
+      "pd_12m_pct": 20.83,
+      "tea_minima_pct": 78.21,
+      "cft_minimo_pct": 100.51,
+      "colchon_pp": 5.81,
+      "pd_equilibrio_pct": 23.73
     },
     {
       "linea": "personales",
       "escenario": "adverso",
       "pd_12m_pct": 25.31,
-      "tea_minima_pct": 92.38,
-      "cft_minimo_pct": 119.74,
-      "colchon_pp": -8.34,
-      "pd_equilibrio_pct": 21.4
+      "tea_minima_pct": 87.4,
+      "cft_minimo_pct": 112.95,
+      "colchon_pp": -3.37,
+      "pd_equilibrio_pct": 23.73
     },
     {
       "linea": "personales",
       "escenario": "favorable",
       "pd_12m_pct": 17.65,
-      "tea_minima_pct": 76.8,
-      "cft_minimo_pct": 98.6,
-      "colchon_pp": 7.23,
-      "pd_equilibrio_pct": 21.4
+      "tea_minima_pct": 72.28,
+      "cft_minimo_pct": 92.54,
+      "colchon_pp": 11.74,
+      "pd_equilibrio_pct": 23.73
     },
     {
       "linea": "personales",
       "escenario": "adverso_p95",
       "pd_12m_pct": 34.92,
-      "tea_minima_pct": 117.09,
-      "cft_minimo_pct": 153.89,
-      "colchon_pp": -33.05,
-      "pd_equilibrio_pct": 21.4
+      "tea_minima_pct": 111.37,
+      "cft_minimo_pct": 145.93,
+      "colchon_pp": -27.35,
+      "pd_equilibrio_pct": 23.73
     },
     {
       "linea": "personales",
       "escenario": "niif9_ponderado",
       "pd_12m_pct": 21.56,
-      "tea_minima_pct": 84.37,
-      "cft_minimo_pct": 108.84,
-      "colchon_pp": -0.34,
-      "pd_equilibrio_pct": 21.4
+      "tea_minima_pct": 79.63,
+      "cft_minimo_pct": 102.43,
+      "colchon_pp": 4.39,
+      "pd_equilibrio_pct": 23.73
     },
     {
       "linea": "tarjetas_de_credito",
       "escenario": "base",
       "pd_12m_pct": 15.99,
-      "tea_minima_pct": 73.8,
-      "cft_minimo_pct": 94.57,
+      "tea_minima_pct": 69.37,
+      "cft_minimo_pct": 88.65,
       "colchon_pp": null,
       "pd_equilibrio_pct": null
     },
@@ -157,8 +157,8 @@
       "linea": "tarjetas_de_credito",
       "escenario": "adverso",
       "pd_12m_pct": 20.76,
-      "tea_minima_pct": 82.76,
-      "cft_minimo_pct": 106.66,
+      "tea_minima_pct": 78.07,
+      "cft_minimo_pct": 100.32,
       "colchon_pp": null,
       "pd_equilibrio_pct": null
     },
@@ -166,8 +166,8 @@
       "linea": "tarjetas_de_credito",
       "escenario": "favorable",
       "pd_12m_pct": 12.8,
-      "tea_minima_pct": 68.36,
-      "cft_minimo_pct": 87.29,
+      "tea_minima_pct": 64.1,
+      "cft_minimo_pct": 81.62,
       "colchon_pp": null,
       "pd_equilibrio_pct": null
     },
@@ -175,8 +175,8 @@
       "linea": "tarjetas_de_credito",
       "escenario": "adverso_p95",
       "pd_12m_pct": 31.89,
-      "tea_minima_pct": 108.54,
-      "cft_minimo_pct": 142.0,
+      "tea_minima_pct": 103.08,
+      "cft_minimo_pct": 134.44,
       "colchon_pp": null,
       "pd_equilibrio_pct": null
     },
@@ -184,8 +184,8 @@
       "linea": "tarjetas_de_credito",
       "escenario": "niif9_ponderado",
       "pd_12m_pct": 16.74,
-      "tea_minima_pct": 75.15,
-      "cft_minimo_pct": 96.38,
+      "tea_minima_pct": 70.68,
+      "cft_minimo_pct": 90.39,
       "colchon_pp": null,
       "pd_equilibrio_pct": null
     }

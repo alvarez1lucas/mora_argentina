@@ -1,11 +1,11 @@
 {
-  "tea_mercado_pct": 84.03335094119528,
-  "tea_estado_pct": 38.00794823069621,
+  "tea_mercado_pct": 84.02585481430383,
+  "tea_estado_pct": 34.290258928320405,
   "lgd": 0.75,
   "costo_operativo_pp": 12.0,
   "cortes_pd_pct": {
     "solo_perdida_esperada": 52.84,
-    "con_costo_de_oportunidad": 21.4
+    "con_costo_de_oportunidad": 23.73
   },
   "delta_logit": {
     "ttc": 0.0,
@@ -28,26 +28,26 @@
     {
       "escenario": "ttc",
       "regla": "con_costo_de_oportunidad",
-      "corte_pd_pct": 21.4,
+      "corte_pd_pct": 23.73,
       "pd_media_cartera_pct": 7.94,
-      "aprobacion_pct": 93.4,
-      "pd_media_aprobados_pct": 6.43
+      "aprobacion_pct": 95.0,
+      "pd_media_aprobados_pct": 6.7
     },
     {
       "escenario": "hoy",
       "regla": "solo_perdida_esperada",
       "corte_pd_pct": 52.84,
       "pd_media_cartera_pct": 20.96,
-      "aprobacion_pct": 95.4,
-      "pd_media_aprobados_pct": 18.98
+      "aprobacion_pct": 95.2,
+      "pd_media_aprobados_pct": 18.91
     },
     {
       "escenario": "hoy",
       "regla": "con_costo_de_oportunidad",
-      "corte_pd_pct": 21.4,
+      "corte_pd_pct": 23.73,
       "pd_media_cartera_pct": 20.96,
-      "aprobacion_pct": 61.8,
-      "pd_media_aprobados_pct": 11.31
+      "aprobacion_pct": 66.4,
+      "pd_media_aprobados_pct": 12.09
     },
     {
       "escenario": "base",
@@ -60,10 +60,10 @@
     {
       "escenario": "base",
       "regla": "con_costo_de_oportunidad",
-      "corte_pd_pct": 21.4,
+      "corte_pd_pct": 23.73,
       "pd_media_cartera_pct": 24.7,
-      "aprobacion_pct": 52.2,
-      "pd_media_aprobados_pct": 12.2
+      "aprobacion_pct": 57.4,
+      "pd_media_aprobados_pct": 13.13
     },
     {
       "escenario": "adverso",
@@ -76,10 +76,10 @@
     {
       "escenario": "adverso",
       "regla": "con_costo_de_oportunidad",
-      "corte_pd_pct": 21.4,
+      "corte_pd_pct": 23.73,
       "pd_media_cartera_pct": 28.9,
-      "aprobacion_pct": 42.0,
-      "pd_media_aprobados_pct": 13.03
+      "aprobacion_pct": 47.6,
+      "pd_media_aprobados_pct": 14.15
     }
   ]
 }

@@ -13,7 +13,7 @@
     "cadena_tasa_previa_pp": 25.3539,
     "cadena_tasa_ventana_pp": 61.8448,
     "cadena_peso_estado_pct": 40.8962,
-    "cadena_traspaso": 0.7518
+    "cadena_traspaso": 0.7522
   },
   {
     "medida": "rem",
@@ -29,6 +29,6 @@
     "cadena_tasa_previa_pp": 38.2227,
     "cadena_tasa_ventana_pp": 84.7463,
     "cadena_peso_estado_pct": 29.6341,
-    "cadena_traspaso": 0.7518
+    "cadena_traspaso": 0.7522
   }
 ]

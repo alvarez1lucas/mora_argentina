@@ -7,11 +7,11 @@
     "prima_personales_sobre_estado_pp": 29.5
   },
   "ultimo": {
-    "fecha": "2026-07-01",
-    "tea_estado_3m": 38.0,
-    "tea_personales_nuevos": 88.8,
-    "tea_badlar": 23.5,
-    "prima_personales_sobre_estado_pp": 50.8
+    "fecha": "2026-08-01",
+    "tea_estado_3m": 34.3,
+    "tea_personales_nuevos": 88.9,
+    "tea_badlar": 25.2,
+    "prima_personales_sobre_estado_pp": 54.6
   },
   "promedios_anuales": {
     "2023": {
@@ -33,11 +33,11 @@
       "prima_personales_sobre_estado_pp": 57.9
     },
     "2026": {
-      "tea_estado_3m": 41.8,
-      "tea_personales_nuevos": 92.7,
-      "tea_badlar": 28.2,
-      "prima_personales_sobre_estado_pp": 50.8
+      "tea_estado_3m": 40.9,
+      "tea_personales_nuevos": 92.2,
+      "tea_badlar": 27.9,
+      "prima_personales_sobre_estado_pp": 51.3
     }
   },
-  "meses_estado_rinde_mas_que_badlar_pct": 84.8
+  "meses_estado_rinde_mas_que_badlar_pct": 85.3
 }

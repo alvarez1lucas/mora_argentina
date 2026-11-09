@@ -10,8 +10,8 @@
       {
         "indicador": "sit2",
         "descripcion": "Atrasos de 31 a 90 días (situación 2), % de la cartera de consumo y vivienda",
-        "valor": 3.7550577836256434,
-        "fecha": "2026-07-01",
+        "valor": 3.5815325515010286,
+        "fecha": "2026-08-01",
         "umbral": 2.610314926704028,
         "direccion": "alto",
         "peso": 10.0,
@@ -20,8 +20,8 @@
       {
         "indicador": "sit2_d3",
         "descripcion": "Suba de la situación 2 en 3 meses (pp)",
-        "valor": -0.873582431854568,
-        "fecha": "2026-07-01",
+        "valor": -0.729234555447047,
+        "fecha": "2026-08-01",
         "umbral": 0.5410190279445181,
         "direccion": "alto",
         "peso": 10.0,
@@ -40,9 +40,9 @@
       {
         "indicador": "tasa_real",
         "descripcion": "Tasa real del CFT de préstamos personales (%)",
-        "valor": 71.837250144832,
+        "valor": 71.82944745925252,
         "fecha": "2026-08-01",
-        "umbral": 61.688088683338265,
+        "umbral": 61.68808868333825,
         "direccion": "alto",
         "peso": 10.0,
         "senal": true
@@ -50,7 +50,7 @@
       {
         "indicador": "tasa_real_d12",
         "descripcion": "Suba de la tasa real en 12 meses (pp)",
-        "valor": -20.330302218791218,
+        "valor": -20.338104904370695,
         "fecha": "2026-08-01",
         "umbral": 58.85844528784714,
         "direccion": "alto",
@@ -82,7 +82,7 @@
         "descripcion": "Tasa real del CFT de hace 6 meses (%)",
         "valor": 59.91415847303738,
         "fecha": "2026-08-01",
-        "umbral": 30.959084936196135,
+        "umbral": 30.959084936196145,
         "direccion": "alto",
         "peso": 0.0,
         "senal": null

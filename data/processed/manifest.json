@@ -1,10 +1,10 @@
 {
-  "corrida_utc": "2026-11-02T21:27:45+00:00",
+  "corrida_utc": "2026-11-09T21:59:51+00:00",
   "archivos": {
     "a3_dolar_futuro.csv": {
-      "filas": 19308,
+      "filas": 19373,
       "desde": "2020-01-02",
-      "hasta": "2026-10-30"
+      "hasta": "2026-11-06"
     },
     "anexo_balance_por_grupo.csv": {
       "filas": 38775,
@@ -37,14 +37,14 @@
       "hasta": "2026-09-01"
     },
     "entidades_balance.csv": {
-      "filas": 14610,
+      "filas": 14683,
       "desde": "2011-01-01",
-      "hasta": "2026-07-01"
+      "hasta": "2026-08-01"
     },
     "entidades_panel.csv": {
-      "filas": 16827,
+      "filas": 16911,
       "desde": "2011-01-01",
-      "hasta": "2026-07-01"
+      "hasta": "2026-08-01"
     },
     "familias_por_linea.csv": {
       "filas": 200,

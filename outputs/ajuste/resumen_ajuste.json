@@ -1,7 +1,7 @@
 {
   "ventana": [
     "2023-11-01",
-    "2026-10-01"
+    "2026-11-01"
   ],
   "credito_privado_pbi": {
     "inicio": 9.33,
@@ -29,6 +29,6 @@
     "inicio": 2.65,
     "ultimo": 3.8
   },
-  "castigos_ultimos_meses_real_millones": 2056219.0,
+  "castigos_ultimos_meses_real_millones": 2217996.0,
   "pbi_extrapolado_desde": "2026-01-01"
 }

@@ -1,8 +1,8 @@
 {
   "deflactor": "seleccionado",
   "zivot_andrews_logit_mora": {
-    "estadistico": -4.789623782381953,
-    "pvalor": 0.11034280942783498,
+    "estadistico": -4.789623782381972,
+    "pvalor": 0.11034280942782954,
     "fecha_quiebre": "2023-12-01"
   },
   "corridas": {
