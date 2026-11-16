@@ -1,10 +1,10 @@
 {
-  "corrida_utc": "2026-11-09T21:59:51+00:00",
+  "corrida_utc": "2026-11-16T21:42:25+00:00",
   "archivos": {
     "a3_dolar_futuro.csv": {
-      "filas": 19373,
+      "filas": 19412,
       "desde": "2020-01-02",
-      "hasta": "2026-11-06"
+      "hasta": "2026-11-13"
     },
     "anexo_balance_por_grupo.csv": {
       "filas": 38775,
@@ -32,9 +32,9 @@
       "hasta": "2026-09-01"
     },
     "deuda_tesoro.csv": {
-      "filas": 93,
+      "filas": 94,
       "desde": "2019-01-01",
-      "hasta": "2026-09-01"
+      "hasta": "2026-10-01"
     },
     "entidades_balance.csv": {
       "filas": 14683,
@@ -52,9 +52,9 @@
       "hasta": "2026-08-01"
     },
     "ipc_divisiones.csv": {
-      "filas": 118,
+      "filas": 119,
       "desde": "2016-12-01",
-      "hasta": "2026-09-01"
+      "hasta": "2026-10-01"
     },
     "macro_diaria.csv": {
       "filas": 5585,
@@ -62,9 +62,9 @@
       "hasta": "2024-04-18"
     },
     "macro_mensual.csv": {
-      "filas": 381,
+      "filas": 382,
       "desde": "1995-01-01",
-      "hasta": "2026-09-01"
+      "hasta": "2026-10-01"
     },
     "macro_trimestral.csv": {
       "filas": 94,

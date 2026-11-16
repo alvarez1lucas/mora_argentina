@@ -3,8 +3,8 @@
   "horizonte_meses": 12,
   "meses_con_episodio_adelante": 29,
   "vigente": {
-    "fecha": "2026-09-01",
-    "indice": 0.26485599781228253,
+    "fecha": "2026-10-01",
+    "indice": 0.2935333680317099,
     "grado": "vigilancia",
     "indicadores": [
       {
@@ -90,9 +90,9 @@
       {
         "indicador": "carga",
         "descripcion": "Cuota de préstamos personales sobre la masa salarial (%)",
-        "valor": 6.98776595121485,
-        "fecha": "2026-06-01",
-        "umbral": 7.6118905827488,
+        "valor": 6.621271364724204,
+        "fecha": "2026-07-01",
+        "umbral": 7.611741046888567,
         "direccion": "alto",
         "peso": 6.091954022988506,
         "senal": false
@@ -100,9 +100,9 @@
       {
         "indicador": "carga_d12",
         "descripcion": "Suba de la carga de la cuota en 12 meses (pp)",
-        "valor": -0.42604225707065524,
-        "fecha": "2026-06-01",
-        "umbral": 1.3150391064281435,
+        "valor": -0.3842046793965235,
+        "fecha": "2026-07-01",
+        "umbral": 1.3150721506514318,
         "direccion": "alto",
         "peso": 10.0,
         "senal": false
@@ -110,8 +110,8 @@
       {
         "indicador": "salario_real_ia",
         "descripcion": "Salario registrado real, interanual (%)",
-        "valor": -2.8215058549417416,
-        "fecha": "2026-07-01",
+        "valor": -2.3932996617944347,
+        "fecha": "2026-08-01",
         "umbral": -6.871753445693676,
         "direccion": "bajo",
         "peso": 1.931034482758621,
@@ -120,9 +120,9 @@
       {
         "indicador": "emae_ia",
         "descripcion": "Actividad (EMAE), interanual (%)",
-        "valor": -1.2577898907737861,
-        "fecha": "2026-07-01",
-        "umbral": -1.2227982907724841,
+        "valor": -1.7484937732872297,
+        "fecha": "2026-08-01",
+        "umbral": -1.2182981329728635,
         "direccion": "bajo",
         "peso": 1.231527093596059,
         "senal": true
@@ -130,8 +130,8 @@
       {
         "indicador": "iva_real_ia",
         "descripcion": "Recaudación real de IVA DGI, interanual (%)",
-        "valor": 1.6110874992219415,
-        "fecha": "2026-09-01",
+        "valor": -1.9817158625635045,
+        "fecha": "2026-10-01",
         "umbral": -2.13788078303974,
         "direccion": "bajo",
         "peso": 1.7633228840125394,
@@ -140,8 +140,8 @@
       {
         "indicador": "aportes_real_ia",
         "descripcion": "Recaudación real de aportes personales, interanual (%)",
-        "valor": 0.7712691638930735,
-        "fecha": "2026-09-01",
+        "valor": 0.10866947300325336,
+        "fecha": "2026-10-01",
         "umbral": -7.013059444229912,
         "direccion": "bajo",
         "peso": 2.5354969574036508,
@@ -150,12 +150,12 @@
       {
         "indicador": "debitos_creditos_real_ia",
         "descripcion": "Recaudación real del impuesto a los débitos y créditos, interanual (%)",
-        "valor": -0.29102181479894185,
-        "fecha": "2026-09-01",
+        "valor": -9.128223883902997,
+        "fecha": "2026-10-01",
         "umbral": -3.9439342917569404,
         "direccion": "bajo",
         "peso": 2.2988505747126435,
-        "senal": false
+        "senal": true
       }
     ]
   },

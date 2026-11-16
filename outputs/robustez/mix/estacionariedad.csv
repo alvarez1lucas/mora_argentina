@@ -3,11 +3,11 @@ y,nivel,188,0.7979155074454243,0.016993300040312923,raiz_unitaria
 y,diferencia,187,5.577620387940241e-07,0.1,estacionaria
 tasa_real_cft,nivel,188,0.012907861826439673,0.1,estacionaria
 tasa_real_cft,diferencia,187,1.8474085759312195e-08,0.1,estacionaria
-salario_real_ia,nivel,118,0.10700765482695201,0.1,ambigua
-salario_real_ia,diferencia,117,5.859952937813361e-07,0.1,estacionaria
-empleo_ia,nivel,162,0.28656140284064835,0.1,ambigua
-empleo_ia,diferencia,161,0.00534689919520442,0.1,estacionaria
-emae_ia,nivel,187,0.05715190699915727,0.1,ambigua
-emae_ia,diferencia,186,5.36438384925008e-10,0.1,estacionaria
+salario_real_ia,nivel,119,0.11638329222282351,0.1,ambigua
+salario_real_ia,diferencia,118,4.524696962702313e-07,0.1,estacionaria
+empleo_ia,nivel,163,0.34686729864203236,0.1,ambigua
+empleo_ia,diferencia,162,0.0046810953160739965,0.1,estacionaria
+emae_ia,nivel,188,0.05612779827719599,0.1,ambigua
+emae_ia,diferencia,187,4.52969089712383e-10,0.1,estacionaria
 credito_real_ia,nivel,188,0.02764776286349641,0.1,estacionaria
 credito_real_ia,diferencia,187,0.010973577996940412,0.1,estacionaria

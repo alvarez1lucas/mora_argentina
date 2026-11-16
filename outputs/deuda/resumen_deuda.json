@@ -16,14 +16,14 @@
     "bancos_exposicion_estado_pbi": 12.84,
     "bancos_titulos_mn_pbi": 7.11
   },
-  "ultimo_flujos": "2026-09-01",
+  "ultimo_flujos": "2026-10-01",
   "rollover_ultimos_6m": {
-    "2026-04-01": 101.1,
     "2026-05-01": 99.0,
     "2026-06-01": 94.6,
     "2026-07-01": 107.4,
     "2026-08-01": 87.0,
-    "2026-09-01": 93.7
+    "2026-09-01": 93.7,
+    "2026-10-01": 99.7
   },
   "anual_desde_2024": {
     "2024": {
@@ -37,7 +37,7 @@
       "financiamiento_neto_pbi": -5.86
     },
     "2026": {
-      "rollover_pct": 99.54,
+      "rollover_pct": 99.64,
       "capitalizacion_pbi": 5.04,
       "financiamiento_neto_pbi": 0.45
     }
@@ -45,19 +45,19 @@
   "rollover_y_tasas": [
     {
       "h": 1,
-      "n": 91,
+      "n": 92,
       "corr_tea_estado": -0.274,
       "corr_tea_prestamos": -0.182
     },
     {
       "h": 3,
-      "n": 91,
+      "n": 92,
       "corr_tea_estado": -0.292,
       "corr_tea_prestamos": -0.141
     },
     {
       "h": 6,
-      "n": 91,
+      "n": 92,
       "corr_tea_estado": -0.296,
       "corr_tea_prestamos": -0.108
     }

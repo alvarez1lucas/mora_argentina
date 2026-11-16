@@ -10,7 +10,7 @@
       "especificacion": "tasa_real_cft(t-6), empleo_ia(t-3), emae_ia(t-3), credito_real_ia(t-15) | AR(2)",
       "signos_ok": true,
       "n": 140,
-      "r2_ajustado": 0.5322428359793957,
+      "r2_ajustado": 0.5322761942508024,
       "desde": "2013-04-01",
       "hasta": "2026-08-01"
     },
@@ -18,7 +18,7 @@
       "especificacion": "tasa_real_cft(t-6), empleo_ia(t-6), emae_ia(t-3), credito_real_ia(t-15) | AR(2)",
       "signos_ok": true,
       "n": 80,
-      "r2_ajustado": 0.5767083619256084,
+      "r2_ajustado": 0.5767601055935659,
       "desde": "2018-04-01",
       "hasta": "2026-08-01"
     },
@@ -26,7 +26,7 @@
       "especificacion": "tasa_real_cft(t-6), salario_real_ia(t-9), emae_ia(t-3), credito_real_ia(t-15) | AR(2)",
       "signos_ok": true,
       "n": 80,
-      "r2_ajustado": 0.5699342628259403,
+      "r2_ajustado": 0.5699220021148768,
       "desde": "2018-04-01",
       "hasta": "2026-08-01"
     }
